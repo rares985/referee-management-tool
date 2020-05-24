@@ -2,6 +2,20 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const CosmosClient = require("@azure/cosmos").CosmosClient;
+const config = require("./server/dbconfig");
+const dbctx = require("./server/db-conn");
+
+// Un-comment for production
+// const { endpoint, key, databaseId, containerId } = config;
+
+// const client = new CosmosClient({ endpoint, key });
+
+// const database = client.database(databaseId);
+// const container = database.container(containerId);
+
+// Make sure Tasks database is already setup. If not, create it.
+await dbContext.create(client, databaseId, containerId);
 
 const app = express();
 app.use(bodyParser.json());
