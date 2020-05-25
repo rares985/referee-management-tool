@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - 'node'
+notifications:
+  slack: rzrland:rrYWT11jAsdwDeE0NZmeZglO
+
+#safelist
+branches:
+    only:
+    -develop
