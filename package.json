@@ -2,9 +2,10 @@
   "name": "referee-management-tool",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server",
+    "test": "echo No tests yet. Skipping...",
     "build": "cd client/ && npm run build && cd ../",
     "dev": "node server"
   },

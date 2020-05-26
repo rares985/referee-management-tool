@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -32,20 +32,20 @@ module.exports = {
     ],
   },
 
-  // optimization: {
-  //   minimizer: [
-  //     new UglifyJsPlugin({
-  //       cache: true,
-  //       parallel: true,
-  //       uglifyOptions: {
-  //         compress: false,
-  //         ecma: 6,
-  //         mangle: true,
-  //       },
-  //       sourceMap: true,
-  //     }),
-  //   ],
-  // },
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        cache: true,
+        parallel: true,
+        uglifyOptions: {
+          compress: false,
+          ecma: 6,
+          mangle: true,
+        },
+        sourceMap: true,
+      }),
+    ],
+  },
 
   resolve: {
     extensions: ['*', '.js', '.jsx'],
@@ -57,6 +57,6 @@ module.exports = {
       filename: 'index.html',
       template: 'src/index.html',
     }),
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
   ],
 };
