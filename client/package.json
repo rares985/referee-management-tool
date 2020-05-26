@@ -5,9 +5,6 @@
   "dependencies": {
     "@material-ui/core": "^4.10.0",
     "@material-ui/icons": "^4.9.1",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
     "bootstrap": "^4.5.0",
     "file-loader": "^6.0.0",
     "prop-types": "^15.7.2",
@@ -16,8 +13,7 @@
     "react-dom": "^16.13.1",
     "react-router-bootstrap": "^0.25.0",
     "react-router-dom": "^5.2.0",
-    "sha3": "^2.1.2",
-    "shortid": "^2.2.15"
+    "sha3": "^2.1.2"
   },
   "scripts": {
     "dev": "webpack-dev-server --mode development --open --config ./webpack.config.dev.js",
@@ -44,6 +40,9 @@
     "@babel/plugin-proposal-class-properties": "^7.8.3",
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.0.1",
     "babel-loader": "^8.1.0",

@@ -1,8 +1,9 @@
-const webpack = require('webpack');
+// const webpack = require('webpack');
 const path = require('path');
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// var CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = {
   /* Entry point  */
@@ -28,6 +29,16 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+
+      /* Load images and fonts */
+      {
+        test: /\.(png|jpg|gif|eot|ttf|woff|woff2)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]',
+          outputPath: './dist/assets/',
+        },
       },
     ],
   },
