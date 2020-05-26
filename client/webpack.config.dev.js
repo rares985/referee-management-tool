@@ -8,7 +8,7 @@ module.exports = {
   /* Where the bundle.js file will be created */
   output: {
     path: path.resolve(__dirname, './dist'),
-    publicPath: '/',
+    // publicPath: '/',
     filename: 'bundle.js',
   },
 
@@ -21,18 +21,23 @@ module.exports = {
         use: ['babel-loader', 'eslint-loader'],
       },
 
-      /* Load CSS */
+      /* Load SCSS, then CSS */
+      {
+        test: /\.s[ac]ss$/i,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
       /* Load images and fonts */
       {
-        test: /\.(png|jpg|gif|eot|ttf|woff|woff2)$/,
+        test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]',
-          outputPath: './dist/assets/',
+          /* Relative to output-folder */
+          outputPath: 'assets/',
         },
       },
     ],
