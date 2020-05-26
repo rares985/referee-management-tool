@@ -7,4 +7,4 @@ notifications:
 #safelist
 branches:
     only:
-    -develop
+    - develop
