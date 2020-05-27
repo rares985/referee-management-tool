@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, FormGroup, FormControl, FormLabel, Card } from "react-bootstrap";
 
-/* eslint-disable */
-const LoginStub = (props) => {
+
+const LoginStub = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -18,7 +18,7 @@ const LoginStub = (props) => {
     return (
         <div className="page-container">
             <div className="login">
-                <Card className={props.navOpen ? "active" : ''}>
+                <Card>
                     <form onSubmit={handleSubmit}>
                         <div className="avatar">
                             <i className="ion-ios-home" />
