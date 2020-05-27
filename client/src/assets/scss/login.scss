@@ -1,0 +1,16 @@
+
+Button:disabled {
+    z-index: -1;
+}
+
+div.login {
+    form {
+        margin: 10px;
+        display: flex;
+        flex-direction: column;
+        div.avatar {
+            display:flex;
+            justify-content: center;
+        }
+    }
+}

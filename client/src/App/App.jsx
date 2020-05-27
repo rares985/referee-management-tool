@@ -2,18 +2,10 @@ import React from 'react';
 import { Router } from '@reach/router';
 import ResponsiveNavigation from '../components/ResponsiveNavigation';
 import logo from '../assets/frv_logo_no_bg.png';
+import Home from '../containers/Home';
+import Matches from '../containers/Matches';
+import LoginStub from '../containers/LoginStub';
 
-const Home = () => {
-  return <div className="page-container"> Home </div>;
-};
-
-const Matches = () => {
-  return <div className="page-container"> Matches </div>;
-};
-
-const Login = () => {
-  return <div className="page-container"> Login </div>;
-};
 
 const App = () => {
   const navLinks = [
@@ -46,7 +38,7 @@ const App = () => {
       <Router>
         <Home path="/" />
         <Matches path="/matches" />
-        <Login path="/login" />
+        <LoginStub path="/login" />
       </Router>
     </div>
   );
