@@ -57,6 +57,7 @@ module.exports = {
     inline: true,
     contentBase: 'dist/',
     disableHostCheck: true,
+    open: 'chrome',
     historyApiFallback: true,
     hot: true,
     port: 8080,

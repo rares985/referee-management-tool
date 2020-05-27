@@ -4,15 +4,15 @@ import ResponsiveNavigation from '../components/ResponsiveNavigation';
 import logo from '../assets/frv_logo_no_bg.png';
 
 const Home = () => {
-  return <div> Home </div>;
+  return <div className="page-container"> Home </div>;
 };
 
 const Matches = () => {
-  return <div> Matches </div>;
+  return <div className="page-container"> Matches </div>;
 };
 
 const Login = () => {
-  return <div> Login </div>;
+  return <div className="page-container"> Login </div>;
 };
 
 const App = () => {
@@ -44,7 +44,7 @@ const App = () => {
         logo={logo}
       />
       <Router>
-        <Home path="/home" />
+        <Home path="/" />
         <Matches path="/matches" />
         <Login path="/login" />
       </Router>
