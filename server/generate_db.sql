@@ -78,3 +78,11 @@ VALUES
     (4, 'II'),
     (5, 'III'),
     (6, 'IV');
+
+
+CREATE TABLE users (
+	id int IDENTITY(1,1) PRIMARY KEY,
+    username VARCHAR(30),
+    password VARCHAR(60)
+);
+

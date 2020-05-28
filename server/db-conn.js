@@ -1,24 +1,22 @@
-const CosmosClient = require("@azure/cosmos").CosmosClient;
+var Connection = require('tedious').Connection
+require("dotenv").config({ path: __dirname + '/.env' });
 
-async function create(client, databaseId, containerId) {
-  const partitionKey = config.partitionKey;
-  /**
-   * Create the database if it does not exist
-   */
-  const { database } = await client.databases.createIfNotExists({
-    id: databaseId,
-  });
-  console.log(`Created database:\n${database.id}\n`);
-
-  /**
-   * Create the container if it does not exist
-   */
-  const { container } = await client
-    .database(databaseId)
-    .containers.createIfNotExists(
-      { id: containerId, partitionKey },
-      { offerThroughput: 400 }
-    );
-
-  console.log(`Created container:\n${container.id}\n`);
+/* DB configuration */
+var config = {
+  server: process.env.DB_SERVER,
+  options: {
+    database: process.env.DB_NAME,
+    trustServerCertificate: true
+  },
+  authentication: {
+    type: 'default',
+    options: {
+      userName: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD
+    }
+  },
 }
+
+const connection = new Connection(config);
+
+module.exports =  connection;
