@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Router } from '@reach/router';
 import ResponsiveNavigation from '../components/ResponsiveNavigation';
 import logo from '../assets/frv_logo_no_bg.png';
@@ -7,8 +7,19 @@ import Matches from '../containers/Matches';
 import LoginStub from '../containers/LoginStub';
 
 
+/* eslint-disable */
+const Dashboard = () => {
+  return (
+    <div className="page-container">
+      <p> Dashboard </p>
+    </div>
+  );
+}
+
 const App = () => {
-  const navLinks = [
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  const guestLinks = [
     {
       text: 'Home',
       path: '/',
@@ -26,10 +37,19 @@ const App = () => {
     },
   ];
 
+  const userLinks = [
+    ...guestLinks.slice(0, guestLinks.length - 1),
+    {
+      text: 'Personal Account',
+      path: '/account',
+      icon: 'ion-ios-person'
+    },
+  ]
+
   return (
     <div className="app">
       <ResponsiveNavigation
-        navLinks={navLinks}
+        navLinks={loggedIn ? userLinks : guestLinks}
         background="#000000"
         hoverBackground="#ddd"
         linkColor="#777"
@@ -38,7 +58,12 @@ const App = () => {
       <Router>
         <Home path="/" />
         <Matches path="/matches" />
-        <LoginStub path="/login" />
+        {!loggedIn &&
+          <LoginStub path="/login" loginCallback={setLoggedIn} />
+        }
+        {loggedIn &&
+          <Dashboard path="/account" />
+        }
       </Router>
     </div>
   );

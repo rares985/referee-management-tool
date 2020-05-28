@@ -8,7 +8,7 @@ const axios = require('axios').create({
 const HIDE_PASSWORD_DELAY_MS = 500;
 
 /* eslint-disable */
-const LoginStub = () => {
+const LoginStub = (props) => {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -22,13 +22,17 @@ const LoginStub = () => {
         event.preventDefault();
         console.log()
 
-        axios.post('/api/authenticate',{
+        axios.post('/api/authenticate', {
             username: username,
             password: password
         })
-        .then((response) => {
-            alert(response.data);
-        })
+            .then((response) => {
+                if (response.status == 200) {
+                    props.loginCallback(true);
+                }
+            }, (error) => {
+                console.error(error);
+            })
     }
 
     const EyeOpenIcon = () => {
