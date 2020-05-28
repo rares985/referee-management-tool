@@ -44,58 +44,66 @@ app.use(express.static("./client/dist/"));
 
 /* Declare Routes  ============================== */
 app.post("/api/register", (req, res) => {
-  console.log(`REGISTER: Got request: ${req.body.user}, ${req.body.password}`);
+  const { username, password } = req.body;
+  console.log(`REGISTER: Got request: ${username}, ${password}`);
 
-  var query = '';
-  
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
-      throw(err);
-    } else {
-      query = `insert into users (username, password) VALUES ('${req.body.user}', '${hash}');`;
-      executeQuery(query);
-      res.status(200).send(`Welcome to the club ${req.body.user}!`);
-    }
-  });
+  if (username === undefined || password === undefined) {
+    res.status(400).send("Invalid parameters for registration");
+  } else {
+    bcrypt.hash(password, 10, (err, hash) => {
+      if (err) {
+        throw (err);
+      } else {
+        var query = `insert into users (username, password) VALUES ('${username}', '${hash}');`;
+        executeQuery(query);
+        res.status(200).send(`Welcome to the club, ${username}!`);
+      }
+    });
+  }
 });
 
 app.post("/api/authenticate", (req, res) => {
-  console.log(req.body);
-  const {username, password} = req.body;
+  const { username, password } = req.body;
   console.log(`AUTH: Got request: ${username}, ${password}`);
-  var query = `SELECT password FROM users WHERE username='${username}'`;
 
-  console.log(`Going to execute query ${query}`);
-  request = new Request(query, (err, rowCount) => {
-    if (err) {
-      console.log(err)
-    } else {
-      console.log(`Got ${rowCount} rows`);
-    }
-  });
+  if (username === undefined || password === undefined) {
+    res.status(400).send("Invalid parameters for authentication");
+  } else {
+    var query = `SELECT password FROM users WHERE username='${username}'`;
 
-  request.on('row', (cols) => {
-    cols.forEach((col) => {
-      if (col.value == null) {
-        console.log('Got NULL value')
+    console.log(`Going to execute query ${query}`);
+    request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.log(err)
       } else {
-        bcrypt.compare(password, col.value, (err, result) => {
-          if (err) {
-            throw(err);
-          } else {
-            console.log(result);
-            if (result) {
-              res.status(200).send('Login success');
-            } else {
-              res.status(401).send('Login failure!');
-            }
-          }
-        });
+        console.log(`Got ${rowCount} rows`);
       }
     });
-  });
 
-  connection.execSql(request); 
+    request.on('row', (cols) => {
+      cols.forEach((col) => {
+        if (col.value == null) {
+          console.log('Got NULL value')
+        } else {
+          bcrypt.compare(password, col.value, (err, result) => {
+            if (err) {
+              throw (err);
+            } else {
+              console.log(result);
+              if (result) {
+                res.status(200).send('Login success');
+              } else {
+                res.status(401).send('Login failure!');
+              }
+            }
+          });
+        }
+      });
+    });
+
+    connection.execSql(request);
+
+  }
 });
 
 app.get("/*", (req, res) => {

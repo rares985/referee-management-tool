@@ -51,9 +51,8 @@ VALUES
 
 
 CREATE TABLE lots (
-	id      INT         NOT NULL,
-    name    VARCHAR(20)
-	PRIMARY KEY (id)
+    id      int             IDENTITY(1, 1)   PRIMARY KEY
+    name    VARCHAR(20)     NOT NULL
 );
 
 INSERT INTO lots (id, name)
@@ -65,9 +64,8 @@ VALUES
 
 
 CREATE TABLE categories (
-	id      INT         NOT NULL,
-    name    VARCHAR(20)
-	PRIMARY KEY (id)
+    id      int             IDENTITY(1, 1) PRIMARY KEY
+    name    VARCHAR(20)     NOT NULL
 );
 
 INSERT INTO categories (id, name)
@@ -81,8 +79,26 @@ VALUES
 
 
 CREATE TABLE users (
-	id int IDENTITY(1,1) PRIMARY KEY,
-    username VARCHAR(30),
-    password VARCHAR(60)
+	id          int IDENTITY(1,1) PRIMARY KEY,
+    username    VARCHAR(30) NOT NULL,
+    password    VARCHAR(60) NOT NULL
 );
 
+
+
+
+CREATE TABLE sensitive_info (
+    id              int         IDENTITY(1, 1) PRIMARY KEY,
+    first_name      VARCHAR(30) NOT NULL,
+    last_name       VARCHAR(30) NOT NULL,
+    personal_email  VARCHAR(30) NOT NULL,
+);
+
+CREATE TABLE referees (
+    id                  int IDENTITY(1, 1) PRIMARY KEY,
+    id_user             int FOREIGN KEY REFERENCES users(id),
+    id_lot              int FOREIGN KEY REFERENCES lots(id),
+    id_category         int FOREIGN KEY REFERENCES categories(id),
+    id_county           int FOREIGN KEY REFERENCES counties(id),
+    id_sensitive_info   int FOREIGN KEY REFERENCES sensitive_info(id)
+);
