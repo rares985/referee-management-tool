@@ -5,6 +5,8 @@ const axios = require('axios').create({
     baseURL: 'http://localhost:5001'
 });
 
+const HIDE_PASSWORD_DELAY_MS = 500;
+
 /* eslint-disable */
 const LoginStub = () => {
 
@@ -89,7 +91,15 @@ const LoginStub = () => {
                             />
                             <InputGroup.Append>
                                 <Button variant="outline-secondary"
-                                    onClick={() => setMasked(!isMasked)}>
+                                    onClick={() => {
+                                        /* Invert password mask */
+                                        setMasked(!isMasked);
+                                        setTimeout(() => {
+                                            /* At timeout, forcefully hide password */
+                                            setMasked(true);
+                                        }, HIDE_PASSWORD_DELAY_MS);
+                                    }}
+                                >
                                     <EyeIcon isMasked={isMasked} />
                                 </Button>
                             </InputGroup.Append>
