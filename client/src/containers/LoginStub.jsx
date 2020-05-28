@@ -1,19 +1,32 @@
 import React, { useState } from 'react';
 import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card } from "react-bootstrap";
 
+const axios = require('axios').create({
+    baseURL: 'http://localhost:5001'
+});
+
 /* eslint-disable */
 const LoginStub = () => {
 
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isMasked, setMasked] = useState(true);
 
     function validateForm() {
-        return email.length > 0 && password.length > 0;
+        return username.length > 0 && password.length > 0;
     }
 
     function handleSubmit(event) {
         event.preventDefault();
+        console.log()
+
+        axios.post('/api/authenticate',{
+            username: username,
+            password: password
+        })
+        .then((response) => {
+            alert(response.data);
+        })
     }
 
     const EyeOpenIcon = () => {
@@ -58,13 +71,13 @@ const LoginStub = () => {
                         <div className="avatar">
                             <LockIcon />
                         </div>
-                        <FormGroup controlId="email">
-                            <FormLabel>Email</FormLabel>
+                        <FormGroup controlId="username">
+                            <FormLabel>username</FormLabel>
                             <FormControl
                                 autoFocus
-                                type="email"
-                                value={email}
-                                onChange={e => setEmail(e.target.value)}
+                                type="text"
+                                value={username}
+                                onChange={e => setUsername(e.target.value)}
                             />
                         </FormGroup>
                         <FormLabel>Password</FormLabel>
