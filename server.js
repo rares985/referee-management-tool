@@ -1,31 +1,30 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-var Request = require('tedious').Request
+var Request = require("tedious").Request;
 
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
-const connection = require('./server/db-conn');
-
+const connection = require("./server/db-conn");
 
 /* JWT secret */
-const secret = 'shh';
+const secret = "shh";
 
 const executeQuery = (query) => {
   console.log(`Going to execute query ${query}`);
   request = new Request(query, (err, rowCount) => {
     if (err) {
-      console.log(err)
+      console.log(err);
     } else {
-      console.log(rowCount + 'rows')
+      console.log(rowCount + "rows");
     }
   });
 
-  request.on('row', (cols) => {
+  request.on("row", (cols) => {
     cols.forEach((col) => {
       if (col.value == null) {
-        console.log('NULL')
+        console.log("NULL");
       } else {
         console.log(col.value);
       }
@@ -33,7 +32,7 @@ const executeQuery = (query) => {
   });
 
   connection.execSql(request);
-}
+};
 
 const app = express();
 app.use(bodyParser.json());
@@ -52,7 +51,7 @@ app.post("/api/register", (req, res) => {
   } else {
     bcrypt.hash(password, 10, (err, hash) => {
       if (err) {
-        throw (err);
+        throw err;
       } else {
         var query = `insert into users (username, password) VALUES ('${username}', '${hash}');`;
         executeQuery(query);
@@ -74,26 +73,26 @@ app.post("/api/authenticate", (req, res) => {
     console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
       if (err) {
-        console.log(err)
+        console.log(err);
       } else {
         console.log(`Got ${rowCount} rows`);
       }
     });
 
-    request.on('row', (cols) => {
+    request.on("row", (cols) => {
       cols.forEach((col) => {
         if (col.value == null) {
-          console.log('Got NULL value')
+          console.log("Got NULL value");
         } else {
           bcrypt.compare(password, col.value, (err, result) => {
             if (err) {
-              throw (err);
+              throw err;
             } else {
               console.log(result);
               if (result) {
-                res.status(200).send('Login success');
+                res.status(200).send("Login success");
               } else {
-                res.status(401).send('Login failure!');
+                res.status(401).send("Login failure!");
               }
             }
           });
@@ -102,7 +101,6 @@ app.post("/api/authenticate", (req, res) => {
     });
 
     connection.execSql(request);
-
   }
 });
 
@@ -112,8 +110,15 @@ app.get("/*", (req, res) => {
   });
 });
 
+connection.on("connect", function (err) {
+  if (err) {
+    console.error(`Failed to connect to remote database due to ${err}`);
+  } else {
+    console.log("Successfully connected to database!");
+  }
+});
 
-connection.connect()
+connection.connect();
 
 // console.log that your server is up and running
 const port = process.env.PORT || 5001;

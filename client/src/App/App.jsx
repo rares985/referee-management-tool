@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Router } from '@reach/router';
+import { Router, navigate } from '@reach/router';
 import ResponsiveNavigation from '../components/ResponsiveNavigation';
 import logo from '../assets/frv_logo_no_bg.png';
 import Home from '../containers/Home';
 import Matches from '../containers/Matches';
 import LoginStub from '../containers/LoginStub';
-
 
 /* eslint-disable */
 const Dashboard = () => {
@@ -14,7 +13,7 @@ const Dashboard = () => {
       <p> Dashboard </p>
     </div>
   );
-}
+};
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -42,9 +41,9 @@ const App = () => {
     {
       text: 'Personal Account',
       path: '/account',
-      icon: 'ion-ios-person'
+      icon: 'ion-ios-person',
     },
-  ]
+  ];
 
   return (
     <div className="app">
@@ -58,12 +57,8 @@ const App = () => {
       <Router>
         <Home path="/" />
         <Matches path="/matches" />
-        {!loggedIn &&
-          <LoginStub path="/login" loginCallback={setLoggedIn} />
-        }
-        {loggedIn &&
-          <Dashboard path="/account" />
-        }
+        {!loggedIn && <LoginStub path="/login" navigate={navigate} loginCallback={setLoggedIn} />}
+        {loggedIn && <Dashboard path="/account" />}
       </Router>
     </div>
   );
