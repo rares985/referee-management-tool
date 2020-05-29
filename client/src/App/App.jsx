@@ -5,15 +5,8 @@ import logo from '../assets/frv_logo_no_bg.png';
 import Home from '../containers/Home';
 import Matches from '../containers/Matches';
 import LoginStub from '../containers/LoginStub';
-
+import Dashboard from '../containers/Dashboard';
 /* eslint-disable */
-const Dashboard = () => {
-  return (
-    <div className="page-container">
-      <p> Dashboard </p>
-    </div>
-  );
-};
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
