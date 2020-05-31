@@ -8,6 +8,7 @@ import LoginStub from '../containers/LoginStub';
 import Dashboard from '../containers/Dashboard';
 import PersonalInformationForm from '../containers/PersonalInformationForm';
 import PersonalMatchHistory from '../containers/PersonalMatchHistory';
+import CalendarPicker from '../containers/CalendarPicker';
 /* eslint-disable */
 
 const App = () => {
@@ -58,10 +59,11 @@ const App = () => {
         <Home path="/" />
         <Matches path="/matches" />
         {!loggedIn && <LoginStub path="/login" navigate={navigate} loginCallback={setLoggedIn} />}
-        {loggedIn && <Dashboard path="/account" />}
-        <Dashboard path="/account" navigate={navigate} />
+        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} />}
         <PersonalInformationForm path="/updateinfo" />
         <PersonalMatchHistory path="/viewhistory" />
+        <CalendarPicker path="/addunavailable" />
+        <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} />
       </Router>
     </div>
   );

@@ -90,6 +90,10 @@ const BoxArrowLeft = () => {
   );
 };
 const Dashboard = (props) => {
+  const handleLogout = () => {
+    props.logoutCallback(false);
+    props.navigate('/login');
+  };
   return (
     <div className="page-container">
       <Container>
@@ -154,8 +158,8 @@ const Dashboard = (props) => {
                 <Card.Body>
                   <Card.Title>Deautentificare </Card.Title>
                   <Card.Text>Deautentificați-vă de pe site</Card.Text>
-                  <Button variant="primary" onClick={() => props.navigate('/logout')}>
-                    Adaugă
+                  <Button variant="primary" onClick={() => handleLogout()}>
+                    Deautentificare
                   </Button>
                 </Card.Body>
               </Card>
