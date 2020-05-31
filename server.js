@@ -116,6 +116,35 @@ app.post("/api/authenticate", (req, res) => {
   }
 });
 
+app.get("/api/personalInfo", (req, res) => {
+  const { username } = req.body;
+  console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
+
+  if (username === undefined) {
+    res.status(401).send("Invalid parameters for authentication");
+  } else {
+    query = `SELECT * FROM sensitive_info
+              WHERE id = (SELECT id_sensitive_info FROM referees
+                WHERE id_user = (SELECT id FROM users 
+                  WHERE username='${username}'))`;
+    console.log(`Going to execute query ${query}`);
+    request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("User information not in database!");
+      } else {
+        console.log(`Got ${rowCount} rows`);
+      }
+    });
+
+    request.on("row", (cols) => {
+      console.log(cols);
+    });
+
+    connection.execSql(request);
+  }
+});
+
 /* Route for knowing if the cookie is valid */
 app.get("/checkToken", withAuth, (req, res) => {
   res.sendStatus(200);
