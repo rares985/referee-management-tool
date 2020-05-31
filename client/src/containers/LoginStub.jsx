@@ -19,7 +19,6 @@ const LoginStub = (props) => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log();
 
     axios
       .post('/api/authenticate', {

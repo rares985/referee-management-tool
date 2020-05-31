@@ -19,7 +19,7 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --mode development --config ./webpack.config.dev.js",
-    "build": "webpack --env.API_URL=https://referee-management-tool.azurewebsites.net --mode production --config ./webpack.config.prod.js"
+    "build": "webpack --mode production --config ./webpack.config.prod.js"
   },
   "eslintConfig": {
     "extends": "react-app"

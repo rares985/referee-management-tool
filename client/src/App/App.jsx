@@ -6,6 +6,8 @@ import Home from '../containers/Home';
 import Matches from '../containers/Matches';
 import LoginStub from '../containers/LoginStub';
 import Dashboard from '../containers/Dashboard';
+import PersonalInformationForm from '../containers/PersonalInformationForm';
+import PersonalMatchHistory from '../containers/PersonalMatchHistory';
 /* eslint-disable */
 
 const App = () => {
@@ -27,12 +29,17 @@ const App = () => {
       path: '/login',
       icon: 'ion-ios-lock',
     },
+    {
+      text: 'Dashboard',
+      path: '/account',
+      icon: 'ion-ios-person',
+    },
   ];
 
   const userLinks = [
     ...guestLinks.slice(0, guestLinks.length - 1),
     {
-      text: 'Personal Account',
+      text: 'Dashboard',
       path: '/account',
       icon: 'ion-ios-person',
     },
@@ -52,6 +59,9 @@ const App = () => {
         <Matches path="/matches" />
         {!loggedIn && <LoginStub path="/login" navigate={navigate} loginCallback={setLoggedIn} />}
         {loggedIn && <Dashboard path="/account" />}
+        <Dashboard path="/account" navigate={navigate} />
+        <PersonalInformationForm path="/updateinfo" />
+        <PersonalMatchHistory path="/viewhistory" />
       </Router>
     </div>
   );
