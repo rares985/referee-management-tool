@@ -6,6 +6,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cookieParser = require("cookie-parser");
+
 var Request = require("tedious").Request;
 
 const jwt = require("jsonwebtoken");
@@ -61,7 +62,7 @@ app.post("/api/register", (req, res) => {
       if (err) {
         throw err;
       } else {
-        var query = `insert into users (username, password) VALUES ('${username}', '${hash}');`;
+        var query = `INSERT INTO [dbo].[User] (Username, Password) VALUES ('${username}', '${hash}');`;
         executeQuery(query);
         res.status(200).send(`Welcome to the club, ${username}!`);
       }
@@ -76,7 +77,7 @@ app.post("/api/authenticate", (req, res) => {
   if (username === undefined || password === undefined) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
-    var query = `SELECT password FROM users WHERE username='${username}'`;
+    var query = `SELECT Password FROM User WHERE Username='${username}'`;
 
     console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
@@ -116,6 +117,7 @@ app.post("/api/authenticate", (req, res) => {
   }
 });
 
+/* JSON format: {username: rares} */
 app.get("/api/personalInfo", (req, res) => {
   const { username } = req.body;
   console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
@@ -138,7 +140,11 @@ app.get("/api/personalInfo", (req, res) => {
     });
 
     request.on("row", (cols) => {
-      console.log(cols);
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      res.status(200).send(obj);
     });
 
     connection.execSql(request);

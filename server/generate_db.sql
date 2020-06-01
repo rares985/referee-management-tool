@@ -1,104 +1,246 @@
-CREATE TABLE counties (
-	id      INT         NOT NULL,
-    name    VARCHAR(20)
-	PRIMARY KEY (id)
+-- Tables containing static data, should never (or rarely) change
+CREATE TABLE County (
+	ID      INT         IDENTITY(1, 1) PRIMARY KEY
+    Name    VARCHAR(20) NOT NULL
 );
 
-INSERT INTO counties (id, name)
-VALUES 
-    (1,	'București'),
-    (2,	'Timiș'),
-    (3,	'Constanța'),
-    (4,	'Cluj'),
-    (5,	'Prahova'),
-    (6,	'Brașov'),
-    (7,	'Iași'),
-    (8,	'Ilfov'),
-    (9,	'Argeș'),
-    (10,	'Dolj'),
-    (11,	'Bihor'),
-    (12,	'Mureș'),
-    (13,	'Sibiu'),
-    (14,	'Arad'),
-    (15,	'Bacău'),
-    (16,	'Suceava'),
-    (17,	'Dâmbovița'),
-    (18,	'Galați'),
-    (19,	'Maramureș'),
-    (20,	'Alba'),
-    (21,	'Gorj'),
-    (22,	'Hunedoara'),
-    (23,	'Buzău'),
-    (24,	'Vâlcea'),
-    (25,	'Neamț'),
-    (26,	'Olt'),
-    (27,	'Satu'),
-    (28,	'Brăila'),
-    (29,	'Caraș'),
-    (30,	'Bistrița'),
-    (31,	'Harghita'),
-    (32,	'Vrancea'),
-    (33,	'Teleorman'),
-    (34,	'Botoșani'),
-    (35,	'Giurgiu'),
-    (36,	'Ialomița'),
-    (37,	'Călărași'),
-    (38,	'Vaslui'),
-    (39,	'Sălaj'),
-    (40,	'Tulcea'),
-    (41,	'Mehedinți'),
-    (42,	'Covasna');
-
-
-CREATE TABLE lots (
-    id      int             IDENTITY(1, 1)   PRIMARY KEY
-    name    VARCHAR(20)     NOT NULL
+CREATE TABLE Lot (
+    ID      int             IDENTITY(1, 1)   PRIMARY KEY
+    Name    VARCHAR(20)     NOT NULL
 );
 
-INSERT INTO lots (id, name)
-VALUES 
-    (1, 'Nedivizionar'),
-    (2, 'Divizionar A'),
-    (3, 'Divizionar B'),
-    (4, 'Divizionar C');
-
-
-CREATE TABLE categories (
-    id      int             IDENTITY(1, 1) PRIMARY KEY
-    name    VARCHAR(20)     NOT NULL
+CREATE TABLE Category (
+    ID      int             IDENTITY(1, 1) PRIMARY KEY
+    Name    VARCHAR(20)     NOT NULL
 );
 
-INSERT INTO categories (id, name)
-VALUES 
-    (1, 'International'),
-    (2, 'Republican'),
-    (3, 'I'),
-    (4, 'II'),
-    (5, 'III'),
-    (6, 'IV');
+-- Table containing authentication info
+CREATE TABLE User (
+	ID          int IDENTITY(1,1) PRIMARY KEY,
+    Username    VARCHAR(30) NOT NULL UNIQUE,
+    Password    VARCHAR(60) NOT NULL
+);
 
 
-CREATE TABLE users (
-	id          int IDENTITY(1,1) PRIMARY KEY,
-    username    VARCHAR(30) NOT NULL,
-    password    VARCHAR(60) NOT NULL
+-- Tables containing business logic
+CREATE TABLE SensitiveInfo (
+    ID              int         IDENTITY(1, 1) PRIMARY KEY,
+    FirstName       VARCHAR(30) NOT NULL,
+    LastName        VARCHAR(30) NOT NULL,
+    PersonalEmail   VARCHAR(30) NOT NULL,
+    Address         VARCHAR(30),
+    PhoneNumber     VARCHAR(10)
+);
+
+CREATE TABLE Referee (
+    ID                  int IDENTITY(1, 1) PRIMARY KEY,
+    UserID              int FOREIGN KEY REFERENCES User(ID),
+    LotID               int FOREIGN KEY REFERENCES Lot(ID),
+    CategoryID          int FOREIGN KEY REFERENCES Category(ID),
+    CountyID            int FOREIGN KEY REFERENCES County(ID),
+    SensitiveInfoID     int FOREIGN KEY REFERENCES SensitiveInfo(ID)
+);
+
+
+CREATE TABLE TeamInfo (
+    ID                  int IDENTITY(1, 1) PRIMARY KEY,
+    Name                VARCHAR(30) NOT NULL,
+    CountyID            int FOREIGN KEY REFERENCES County(ID),
+);
+
+CREATE TABLE MatchInfo (
+    ID                  int IDENTITY(1, 1) PRIMARY KEY,
+    TeamAID             int FOREIGN KEY REFERENCES TeamInfo(ID),
+    TeamBID             int FOREIGN KEY REFERENCES TeamInfo(ID),
+    Venue               VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Delegation (
+    ID                  int IDENTITY(1, 1) PRIMARY KEY,
+    FirstRefereeID      int FOREIGN KEY REFERENCES Referee(ID),
+    SecondRefereeID     int FOREIGN KEY REFERENCES Referee(ID),
+)
+
+CREATE TABLE Competition (
+    ID                  int IDENTITY(1, 1) PRIMARY KEY,
+    Name                VARCHAR(30) NOT NULL,
+)
+
+CREATE TABLE Match (
+    ID                  int IDENTITY(1, 1) PRIMARY KEY
+    MatchNo             VARCHAR(3) NOT NULL, -- might have to be removed, depends on other cols(2,3nf)
+    PlayTime            DATETIME NOT NULL, 
+    MatchInfoID         int FOREIGN KEY REFERENCES MatchInfo(ID),
+    DelegationID        int FOREIGN KEY REFERENCES Delegation(ID),
+    CompetitionID       int FOREIGN KEY REFERENCES Competition(ID),
 );
 
 
 
 
-CREATE TABLE sensitive_info (
-    id              int         IDENTITY(1, 1) PRIMARY KEY,
-    first_name      VARCHAR(30) NOT NULL,
-    last_name       VARCHAR(30) NOT NULL,
-    personal_email  VARCHAR(30) NOT NULL,
-);
+/* Query to get referees info based on referees id */
+SELECT 
+    Cat.Name as Categorie,
+    l.Name as Lot,
+    Cnt.Name as Judet,
+    SensInfo.FirstName as Prenume,
+    SensInfo.LastName as Nume,
+    SensInfo.PersonalEmail as Email
+FROM Referee Ref
+INNER JOIN Category Cat
+    ON Cat.ID=Ref.CategoryID
+INNER JOIN Lot l
+    ON l.ID=Ref.LotID
+INNER JOIN County Cnt
+    ON Cnt.ID=Ref.CountyID
+INNER JOIN SensitiveInfo SensInfo
+    ON SensInfo.ID=Ref.SensitiveInfoID
 
-CREATE TABLE referees (
-    id                  int IDENTITY(1, 1) PRIMARY KEY,
-    id_user             int FOREIGN KEY REFERENCES users(id),
-    id_lot              int FOREIGN KEY REFERENCES lots(id),
-    id_category         int FOREIGN KEY REFERENCES categories(id),
-    id_county           int FOREIGN KEY REFERENCES counties(id),
-    id_sensitive_info   int FOREIGN KEY REFERENCES sensitive_info(id)
-);
+
+    SELECT 
+M.MatchNo,
+M.MatchDay,
+TI.Name,
+TI2.Name,
+SI.FirstName + ', ' + SI.LastName AS 'A1',
+SI2.FirstName + ', ' + SI2.LastName AS 'A2'
+FROM Match M
+INNER JOIN  MatchInfo MI
+    ON M.MatchInfoID=MI.ID
+INNER JOIN TeamInfo TI
+    ON MI.TeamAID=TI.ID
+INNER JOIN TeamInfo TI2
+    ON MI.TeamBID=TI2.ID
+INNER JOIN Delegation D
+    ON M.DelegationID=D.ID
+INNER JOIN Referee R
+    ON D.FirstRefereeID=R.ID
+INNER JOIN Referee R2
+    ON D.SecondRefereeID=R2.ID
+INNER JOIN SensitiveInfo SI
+    ON R.SensitiveInfoID=SI.ID
+INNER JOIN SensitiveInfo SI2
+    ON R2.SensitiveInfoID=SI2.ID
+
+
+
+
+    CREATE TABLE [County] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [Name] varchar(20) UNIQUE NOT NULL
+)
+GO
+
+CREATE TABLE [Lot] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [Name] varchar(20) UNIQUE NOT NULL
+)
+GO
+
+CREATE TABLE [Category] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [Name] varchar(20) UNIQUE NOT NULL
+)
+GO
+
+CREATE TABLE [User] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [Username] varchar(30) UNIQUE NOT NULL,
+  [Password] varchar(60) NOT NULL
+)
+GO
+
+CREATE TABLE [Referee] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [UserID] int,
+  [LotID] int,
+  [CategoryID] int,
+  [CountyID] int,
+  [SensitiveInfoID] int
+)
+GO
+
+CREATE TABLE [SensitiveInfo] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [FirstName] varchar(20) NOT NULL,
+  [LastName] varchar(20) NOT NULL,
+  [Address] varchar(30) NOT NULL,
+  [PersonalEmail] varchar(30) NOT NULL,
+  [PhoneNumber] varchar(10) NOT NULL
+)
+GO
+
+CREATE TABLE [TeamInfo] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [Name] varchar(30) UNIQUE NOT NULL,
+  [CountyID] int
+)
+GO
+
+CREATE TABLE [MatchInfo] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [TeamAID] int,
+  [TeamBID] int,
+  [Venue] varchar(20)
+)
+GO
+
+CREATE TABLE [Delegation] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [FirstRefereeID] int NOT NULL,
+  [SecondRefereeID] int NOT NULL
+)
+GO
+
+CREATE TABLE [Match] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [MatchNo] varchar(3) NOT NULL,
+  [MatchDay] datetime NOT NULL,
+  [MatchInfoID] int,
+  [DelegationID] int,
+  [CompetitionID] int
+)
+GO
+
+CREATE TABLE [Competition] (
+  [ID] int PRIMARY KEY IDENTITY(1, 1),
+  [Name] varchar(30) NOT NULL,
+  [Type] nvarchar(255) NOT NULL CHECK ([Type] IN ('League', 'Cup'))
+)
+GO
+
+ALTER TABLE [Referee] ADD FOREIGN KEY ([UserID]) REFERENCES [User] ([ID])
+GO
+
+ALTER TABLE [Referee] ADD FOREIGN KEY ([LotID]) REFERENCES [Lot] ([ID])
+GO
+
+ALTER TABLE [Referee] ADD FOREIGN KEY ([CategoryID]) REFERENCES [Category] ([ID])
+GO
+
+ALTER TABLE [Referee] ADD FOREIGN KEY ([CountyID]) REFERENCES [County] ([ID])
+GO
+
+ALTER TABLE [Referee] ADD FOREIGN KEY ([SensitiveInfoID]) REFERENCES [SensitiveInfo] ([ID])
+GO
+
+ALTER TABLE [Match] ADD FOREIGN KEY ([MatchInfoID]) REFERENCES [MatchInfo] ([ID])
+GO
+
+ALTER TABLE [Match] ADD FOREIGN KEY ([DelegationID]) REFERENCES [Delegation] ([ID])
+GO
+
+ALTER TABLE [MatchInfo] ADD FOREIGN KEY ([TeamAID]) REFERENCES [TeamInfo] ([ID])
+GO
+
+ALTER TABLE [MatchInfo] ADD FOREIGN KEY ([TeamBID]) REFERENCES [TeamInfo] ([ID])
+GO
+
+ALTER TABLE [TeamInfo] ADD FOREIGN KEY ([CountyID]) REFERENCES [County] ([ID])
+GO
+
+ALTER TABLE [Delegation] ADD FOREIGN KEY ([FirstRefereeID]) REFERENCES [Referee] ([ID])
+GO
+
+ALTER TABLE [Delegation] ADD FOREIGN KEY ([SecondRefereeID]) REFERENCES [Referee] ([ID])
+GO
