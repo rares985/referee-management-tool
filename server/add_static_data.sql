@@ -60,3 +60,11 @@ VALUES
     ('II'),
     ('III'),
     ('IV');
+GO
+
+INSERT INTO AccessLevel(Name)
+VALUES
+    ()
+    ()
+    ()
+    ();

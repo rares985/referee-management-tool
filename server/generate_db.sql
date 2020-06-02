@@ -78,7 +78,7 @@ CREATE TABLE Match (
 
 
 
-/* Query to get referees info based on referees id */
+/* Query to get referees info based on user id */
 SELECT 
     Cat.Name as Categorie,
     l.Name as Lot,
@@ -96,14 +96,14 @@ INNER JOIN County Cnt
 INNER JOIN SensitiveInfo SensInfo
     ON SensInfo.ID=Ref.SensitiveInfoID
 
-
-    SELECT 
-M.MatchNo,
-M.MatchDay,
-TI.Name,
-TI2.Name,
-SI.FirstName + ', ' + SI.LastName AS 'A1',
-SI2.FirstName + ', ' + SI2.LastName AS 'A2'
+/* Query to get matches displayed in /matches route */
+SELECT 
+    M.MatchNo,
+    M.MatchDay,
+    TI.Name,
+    TI2.Name,
+    SI.FirstName + ', ' + SI.LastName AS 'A1',
+    SI2.FirstName + ', ' + SI2.LastName AS 'A2'
 FROM Match M
 INNER JOIN  MatchInfo MI
     ON M.MatchInfoID=MI.ID

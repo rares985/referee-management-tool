@@ -27,3 +27,9 @@ div.personalized-card {
     width: 10rem;
   }
 }
+
+@media screen and (max-width: 760px) {
+  div.page-container {
+    margin-left: 90px;
+  }
+}

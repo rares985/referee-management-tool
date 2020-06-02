@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import { Button, FormGroup, InputGroup, FormControl, FormLabel, Table } from 'react-bootstrap';
-
-const HOURS_IN_DAY = 24;
-const SECONDS_IN_HOUR = 3600;
-const MS_TO_SECONDS = 1000;
-
-const MsToDays = (msValue) => {
-  console.log(`Got ${msValue}`);
-  return Math.floor(msValue / (MS_TO_SECONDS * SECONDS_IN_HOUR * HOURS_IN_DAY));
-};
+import { Button, FormGroup, FormControl, FormLabel, Table } from 'react-bootstrap';
 
 const CalendarPicker = () => {
   const [startDate, setStartDate] = useState(new Date());

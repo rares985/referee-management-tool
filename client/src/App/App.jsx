@@ -13,6 +13,7 @@ import CalendarPicker from '../containers/CalendarPicker';
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [authenticatedUser, setAuthenticatedUser] = useState('');
 
   const guestLinks = [
     {
@@ -30,6 +31,7 @@ const App = () => {
       path: '/login',
       icon: 'ion-ios-lock',
     },
+    // Remove in PROD
     {
       text: 'Dashboard',
       path: '/account',
@@ -58,10 +60,10 @@ const App = () => {
       <Router>
         <Home path="/" />
         <Matches path="/matches" />
-        {!loggedIn && <LoginStub path="/login" navigate={navigate} loginCallback={setLoggedIn} />}
+        {!loggedIn && <LoginStub path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
         {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} />}
-        <PersonalInformationForm path="/updateinfo" />
-        <PersonalMatchHistory path="/viewhistory" />
+        <PersonalInformationForm path="/updateinfo" authenticatedUser={authenticatedUser}/>
+        <PersonalMatchHistory path="/viewhistory" authenticatedUser={authenticatedUser}/>
         <CalendarPicker path="/addunavailable" />
         <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} />
       </Router>

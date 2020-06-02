@@ -18,6 +18,7 @@ const withAuth = require("./server/auth_middleware");
 
 /* JWT secret */
 const secret = process.env.JWT_SECRET;
+console.log(secret);
 
 const executeQuery = (query) => {
   console.log(`Going to execute query ${query}`);
@@ -51,6 +52,8 @@ app.use(cookieParser());
 app.use(express.static("./client/dist/"));
 
 /* Declare Routes  ============================== */
+
+/* REGISTER route */
 app.post("/api/register", (req, res) => {
   const { username, password } = req.body;
   console.log(`REGISTER: Got request: ${username}, ${password}`);
@@ -70,6 +73,7 @@ app.post("/api/register", (req, res) => {
   }
 });
 
+/* AUTHENTICATE route */
 app.post("/api/authenticate", (req, res) => {
   const { username, password } = req.body;
   console.log(`AUTH: Got request: ${username}, ${password}`);
@@ -77,13 +81,16 @@ app.post("/api/authenticate", (req, res) => {
   if (username === undefined || password === undefined) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
-    var query = `SELECT Password FROM User WHERE Username='${username}'`;
+    var query = `SELECT Password FROM [dbo].[User] WHERE Username='${username}'`;
 
     console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
       if (err) {
         console.error(err);
       } else {
+        if (rowCount === 0) {
+          res.status(401).send("Login failure!");
+        }
         console.log(`Got ${rowCount} rows`);
       }
     });
@@ -99,6 +106,7 @@ app.post("/api/authenticate", (req, res) => {
             } else {
               console.log(result);
               if (result) {
+                console.log("Password Check OK. Issuing Token");
                 const payload = { username };
                 const token = jwt.sign(payload, secret, {
                   expiresIn: "1h",
@@ -117,18 +125,57 @@ app.post("/api/authenticate", (req, res) => {
   }
 });
 
+
+app.post("/api/personalInfo", withAuth, (req, res) => {
+  var query = 
+  `ALTER TABLE[dbo].[SensitiveInfo]
+    SET FirstName = ,
+    SET LastName = ,
+    SET Address = ,
+    SET PersonalEmail = ,
+    SET PhoneNumber = ,
+  WHERE ID = (SELECT 
+                SI.ID 
+              FROM[dbo].[User] U
+              INNER JOIN[dbo].[Referee] R
+                ON R.UserID = U.ID
+              INNER JOIN[dbo].[SensitiveInfo] SI
+                ON R.SensitiveInfoID = SI.ID
+              WHERE U.Username = '${username}')`
+});
+
 /* JSON format: {username: rares} */
-app.get("/api/personalInfo", (req, res) => {
-  const { username } = req.body;
+app.get("/api/personalInfo", withAuth, (req, res) => {
+  const username = req.query.username;
   console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
 
   if (username === undefined) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
-    query = `SELECT * FROM sensitive_info
-              WHERE id = (SELECT id_sensitive_info FROM referees
-                WHERE id_user = (SELECT id FROM users 
-                  WHERE username='${username}'))`;
+    var query =
+    `SELECT
+        Usr.Username,
+        Cnt.Name as Judet,
+        L.Name as Lot,
+        Cat.Name as Categorie,
+        SI.LastName as Nume,
+        SI.FirstName as Prenume,
+        SI.Address as Adresa,
+        SI.PersonalEmail as Email,
+        SI.PhoneNumber as Telefon
+    FROM [dbo].[User] Usr
+    INNER JOIN [dbo].[Referee] Ref
+        ON Ref.UserID = Usr.ID
+    INNER JOIN [dbo].[County] Cnt
+        ON Ref.CountyID = Cnt.ID
+    INNER JOIN [dbo].[Lot] L
+        ON Ref.LotID = L.ID
+    INNER JOIN [dbo].[Category] Cat
+        ON Ref.CategoryID = Cat.ID
+    INNER JOIN [dbo].[SensitiveInfo] SI
+        ON Ref.SensitiveInfoID = SI.ID
+    WHERE Usr.Username='${username}'`;
+
     console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
       if (err) {
@@ -144,7 +191,8 @@ app.get("/api/personalInfo", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      res.status(200).send(obj);
+      console.log(`Sending ${JSON.stringify(obj)}`);
+      res.status(200).send(JSON.stringify(obj));
     });
 
     connection.execSql(request);
