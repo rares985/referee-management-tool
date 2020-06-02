@@ -9,6 +9,7 @@ import Dashboard from '../containers/Dashboard';
 import PersonalInformationForm from '../containers/PersonalInformationForm';
 import PersonalMatchHistory from '../containers/PersonalMatchHistory';
 import CalendarPicker from '../containers/CalendarPicker';
+import WithAuth from '../components/withAuth';
 /* eslint-disable */
 
 const App = () => {
@@ -48,6 +49,8 @@ const App = () => {
     },
   ];
 
+  const PersInfoForm = WithAuth(PersonalInformationForm);
+
   return (
     <div className="app">
       <ResponsiveNavigation
@@ -61,8 +64,9 @@ const App = () => {
         <Home path="/" />
         <Matches path="/matches" />
         {!loggedIn && <LoginStub path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
-        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} />}
-        <PersonalInformationForm path="/updateinfo" authenticatedUser={authenticatedUser}/>
+        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} userCallback={setAuthenticatedUser} navigate={navigate} />}
+        <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} />
+        {/* <PersonalInformationForm /> */}
         <PersonalMatchHistory path="/viewhistory" authenticatedUser={authenticatedUser}/>
         <CalendarPicker path="/addunavailable" />
         <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} />

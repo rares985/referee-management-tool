@@ -125,6 +125,11 @@ app.post("/api/authenticate", (req, res) => {
   }
 });
 
+app.get("/api/logout", (req, res) => {
+  res.clearCookie('token');
+  res.sendStatus(200);
+})
+
 
 app.post("/api/personalInfo", withAuth, (req, res) => {
   var query = 

@@ -67,10 +67,9 @@ const PersonalInformationForm = (props) => {
   };
 
   return (
-    <>
+    <div className="page-container">
       { isLoading && <Spinner animation="border" />}
       { !isLoading && 
-      <div className="page-container">
         <div className="login">
           <Card border="dark">
             <form onSubmit={handleSubmit}>
@@ -84,7 +83,7 @@ const PersonalInformationForm = (props) => {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                />
+                  />
               </FormGroup>
               <FormGroup controlId="first_name">
                 <FormLabel>Prenume</FormLabel>
@@ -102,7 +101,7 @@ const PersonalInformationForm = (props) => {
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                />
+                  />
               </FormGroup>
               <FormGroup controlId="birth_date">
                 <FormLabel>Data nașterii</FormLabel>
@@ -111,7 +110,7 @@ const PersonalInformationForm = (props) => {
                   type="date"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
-                />
+                  />
               </FormGroup>
               <FormGroup controlId="mobile_phone">
                 <FormLabel>Număr telefon mobil</FormLabel>
@@ -121,7 +120,7 @@ const PersonalInformationForm = (props) => {
                   pattern="07[1-9][0-9][0-9]{6}"
                   value={mobilePhone}
                   onChange={(e) => setMobilePhone(e.target.value)}
-                />
+                  />
               </FormGroup>
               <FormGroup controlId="personal_email">
                 <FormLabel>Adresă e-mail</FormLabel>
@@ -130,7 +129,7 @@ const PersonalInformationForm = (props) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                />
+                  />
               </FormGroup>
               <FormGroup controlId="category">
                 <FormLabel>Categorie</FormLabel>
@@ -162,9 +161,8 @@ const PersonalInformationForm = (props) => {
             </form>
           </Card>
         </div>
-      </div>
       }
-  </>
+      </div>
   );
 };
 

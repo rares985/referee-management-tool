@@ -2,11 +2,25 @@ import React from 'react';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import {Clock, PersonBoundingBox, Calendar, BoxArrowLeft} from '../components/Icons';
 
+const axios = require('axios').create({
+  baseURL: 'http://localhost:5001',
+});
+
 /* eslint-disable */
 
 const Dashboard = (props) => {
   const handleLogout = () => {
     props.logoutCallback(false);
+    axios
+    .get('/api/logout')
+    .then(resp => {
+      console.log(resp)
+    })
+    .catch(err => {
+      console.error(err);
+    });
+
+    props.userCallback('');
     props.navigate('/login');
   };
   return (
