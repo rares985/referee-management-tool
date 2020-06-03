@@ -3,7 +3,7 @@ import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import {Clock, PersonBoundingBox, Calendar, BoxArrowLeft} from '../components/Icons';
 
 const axios = require('axios').create({
-  baseURL: 'http://localhost:5001',
+  baseURL: process.env.API_ENDPOINT
 });
 
 /* eslint-disable */
@@ -14,7 +14,7 @@ const Dashboard = (props) => {
     axios
     .get('/api/logout')
     .then(resp => {
-      console.log(resp)
+      console.log(resp);
     })
     .catch(err => {
       console.error(err);

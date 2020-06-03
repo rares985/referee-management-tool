@@ -3,7 +3,7 @@ import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card } from 'rea
 import {EyeOpenIcon, EyeClosedIcon, LockIcon} from '../components/Icons';
 
 const axios = require('axios').create({
-  baseURL: 'http://localhost:5001',
+  baseURL: process.env.API_ENDPOINT
 });
 
 const HIDE_PASSWORD_DELAY_MS = 500;

@@ -4,7 +4,7 @@ import {PersonBoundingBox} from '../components/Icons';
 
 /* eslint-disable */
 const axios = require('axios').create({
-  baseURL: 'http://localhost:5001',
+  baseURL: process.env.API_ENDPOINT
 });
 
 

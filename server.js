@@ -124,12 +124,13 @@ app.post("/api/authenticate", (req, res) => {
   }
 });
 
+/* Logout , for deleting the cookie */
 app.get("/api/logout", (req, res) => {
   res.clearCookie('token');
   res.sendStatus(200);
 })
 
-
+/* UPDATE PERSONAL INFO */
 app.post("/api/personalInfo", withAuth, (req, res) => {
   var query = 
   `ALTER TABLE[dbo].[SensitiveInfo]
@@ -148,7 +149,7 @@ app.post("/api/personalInfo", withAuth, (req, res) => {
               WHERE U.Username = '${username}')`
 });
 
-/* JSON format: {username: rares} */
+/* GET PERSONAL INFO: JSON format: {username: rares} */
 app.get("/api/personalInfo", withAuth, (req, res) => {
   const username = req.query.username;
   console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);

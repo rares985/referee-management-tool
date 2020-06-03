@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import navigate from '@reach/router';
 
 const axios = require('axios').create({
-    baseURL: 'http://localhost:5001',
+    baseURL: process.env.API_ENDPOINT
 });
 
 
