@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
-import navigate from '@reach/router';
+import { Spinner } from 'react-bootstrap';
 
 const axios = require('axios').create({
     baseURL: process.env.API_ENDPOINT
 });
 
+const ONE_SECOND_IN_MS = 1000;
+const REDIRECT_WAIT_SEC = 3;
 
 /* eslint-disable */
 const WithAuth = (ComponentToProtect) => {
@@ -13,7 +15,9 @@ const WithAuth = (ComponentToProtect) => {
             super();
             this.state = {
                 loading: true,
-                redirect: false
+                redirect: false,
+                redirectTime: REDIRECT_WAIT_SEC,
+                message: ''
             };
         }
 
@@ -21,29 +25,36 @@ const WithAuth = (ComponentToProtect) => {
             axios
             .get('/checkToken')
             .then(res => {
+                console.log('Res = ' + res);
                 if (res.status === 200) {
                     this.setState({loading: false});
                     console.log('WithAuth fetch done');
-                } else {
-                    const error = new Error(res.error);
-                    console.log(error);
-                    throw error;
                 }
             })
             .catch(err => {
-                console.error(err);
+                console.log(err.response);
+                this.setState({message: err.response.data, loading:false, redirect:true});
                 this.setState({loading: false, redirect: true});
             })
         }
 
         render() {
-            const { loading, redirect } = this.state;
+            const { loading, redirect, redirectTime, message } = this.state;
             if (loading) {
-                return null;
+                return <></>;
             }
             if (redirect) {
-                navigate('/login');
-                return null;
+                setInterval(() => {this.setState({redirectTime : redirectTime - 1}) }, ONE_SECOND_IN_MS);
+                setTimeout(() => {
+                    this.props.navigate('/login')
+                }, REDIRECT_WAIT_SEC * ONE_SECOND_IN_MS);
+                return (
+                    <div className="page-container">
+                        <h1>{message}</h1>
+                        <h1> Redirecting in {redirectTime}...</h1>
+                        <Spinner animation="border" />
+                    </div>
+                )
             }
             return <ComponentToProtect {...this.props} />
         }

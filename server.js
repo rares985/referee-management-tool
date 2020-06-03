@@ -204,6 +204,44 @@ app.get("/api/personalInfo", withAuth, (req, res) => {
   }
 });
 
+/* GET PERSONAL MATCH HISTORY */
+app.get("/api/matchHistory"), (req, res) => {
+  const username = req.query.username;
+  console.log(`FETCH_MATCH_HISTORY: Got request: ${username}`);
+
+  var query = 
+  `SELECT
+  M.MatchNo,
+    M.MatchDay,
+    TI.Name,
+    TI2.Name,
+    SI.FirstName + ' ' + SI.LastName,
+    SI2.FirstName + ' ' + SI2.LastName
+  FROM[dbo].[Match] M
+  INNER JOIN[dbo].[Delegation] D
+  ON M.DelegationID = D.ID
+  INNER JOIN[dbo].[MatchInfo] MI
+  ON M.MatchInfoID = MI.ID
+  INNER JOIN[dbo].[Referee] R
+  ON D.FirstRefereeID = R.ID
+  INNER JOIN[dbo].[Referee] R2
+  ON D.SecondRefereeID = R2.ID
+  INNER JOIN[dbo].[TeamInfo] TI
+  ON MI.TeamAID = TI.ID
+  INNER JOIN[dbo].[TeamInfo] TI2
+  ON MI.TeamBID = TI2.ID
+  INNER JOIN[dbo].[SensitiveInfo] SI
+  ON R.SensitiveInfoID = SI.ID
+  INNER JOIN[dbo].[SensitiveInfo] SI2
+  ON R2.SensitiveInfoID = SI2.ID
+  INNER JOIN[dbo].[User] U
+  ON R.UserID = U.ID
+  OR R2.UserID = U.ID
+  WHERE(U.Username = '${username}');`;
+
+  console.log(`Going to execute query ${query}`);
+}
+
 /* Route for knowing if the cookie is valid */
 app.get("/checkToken", withAuth, (req, res) => {
   res.sendStatus(200);

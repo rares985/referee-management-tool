@@ -32,12 +32,12 @@ const App = () => {
       path: '/login',
       icon: 'ion-ios-lock',
     },
-    // Remove in PROD
-    {
-      text: 'Dashboard',
-      path: '/account',
-      icon: 'ion-ios-person',
-    },
+    // // Remove in PROD
+    // {
+    //   text: 'Dashboard',
+    //   path: '/account',
+    //   icon: 'ion-ios-person',
+    // },
   ];
 
   const userLinks = [
@@ -65,11 +65,10 @@ const App = () => {
         <Matches path="/matches" />
         {!loggedIn && <LoginStub path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
         {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} userCallback={setAuthenticatedUser} navigate={navigate} />}
-        <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} />
-        {/* <PersonalInformationForm /> */}
+        <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate}/>
         <PersonalMatchHistory path="/viewhistory" authenticatedUser={authenticatedUser}/>
         <CalendarPicker path="/addunavailable" />
-        <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} />
+        {/* <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} /> */}
       </Router>
     </div>
   );
