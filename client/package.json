@@ -19,7 +19,8 @@
   },
   "scripts": {
     "dev": "webpack-dev-server --mode development --config ./webpack.config.dev.js",
-    "build": "webpack --mode production --config ./webpack.config.prod.js"
+    "build": "webpack --env.API_ENDPOINT=http://referee-management-tool.azurewebsites.net --mode production --config ./webpack.config.prod.js",
+    "build:local": "webpack --env.API_ENDPOINT=http://localhost:5001 --mode production --config ./webpack.config.prod.js"
   },
   "eslintConfig": {
     "extends": "react-app"

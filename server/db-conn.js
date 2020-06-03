@@ -5,7 +5,6 @@ require("dotenv").config({
 
 var Connection = require("tedious").Connection;
 
-console.log(process.env.DB_SERVER);
 /* DB configuration */
 var config = {
   server: process.env.DB_SERVER,

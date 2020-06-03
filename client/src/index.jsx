@@ -6,7 +6,9 @@ import './assets/scss/base.scss';
 import App from './App/App';
 import * as serviceWorker from './serviceWorker';
 
+/* eslint-disable no-console */
 console.log(process.env.API_ENDPOINT);
+/* eslint-enable no-console */
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

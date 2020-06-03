@@ -1,17 +1,12 @@
 const webpack = require('webpack');
 const path = require('path');
-const dotenv = require('dotenv').config({
-  path: path.resolve(__dirname, '..', '.env')
-}).parsed;
 
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-// var CompressionPlugin = require('compression-webpack-plugin');
 
-module.exports = () => {
-  const envKeys = Object.keys(dotenv).reduce((prev, next) => {
-    prev[`process.env.${next}`] = JSON.stringify(dotenv[next]);
+module.exports = (env) => {
+  const envKeys = Object.keys(env).reduce((prev, next) => {
+    prev[`process.env.${next}`] = JSON.stringify(env[next]);
     return prev;
   }, {});
 

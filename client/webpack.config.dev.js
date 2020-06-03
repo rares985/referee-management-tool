@@ -56,10 +56,18 @@ module.exports = {
   devServer: {
     inline: true,
     contentBase: 'dist/',
+    proxy: {
+      '/api/*': 'http://localhost:5001'
+    },
+    headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+    },
     disableHostCheck: true,
     open: 'chrome',
     historyApiFallback: true,
     hot: true,
     port: 8080,
-  },
+  }
 };

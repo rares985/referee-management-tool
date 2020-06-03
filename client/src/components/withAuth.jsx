@@ -25,7 +25,6 @@ const WithAuth = (ComponentToProtect) => {
             axios
             .get('/checkToken')
             .then(res => {
-                console.log('Res = ' + res);
                 if (res.status === 200) {
                     this.setState({loading: false});
                     console.log('WithAuth fetch done');

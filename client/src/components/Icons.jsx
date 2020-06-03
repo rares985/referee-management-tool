@@ -1,5 +1,6 @@
 import React from 'react';
 
+/* eslint-disable max-len */
 export const Clock = () => {
     return (
         <svg
@@ -140,3 +141,5 @@ export const LockIcon = () => {
         </svg>
     );
 };
+
+/* eslint-enable max-len */

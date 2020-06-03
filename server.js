@@ -1,5 +1,5 @@
 
-const dotenv=require("dotenv").config();
+const dotenv = require("dotenv").config();
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -17,7 +17,6 @@ const withAuth = require("./server/auth_middleware");
 
 /* JWT secret */
 const secret = process.env.JWT_SECRET;
-console.log(secret);
 
 const executeQuery = (query) => {
   console.log(`Going to execute query ${query}`);
@@ -205,42 +204,73 @@ app.get("/api/personalInfo", withAuth, (req, res) => {
 });
 
 /* GET PERSONAL MATCH HISTORY */
-app.get("/api/matchHistory"), (req, res) => {
+app.get("/api/matchHistory", (req, res) => {
   const username = req.query.username;
   console.log(`FETCH_MATCH_HISTORY: Got request: ${username}`);
 
-  var query = 
-  `SELECT
-  M.MatchNo,
-    M.MatchDay,
-    TI.Name,
-    TI2.Name,
-    SI.FirstName + ' ' + SI.LastName,
-    SI2.FirstName + ' ' + SI2.LastName
-  FROM[dbo].[Match] M
-  INNER JOIN[dbo].[Delegation] D
-  ON M.DelegationID = D.ID
-  INNER JOIN[dbo].[MatchInfo] MI
-  ON M.MatchInfoID = MI.ID
-  INNER JOIN[dbo].[Referee] R
-  ON D.FirstRefereeID = R.ID
-  INNER JOIN[dbo].[Referee] R2
-  ON D.SecondRefereeID = R2.ID
-  INNER JOIN[dbo].[TeamInfo] TI
-  ON MI.TeamAID = TI.ID
-  INNER JOIN[dbo].[TeamInfo] TI2
-  ON MI.TeamBID = TI2.ID
-  INNER JOIN[dbo].[SensitiveInfo] SI
-  ON R.SensitiveInfoID = SI.ID
-  INNER JOIN[dbo].[SensitiveInfo] SI2
-  ON R2.SensitiveInfoID = SI2.ID
-  INNER JOIN[dbo].[User] U
-  ON R.UserID = U.ID
-  OR R2.UserID = U.ID
-  WHERE(U.Username = '${username}');`;
+  if (username === undefined) {
+    res.status(401).send("Invalid parameters for authentication");
+  } else {
+    var query = 
+    `SELECT
+      M.MatchNo as 'MatchNumber',
+      M.MatchDay as 'MatchDay',
+      TI.Name as 'TeamAName',
+      TI2.Name as 'TeamBName',
+      SI.FirstName + ' ' + SI.LastName as 'FirstRefName',
+      SI2.FirstName + ' ' + SI2.LastName as 'SecondRefName'
+    FROM[dbo].[Match] M
+    INNER JOIN[dbo].[Delegation] D
+    ON M.DelegationID = D.ID
+    INNER JOIN[dbo].[MatchInfo] MI
+    ON M.MatchInfoID = MI.ID
+    INNER JOIN[dbo].[Referee] R
+    ON D.FirstRefereeID = R.ID
+    INNER JOIN[dbo].[Referee] R2
+    ON D.SecondRefereeID = R2.ID
+    INNER JOIN[dbo].[TeamInfo] TI
+    ON MI.TeamAID = TI.ID
+    INNER JOIN[dbo].[TeamInfo] TI2
+    ON MI.TeamBID = TI2.ID
+    INNER JOIN[dbo].[SensitiveInfo] SI
+    ON R.SensitiveInfoID = SI.ID
+    INNER JOIN[dbo].[SensitiveInfo] SI2
+    ON R2.SensitiveInfoID = SI2.ID
+    INNER JOIN[dbo].[User] U
+    ON R.UserID = U.ID
+    OR R2.UserID = U.ID
+    WHERE(U.Username = '${username}');`;
 
-  console.log(`Going to execute query ${query}`);
-}
+    console.log(`Going to execute query ${query}`);
+    request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("User information not in database!");
+      } else {
+        console.log(`Got ${rowCount} rows`);
+      }
+    });
+
+    var matches = [];
+    request.on("row", (cols) => {
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      console.log(`Adding ${JSON.stringify(obj)}`);
+      matches.push(JSON.stringify(obj));
+    });
+
+    request.on("doneInProc", (r, m, rs, ro) => {
+      res.status(200).send(matches);
+    });
+
+  
+
+    connection.execSql(request);
+    
+  }
+});
 
 /* Route for knowing if the cookie is valid */
 app.get("/checkToken", withAuth, (req, res) => {
