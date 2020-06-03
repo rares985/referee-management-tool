@@ -1,5 +1,9 @@
+const path = require('path');
+require("dotenv").config({
+  path: path.resolve(__dirname, '..', '.env')
+});
+
 var Connection = require("tedious").Connection;
-require("dotenv").config({ path: __dirname + "/.env" });
 
 console.log(process.env.DB_SERVER);
 /* DB configuration */

@@ -6,6 +6,7 @@ import './assets/scss/base.scss';
 import App from './App/App';
 import * as serviceWorker from './serviceWorker';
 
+console.log(process.env.API_ENDPOINT);
 ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
