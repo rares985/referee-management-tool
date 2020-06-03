@@ -50,6 +50,7 @@ const App = () => {
   ];
 
   const PersInfoForm = WithAuth(PersonalInformationForm);
+  const PersMatchHist = WithAuth(PersonalMatchHistory);
 
   return (
     <div className="app">
@@ -66,9 +67,9 @@ const App = () => {
         {!loggedIn && <LoginStub path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
         {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} userCallback={setAuthenticatedUser} navigate={navigate} />}
         <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate}/>
+        <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate}/>
         <PersonalMatchHistory path="/viewhistory" authenticatedUser={authenticatedUser}/>
         <CalendarPicker path="/addunavailable" />
-        {/* <Dashboard path="/account" logoutCallback={setLoggedIn} navigate={navigate} /> */}
       </Router>
     </div>
   );

@@ -7,7 +7,7 @@
     "start": "node server",
     "test": "echo No tests yet. Skipping...",
     "build": "cd client/ && npm run build && cd ../",
-    "dev": "node server"
+    "dev": "nodemon server"
   },
   "keywords": [],
   "author": "",
@@ -22,7 +22,22 @@
     "tedious": "^8.3.0"
   },
   "devDependencies": {
-    "sha3": "^2.1.2",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^26.0.1",
+    "babel-loader": "^8.1.0",
+    "eslint": "^7.1.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "file-loader": "^6.0.0",
+    "jest": "^26.0.1",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5",
     "webpack": "^4.43.0"
   }
 }
