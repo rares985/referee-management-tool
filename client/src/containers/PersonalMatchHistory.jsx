@@ -25,7 +25,6 @@ const MatchTable = (props) => {
           const matchJson = JSON.parse(match);
           const d = new Date(matchJson.MatchDay);
           const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
-          console.log(matchJson);
           return (
             <tr>
               <td>

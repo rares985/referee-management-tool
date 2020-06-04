@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Button, Container, Row, Col } from 'react-bootstrap';
-import {Clock, PersonBoundingBox, Calendar, BoxArrowLeft} from '../components/Icons';
+import { Clock, PersonBoundingBox, Calendar, BoxArrowLeft, getIcon } from '../components/Icons';
 
 const axios = require('axios').create({
   baseURL: process.env.API_ENDPOINT
@@ -8,23 +8,55 @@ const axios = require('axios').create({
 
 /* eslint-disable */
 
+const DashboardLink = (props) => {
+  return (
+    <div className="personalized-card">
+      <Card border="dark" style={{ width: '18rem' }}>
+        <div className="avatar">
+          {getIcon(props.iconName)}
+        </div>
+        <Card.Body>
+          <Card.Title>{props.cardTitle}</Card.Title>
+          <Card.Text>{props.cardText}</Card.Text>
+          <Button variant="primary" onClick={() => props.cardButtonAction()}>
+            {props.buttonText}
+          </Button>
+        </Card.Body>
+      </Card>
+    </div>
+  );
+}
+
+
+
 const Dashboard = (props) => {
   const handleLogout = () => {
     props.logoutCallback(false);
     axios
-    .get('/api/logout')
-    .then(resp => {
-      console.log(resp);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+      .get('/api/logout')
+      .then(resp => {
+        console.log(resp);
+      })
+      .catch(err => {
+        console.error(err);
+      });
 
     props.userCallback('');
     props.navigate('/login');
   };
+
+  const last_card_props = {
+    iconName: 'CheckSquare',
+    cardTitle: 'Confirma delegari',
+    cardText: 'Confirma delegari efectuate de altcineva',
+    buttonText: 'Confirma',
+    cardButtonAction: () => {
+      props.navigate("/404")
+    }
+  };
+
   return (
-    <div className="page-container">
+    <div className="page-container" >
       <Container>
         <Row xs={1} md={2} lg={3}>
           <Col>
@@ -94,9 +126,12 @@ const Dashboard = (props) => {
               </Card>
             </div>
           </Col>
+          {/* <Col>
+            <DashboardLink {...last_card_props} />
+          </Col> */}
         </Row>
       </Container>
-    </div>
+    </div >
   );
 };
 

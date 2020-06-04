@@ -125,7 +125,7 @@ INNER JOIN SensitiveInfo SI2
 
 
 
-    CREATE TABLE [County] (
+CREATE TABLE [County] (
   [ID] int PRIMARY KEY IDENTITY(1, 1),
   [Name] varchar(20) UNIQUE NOT NULL
 )
@@ -147,16 +147,17 @@ CREATE TABLE [User] (
   [ID] int PRIMARY KEY IDENTITY(1, 1),
   [Username] varchar(30) UNIQUE NOT NULL,
   [Password] varchar(60) NOT NULL
+  [AccessLevelID] int NOT NULL
 )
 GO
 
 CREATE TABLE [Referee] (
   [ID] int PRIMARY KEY IDENTITY(1, 1),
-  [UserID] int,
-  [LotID] int,
-  [CategoryID] int,
-  [CountyID] int,
-  [SensitiveInfoID] int
+  [UserID] int NOT NULL,
+  [LotID] int NOT NULL,
+  [CategoryID] int NOT NULL,
+  [CountyID] int NOT NULL,
+  [SensitiveInfoID] int NOT NULL
 )
 GO
 
@@ -209,6 +210,20 @@ CREATE TABLE [Competition] (
 )
 GO
 
+CREATE TABLE [AccessLevel] (
+    [ID] int PRIMARY KEY IDENTITY(1, 1),
+    [Name] varchar(30) NOT NULL,
+)
+GO
+
+CREATE TABLE [UnavailabilityPeriod] (
+    [ID] int PRIMARY KEY IDENTITY(1, 1),
+    [StartDate] datetime NOT NULL,
+    [EndDate] datetime NOT NULL,
+    [RefereeID] int NOT NULL,
+)
+GO
+
 ALTER TABLE [Referee] ADD FOREIGN KEY ([UserID]) REFERENCES [User] ([ID])
 GO
 
@@ -243,4 +258,10 @@ ALTER TABLE [Delegation] ADD FOREIGN KEY ([FirstRefereeID]) REFERENCES [Referee]
 GO
 
 ALTER TABLE [Delegation] ADD FOREIGN KEY ([SecondRefereeID]) REFERENCES [Referee] ([ID])
+GO
+
+ALTER TABLE [UserID] ADD FOREIGN KEY ([AccessLevelID]) REFERENCES [AccessLevel] ([ID])
+GO
+
+ALTER TABLE [UnavailabilityPeriod] ADD FOREIGN KEY ([RefereeID]) REFERENCES [Referee] ([ID])
 GO

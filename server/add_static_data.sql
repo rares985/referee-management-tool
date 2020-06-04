@@ -64,7 +64,7 @@ GO
 
 INSERT INTO AccessLevel(Name)
 VALUES
-    ()
-    ()
-    ()
-    ();
+    ("User")
+    ("Programmer") -- Junior, Sperante etc.
+    ("Temporary") -- For tournaments
+    ("");
