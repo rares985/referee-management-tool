@@ -1,8 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
 
+/* For minification */
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+/* For bundle compression */
+const BrotliPlugin = require('brotli-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+
+/* For cleaning before every buildd */
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = (env) => {
   const envKeys = Object.keys(env).reduce((prev, next) => {
@@ -18,7 +26,7 @@ module.exports = (env) => {
     output: {
       path: __dirname + '/dist',
       // publicPath: '/',
-      filename: 'bundle.js',
+      filename: '[name].bundle.[hash].js',
     },
   
     module: {
@@ -54,6 +62,15 @@ module.exports = (env) => {
     },
   
     optimization: {
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+          }
+        }
+      },
       minimizer: [
         new UglifyJsPlugin({
           cache: true,
@@ -73,14 +90,39 @@ module.exports = (env) => {
     },
   
     plugins: [
+    /**
+      * All files inside webpack's output.path directory will be removed once, but the
+      * directory itself will not be. If using webpack 4+'s default configuration,
+      * everything under <PROJECT_DIR>/dist/ will be removed.
+      * Use cleanOnceBeforeBuildPatterns to override this behavior.
+      *
+      * During rebuilds, all webpack assets that are not used anymore
+      * will be removed automatically.
+      *
+      * See `Options and Defaults` for information
+      */
+      new webpack.ProgressPlugin(),
+      new CleanWebpackPlugin(),
       new webpack.DefinePlugin(envKeys),
       new HtmlWebpackPlugin({
         /* Relative to output path: */
-        filename: 'index.html',
+        // filename: 'index.html',
         template: 'src/index.html',
       }),
+      new CompressionPlugin({
+        filename: '[path].gz[query]',
+        algorithm: 'gzip',
+        test: /\.(js|css|html)$/,
+        threshold: 10240,
+        minRatio: 0.7
+      }),
+      new BrotliPlugin({
+        asset: '[path].br[query]',
+        test: /\.(js|html|svg|css)$/,
+        threshold: 10240,
+        minRatio: 0.7
+      })
       // new BundleAnalyzerPlugin(),
     ],
-
   }
 };

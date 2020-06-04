@@ -64,6 +64,29 @@ const PersonalInformationForm = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log('Submitted');
+    axios
+      .post('/api/personalInfo', {
+        username: props.authenticatedUser,
+        address: address,
+        firstName: firstName,
+        lastName: lastName,
+        mobilePhone: mobilePhone,
+        email: email
+      })
+      .then(
+        (response) => {
+          if (response.status == 200) {
+            console.log(`Updated information in database for user ${username}`);
+          }
+        },
+        (error) => {
+          if (error.response) {
+            if (error.response.status === 401) {
+              alert("Invalid params...");
+            }
+          }
+        }
+      );
   };
 
   return (
