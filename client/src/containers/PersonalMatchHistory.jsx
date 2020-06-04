@@ -21,15 +21,18 @@ const MatchTable = (props) => {
         </tr>
       </thead>
       <tbody>
-        {props.matches.forEach((match) => {
+        {props.matches.map((match, idx) => {
           const matchJson = JSON.parse(match);
+          const d = new Date(matchJson.MatchDay);
+          const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+          console.log(matchJson);
           return (
             <tr>
               <td>
                 {matchJson.MatchNumber}
               </td>
               <td>
-                {matchJson.MatchDay}
+                {dstr}
               </td>
               <td>
                 {matchJson.TeamAName}
@@ -68,7 +71,6 @@ const PersonalMatchHistory = (props) => {
             if (response.status === 200) {
               setIsLoading(false);
               setMatches(response.data);
-              console.log(response.data);
             }
           },
           (error) => {
