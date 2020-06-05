@@ -141,14 +141,14 @@ app.post("/api/authenticate", (req, res) => {
 
 /* UPDATE PERSONAL INFO */
 app.post("/api/personalInfo", withAuth, (req, res) => {
-  const {username, address, firstName, lastName, mobilePhone, email} = req.body;
+  const { username, address, firstName, lastName, mobilePhone, email } = req.body;
   console.log(`UPDATE_PERSONAL_INFO: Got request: ${username}, ${address}, ${firstName}, ${lastName}, ${mobilePhone}, ${email}`);
 
   if (username === undefined || address === undefined || firstName === undefined || lastName === undefined || mobilePhone === undefined || email === undefined) {
     res.status(401).send("Invalid parameters!");
   } else {
-    var query = 
-    `UPDATE [dbo].[SensitiveInfo]
+    var query =
+      `UPDATE [dbo].[SensitiveInfo]
       SET FirstName = '${firstName}',
       LastName = '${lastName}',
       Address = '${address}',
@@ -196,7 +196,7 @@ app.get("/api/personalInfo", withAuth, (req, res) => {
     res.status(401).send("Invalid parameters for authentication");
   } else {
     var query =
-    `SELECT
+      `SELECT
         Usr.Username,
         Cnt.Name as Judet,
         L.Name as Lot,
@@ -250,8 +250,8 @@ app.get("/api/matchHistory", withAuth, (req, res) => {
   if (username === undefined) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
-    var query = 
-    `SELECT
+    var query =
+      `SELECT
       M.MatchNo as 'MatchNumber',
       M.MatchDay as 'MatchDay',
       TI.Name as 'TeamAName',
@@ -304,10 +304,10 @@ app.get("/api/matchHistory", withAuth, (req, res) => {
       res.status(200).send(matches);
     });
 
-  
+
 
     connection.execSql(request);
-    
+
   }
 });
 
@@ -361,13 +361,13 @@ app.get("/api/addUnavailable", withAuth, (req, res) => {
 
 /* ADD UNAVAILABILITY PERIOD */
 app.post("/api/addUnavailable", withAuth, (req, res) => {
-  const {username, startDate, endDate} = req.body;
+  const { username, startDate, endDate } = req.body;
 
   if (username === undefined || startDate === undefined || endDate === undefined) {
     res.status(400).send("Invalid params...");
   } else {
     console.log(`ADD_UNAVAILABILITY_PERIOD: Got request: ${username} ${startDate} ${endDate}`);
-    var search_query = 
+    var search_query =
       `SELECT 
         * 
       FROM [dbo].[UnavailabilityPeriod] UP
@@ -381,7 +381,7 @@ app.post("/api/addUnavailable", withAuth, (req, res) => {
     console.log(`Going to execute query ${search_query}`);
 
     var insert_query =
-    `INSERT INTO [dbo].[UnavailabilityPeriod](StartDate, EndDate, RefereeID)
+      `INSERT INTO [dbo].[UnavailabilityPeriod](StartDate, EndDate, RefereeID)
     VALUES
       (CONVERT(DATETIME, '${startDate}', 105),
       CONVERT(DATETIME, '${endDate}', 105), 
@@ -413,6 +413,47 @@ app.post("/api/addUnavailable", withAuth, (req, res) => {
       }
     });
     connection.execSql(search_request);
+  }
+});
+
+
+app.get("/api/userinfo", withAuth, (req, res) => {
+  const username = req.query.username;
+  console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
+
+  if (username === undefined) {
+    res.status(401).send("Invalid parameters for authentication");
+  } else {
+    var query =
+      `SELECT
+        Username,
+        HasDelegationRights,
+        HasApprovalRights
+      FROM [dbo].[User]
+      WHERE Username='${username}';`;
+
+    console.log(`Going to execute query ${query}`);
+
+    var userinfo;
+
+    var request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Failed insert query");
+      } else {
+        res.status(200).send(userinfo);
+      }
+    });
+
+    request.on("row", (cols) => {
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      userinfo = JSON.stringify(obj);
+    });
+
+    connection.execSql(request);
   }
 });
 

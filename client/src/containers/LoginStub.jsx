@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
-import {EyeOpenIcon, EyeClosedIcon, LockIcon} from '../components/Icons';
+import { EyeOpenIcon, EyeClosedIcon, LockIcon } from '../components/Icons';
 
 const axios = require('axios').create({
   baseURL: process.env.API_ENDPOINT

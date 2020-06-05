@@ -9,6 +9,8 @@ import Dashboard from '../containers/Dashboard';
 import PersonalInformationForm from '../containers/PersonalInformationForm';
 import PersonalMatchHistory from '../containers/PersonalMatchHistory';
 import CalendarPicker from '../containers/CalendarPicker';
+import ProposeDrafts from '../containers/ProposeDrafts';
+import ApproveDrafts from '../containers/ApproveDrafts';
 import WithAuth from '../components/withAuth';
 /* eslint-disable */
 
@@ -32,12 +34,6 @@ const App = () => {
       path: '/login',
       icon: 'ion-ios-lock',
     },
-    // // Remove in PROD
-    // {
-    //   text: 'Dashboard',
-    //   path: '/account',
-    //   icon: 'ion-ios-person',
-    // },
   ];
 
   const userLinks = [
@@ -53,6 +49,8 @@ const App = () => {
   const PersInfoForm = WithAuth(PersonalInformationForm);
   const PersMatchHist = WithAuth(PersonalMatchHistory);
   const CalndPicker = WithAuth(CalendarPicker);
+  const ApprvDrafts = WithAuth(ApproveDrafts);
+  const PrpsDrafts = WithAuth(ProposeDrafts);
 
   return (
     <div className="app">
@@ -67,10 +65,12 @@ const App = () => {
         <Home path="/" />
         <Matches path="/matches" />
         {!loggedIn && <LoginStub path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
-        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} userCallback={setAuthenticatedUser} navigate={navigate} />}
+        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} authenticatedUser={authenticatedUser} userCallback={setAuthenticatedUser} navigate={navigate} />}
         <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} />
         <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} />
         <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} />
+        <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
+        <PrpsDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
       </Router>
     </div>
   );
