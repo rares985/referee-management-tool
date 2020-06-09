@@ -142,6 +142,7 @@ const Dashboard = (props) => {
                 </Card>
               </div>
             </Col>
+
             {hasDelegationRights &&
               <Col>
                 <div className="personalized-card">
@@ -152,7 +153,7 @@ const Dashboard = (props) => {
                     <Card.Body>
                       <Card.Title>Delegare </Card.Title>
                       <Card.Text>Propuneți arbitri pentru delegare</Card.Text>
-                      <Button variant="primary" onClick={() => props.navigate("/proposedrafts")}>
+                      <Button variant="primary" onClick={() => props.navigate('/proposedrafts')}>
                         Delegă
                   </Button>
                     </Card.Body>
@@ -170,7 +171,7 @@ const Dashboard = (props) => {
                     <Card.Body>
                       <Card.Title>Aprobă delegări </Card.Title>
                       <Card.Text>Vizualizați și aprobați delegări pentru arbitri</Card.Text>
-                      <Button variant="primary" onClick={() => props.navigate("/approvedrafts")}>
+                      <Button variant="primary" onClick={() => props.navigate('/approvedrafts')}>
                         Vizualizare
                   </Button>
                     </Card.Body>

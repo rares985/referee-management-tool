@@ -1,0 +1,156 @@
+Project RefManTool {
+  database_type: 'SQL Server'
+}
+
+// static, should rarely (if ever) change
+Table County {
+  ID int [pk, increment]
+  Name varchar(30) [not null, unique]
+}
+
+Table Lot {
+  ID int [pk, increment]
+  Name varchar(20) [not null, unique]
+}
+
+Table Category {
+  ID int [pk, increment]
+  Name varchar(20) [not null, unique]
+}
+
+Table Sex {
+  ID int [pk, increment]
+  Name varchar(1)  [not null, unique]
+}
+
+
+Table User {
+  ID int [pk, increment]
+  Username varchar(30) [not null, unique]
+  Password varchar(60) [not null]
+}
+
+Table Referee {
+  ID int [pk, increment]
+  UserID int [not null, unique, ref: - User.ID]
+  LotID int [not null, ref: > Lot.ID]
+  CategoryID int [not null, ref: > Category.ID]
+  CountyID int [not null, ref: > County.ID]
+  FirstName varchar(20) [not null]
+  LastName varchar(20) [not null]
+  Address varchar(60)  [not null]
+  PersonalEmail varchar(30) [not null]
+  PhoneNumber varchar(10) [not null]
+}
+
+Table Match {
+  ID int [pk, increment]
+  MatchNo varchar(3) [not null]
+  MatchDay date [not null]
+  MatchInfoID int [not null, ref: > MatchInfo.ID]
+  CompetitionInstanceID int [not null, ref: > CompetitionInstance.ID]
+}
+
+
+Table MatchInfo {
+  ID int [pk, increment]
+  TeamAID int [not null, ref: > Team.ID]
+  TeamBID int [not null, ref: > Team.ID]
+  Venue varchar(20) [not null]
+}
+
+// Bridges the 2 parts of the diagram (take care when inserting as
+// not to double the entries since A1ID and A2ID are not pks)
+Table Delegation {
+  ID int [pk, increment]
+  FirstRefereeID int [not null, ref: > CompetitionEligibleReferee.ID]
+  SecondRefereeID int [not null, ref: > CompetitionEligibleReferee.ID]
+  MatchID int [not null, ref: > Match.ID]
+}
+
+
+Table Season {
+  ID int [pk, increment]
+  StartDate date [not null, unique]
+  EndDate date [not null, unique]
+}
+
+Table Competition {
+  ID int [pk, increment]
+  Name varchar(30) [not null, unique]
+}
+
+Table CompetitionSex {
+  ID int [pk, increment]
+  CompetitionID int [not null, ref: > Competition.ID]
+  SexID int [not null, ref: > Sex.ID]
+}
+
+Table CompetitionSexLevel {
+  ID int [pk, increment]
+  CompetitionSexID int [not null, ref: > CompetitionSex.ID]
+  TeamLevelID int [not null, ref: > TeamLevel.ID]
+}
+
+Table TeamLevel {
+  ID int [pk, increment]
+  Name varchar(20) [not null, unique]
+}
+
+
+Table CompetitionInstance {
+  ID int [pk, increment]
+  CompetitionSexLevelID int [not null, ref: > CompetitionSexLevel.ID]
+  SeasonID int [not null, ref: > Season.ID]
+}
+
+
+Table CompetitionEligibleReferee {
+  ID int [pk, increment]
+  CompetitionInstanceID int [not null, ref: > CompetitionInstance.ID]
+  RefereeID int [not null, ref: > Referee.ID]
+}
+
+Table UserCompetitionRights {
+  ID int [pk, increment]
+  UserID int [not null, ref: > User.ID]
+  CompetitionInstanceID int [not null, ref: > CompetitionInstance.ID]
+  HasDelegationRights bit [not null]
+  HasAccessRights bit [not null]
+}
+
+
+Table DelegationDraft {
+  ID int [pk, increment]
+  CreatedBy int [not null, ref: > User.ID]
+  MatchID int [not null, ref: > Match.ID]
+  FirstRefereeID int [not null, ref: > CompetitionEligibleReferee.ID]
+  SecondRefereeID int [not null, ref: > CompetitionEligibleReferee.ID]
+  FirstRefereeState State [not null]
+  SecondRefereeState State [not null]
+}
+
+
+Table UnavailabilityPeriod {
+  ID int [pk, increment]
+  StartDate date [not null]
+  EndDate date [not null]
+  RefereeID int [not null, ref: > Referee.ID]
+}
+
+
+Table Team {
+  ID int [pk, increment]
+  Name varchar(30) [not null]
+  CountyID int [not null, ref: > County.ID]
+  TeamLevelID int [not null, ref: > TeamLevel.ID]
+  SexID int [not null, ref: > Sex.ID]
+}
+
+
+enum State {
+  None
+  Deferred
+  Pending
+  Accepted
+}

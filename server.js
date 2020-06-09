@@ -195,29 +195,7 @@ app.get("/api/personalInfo", withAuth, (req, res) => {
   if (username === undefined) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
-    var query =
-      `SELECT
-        Usr.Username,
-        Cnt.Name as Judet,
-        L.Name as Lot,
-        Cat.Name as Categorie,
-        SI.LastName as Nume,
-        SI.FirstName as Prenume,
-        SI.Address as Adresa,
-        SI.PersonalEmail as Email,
-        SI.PhoneNumber as Telefon
-    FROM [dbo].[User] Usr
-    INNER JOIN [dbo].[Referee] Ref
-        ON Ref.UserID = Usr.ID
-    INNER JOIN [dbo].[County] Cnt
-        ON Ref.CountyID = Cnt.ID
-    INNER JOIN [dbo].[Lot] L
-        ON Ref.LotID = L.ID
-    INNER JOIN [dbo].[Category] Cat
-        ON Ref.CategoryID = Cat.ID
-    INNER JOIN [dbo].[SensitiveInfo] SI
-        ON Ref.SensitiveInfoID = SI.ID
-    WHERE Usr.Username='${username}'`;
+    var query = `[dbo].[GetPersonalInfo] '${username}';`;
 
     console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
@@ -425,12 +403,7 @@ app.get("/api/userinfo", withAuth, (req, res) => {
     res.status(401).send("Invalid parameters for authentication");
   } else {
     var query =
-      `SELECT
-        Username,
-        HasDelegationRights,
-        HasApprovalRights
-      FROM [dbo].[User]
-      WHERE Username='${username}';`;
+      `[dbo].[GetUserInfo] '${username}';`;
 
     console.log(`Going to execute query ${query}`);
 
@@ -451,6 +424,43 @@ app.get("/api/userinfo", withAuth, (req, res) => {
         obj[col.metadata.colName] = col.value;
       });
       userinfo = JSON.stringify(obj);
+    });
+
+    connection.execSql(request);
+  }
+});
+
+app.get("/api/delegablematches", (req, res) => {
+  const username = req.query.username;
+  console.log(`GET_DELEGABLE_MATCHES: Got request: ${username}`);
+
+  if (username === undefined) {
+    res.status(401).send("Invalid parameters for authentication");
+  } else {
+    var query =
+      `[dbo].[GetMyDelegableMatches] '${username}';`;
+
+    console.log(`Going to execute query ${query}`);
+
+    var matches = [];
+
+    var request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Failed search query");
+      } else {
+        res.status(200).send(matches);
+      }
+    });
+
+
+    request.on("row", (cols) => {
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      console.log(`Adding ${JSON.stringify(obj)}`);
+      matches.push(JSON.stringify(obj));
     });
 
     connection.execSql(request);

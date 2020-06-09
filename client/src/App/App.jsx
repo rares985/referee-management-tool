@@ -17,7 +17,6 @@ import WithAuth from '../components/withAuth';
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [authenticatedUser, setAuthenticatedUser] = useState('');
-
   const guestLinks = [
     {
       text: 'Home',
