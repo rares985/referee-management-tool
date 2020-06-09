@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Spinner } from 'react-bootstrap';
-import { Pencil, Filter, ArrowUpDown } from '../components/Icons';
+import { Pencil, ArrowUpDown } from '../components/Icons';
 
 const axios = require('axios').create({
     baseURL: process.env.API_ENDPOINT
@@ -23,25 +23,24 @@ const MatchTable = (props) => {
             </thead>
             <tbody>
                 {props.matches.map((match, idx) => {
-                    const matchJson = JSON.parse(match);
-                    const d = new Date(matchJson.matchday);
+                    const d = new Date(match.matchday);
                     const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
                     return (
                         <tr>
                             <td>
-                                {matchJson.matchno}
+                                {match.matchno}
                             </td>
                             <td>
                                 {dstr}
                             </td>
                             <td>
-                                {matchJson.TeamA}
+                                {match.TeamA}
                             </td>
                             <td>
-                                {matchJson.TeamB}
+                                {match.TeamB}
                             </td>
                             <td>
-                                {matchJson.Competitie}
+                                {match.Competitie}
                             </td>
                             <td>
                                 <Pencil />
