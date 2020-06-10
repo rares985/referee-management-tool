@@ -138,49 +138,7 @@ app.post("/api/authenticate", (req, res) => {
 
 
 /* =============================== BUSINESS ROUTES ==================================== */
-
-/* UPDATE PERSONAL INFO */
-app.post("/api/personalInfo", withAuth, (req, res) => {
-  const { username, address, firstName, lastName, mobilePhone, email } = req.body;
-  console.log(`UPDATE_PERSONAL_INFO: Got request: ${username}, ${address}, ${firstName}, ${lastName}, ${mobilePhone}, ${email}`);
-
-  if (username === undefined || address === undefined || firstName === undefined || lastName === undefined || mobilePhone === undefined || email === undefined) {
-    res.status(401).send("Invalid parameters!");
-  } else {
-    var query =
-      `EXEC [dbo].[UpdatePersonalInfo]
-        @Username = '${username}',
-        @FirstName = '${firstName}',
-        @LastName = '${lastName}',
-        @Address = '${address}',
-        @PersonalEmail = '${email}',
-        @PhoneNumber = '${mobilePhone}'`;
-
-    console.log(`Going to execute query ${query}`);
-    request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("User information not in database!");
-      } else {
-        console.log(`Got ${rowCount} rows`);
-      }
-    });
-
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      console.log(`Sending ${JSON.stringify(obj)}`);
-      res.status(200).send(JSON.stringify(obj));
-    });
-
-    connection.execSql(request);
-  }
-
-});
-
-/* GET PERSONAL INFO: JSON format: {username: rares} */
+/* GET PERSONAL INFO */
 app.get("/api/personalInfo", withAuth, (req, res) => {
   const username = req.query.username;
   console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
@@ -210,6 +168,146 @@ app.get("/api/personalInfo", withAuth, (req, res) => {
     });
 
     connection.execSql(request);
+  }
+});
+
+/* UPDATE PERSONAL INFO */
+app.post("/api/personalInfo", withAuth, (req, res) => {
+  const { username, address, firstName, lastName, mobilePhone, email } = req.body;
+  console.log(`UPDATE_PERSONAL_INFO: Got request: ${username}, ${address}, ${firstName}, ${lastName}, ${mobilePhone}, ${email}`);
+
+  if (username === undefined || address === undefined || firstName === undefined || lastName === undefined || mobilePhone === undefined || email === undefined) {
+    res.status(401).send("Invalid parameters!");
+  } else {
+    var query =
+      `UPDATE [dbo].[SensitiveInfo]
+      SET FirstName = '${firstName}',
+      LastName = '${lastName}',
+      Address = '${address}',
+      PersonalEmail = '${email}',
+      PhoneNumber = '${mobilePhone}'
+    WHERE ID = (SELECT 
+                  SI.ID 
+                FROM[dbo].[User] U
+                INNER JOIN[dbo].[Referee] R
+                  ON R.UserID = U.ID
+                INNER JOIN[dbo].[SensitiveInfo] SI
+                  ON R.SensitiveInfoID = SI.ID
+                WHERE U.Username = '${username}');`
+
+    console.log(`Going to execute query ${query}`);
+    request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("User information not in database!");
+      } else {
+        console.log(`Got ${rowCount} rows`);
+      }
+    });
+
+    request.on("row", (cols) => {
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      console.log(`Sending ${JSON.stringify(obj)}`);
+      res.status(200).send(JSON.stringify(obj));
+    });
+
+    connection.execSql(request);
+  }
+
+});
+
+
+/* GET UNAVAILABILITY PERIODS */
+app.get("/api/addUnavailable", withAuth, (req, res) => {
+  const username = req.query.username;
+
+  if (username === undefined) {
+    res.status(400).send("Invalid params...");
+  } else {
+    console.log(`GET_UNAVAILABILITY_PERIOD: Got request: ${username}`);
+    var query = `[dbo].[GetUnavailabilityPeriods] @Username='${username}'`;
+    console.log(`Going to execute query ${query}`);
+
+    let periods = [];
+    request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("User information not in database!");
+      } else {
+        res.status(200).send(periods);
+      }
+    });
+
+    request.on("row", (cols) => {
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      console.log(`Adding ${JSON.stringify(obj)}`);
+      periods.push(JSON.stringify(obj));
+    });
+
+    connection.execSql(request);
+  }
+});
+
+/* ADD UNAVAILABILITY PERIOD */
+app.post("/api/addUnavailable", withAuth, (req, res) => {
+  const { username, startDate, endDate } = req.body;
+
+  if (username === undefined || startDate === undefined || endDate === undefined) {
+    res.status(400).send("Invalid params...");
+  } else {
+    console.log(`ADD_UNAVAILABILITY_PERIOD: Got request: ${username} ${startDate} ${endDate}`);
+    var search_query =
+      `SELECT 
+        * 
+      FROM [dbo].[UnavailabilityPeriod] UP
+      INNER JOIN[dbo].[Referee] R
+        ON UP.RefereeID = R.ID
+      INNER JOIN[dbo].[User] U
+        ON R.UserID = U.ID
+      WHERE(U.Username = '${username}' 
+        AND UP.StartDate = CONVERT(DATETIME, '${startDate}', 105)
+        AND UP.EndDate = CONVERT(DATETIME, '${endDate}', 105));`;
+    console.log(`Going to execute query ${search_query}`);
+
+    var insert_query =
+      `INSERT INTO [dbo].[UnavailabilityPeriod](StartDate, EndDate, RefereeID)
+    VALUES
+      (CONVERT(DATETIME, '${startDate}', 105),
+      CONVERT(DATETIME, '${endDate}', 105), 
+      (SELECT
+          R.ID
+      FROM [dbo].[Referee] R
+      INNER JOIN [dbo].[User] U
+        ON R.UserID = U.ID
+      WHERE U.Username='${username}'));`;
+
+    var insert_request = new Request(insert_query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Failed insert query");
+      } else {
+        res.status(200).send("OK. Added.");
+      }
+    });
+
+    var search_request = new Request(search_query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Failed search query.");
+      } else if (rowCount >= 1) {
+        res.status(400).send("DUPLICATE");
+      } else {
+        console.log(`Going to execute query ${insert_query}`);
+        connection.execSql(insert_request);
+      }
+    });
+    connection.execSql(search_request);
   }
 });
 
@@ -282,110 +380,6 @@ app.get("/api/matchHistory", withAuth, (req, res) => {
   }
 });
 
-/* GET UNAVAILABILITY PERIODS */
-app.get("/api/addUnavailable", withAuth, (req, res) => {
-  const username = req.query.username;
-
-  if (username === undefined) {
-    res.status(400).send("Invalid params...");
-  } else {
-    console.log(`GET_UNAVAILABILITY_PERIOD: Got request: ${username}`);
-    var query =
-      `SELECT 
-        UP.StartDate as 'StartDate',
-        UP.EndDate as 'EndDate'
-      FROM [dbo].[UnavailabilityPeriod] UP
-      INNER JOIN[dbo].[Referee] R
-        ON UP.RefereeID = R.ID
-      INNER JOIN[dbo].[User] U
-        ON R.UserID = U.ID
-      WHERE U.Username = '${username}';`;
-    console.log(`Going to execute query ${query}`);
-
-    request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("User information not in database!");
-      } else {
-        console.log(`Got ${rowCount} rows`);
-      }
-    });
-
-    var periods = [];
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      console.log(`Adding ${JSON.stringify(obj)}`);
-      periods.push(JSON.stringify(obj));
-    });
-
-    request.on("doneInProc", (r, m, rs, ro) => {
-      res.status(200).send(periods);
-    });
-
-    connection.execSql(request);
-  }
-});
-
-
-/* ADD UNAVAILABILITY PERIOD */
-app.post("/api/addUnavailable", withAuth, (req, res) => {
-  const { username, startDate, endDate } = req.body;
-
-  if (username === undefined || startDate === undefined || endDate === undefined) {
-    res.status(400).send("Invalid params...");
-  } else {
-    console.log(`ADD_UNAVAILABILITY_PERIOD: Got request: ${username} ${startDate} ${endDate}`);
-    var search_query =
-      `SELECT 
-        * 
-      FROM [dbo].[UnavailabilityPeriod] UP
-      INNER JOIN[dbo].[Referee] R
-        ON UP.RefereeID = R.ID
-      INNER JOIN[dbo].[User] U
-        ON R.UserID = U.ID
-      WHERE(U.Username = '${username}' 
-        AND UP.StartDate = CONVERT(DATETIME, '${startDate}', 105)
-        AND UP.EndDate = CONVERT(DATETIME, '${endDate}', 105));`;
-    console.log(`Going to execute query ${search_query}`);
-
-    var insert_query =
-      `INSERT INTO [dbo].[UnavailabilityPeriod](StartDate, EndDate, RefereeID)
-    VALUES
-      (CONVERT(DATETIME, '${startDate}', 105),
-      CONVERT(DATETIME, '${endDate}', 105), 
-      (SELECT
-          R.ID
-      FROM [dbo].[Referee] R
-      INNER JOIN [dbo].[User] U
-        ON R.UserID = U.ID
-      WHERE U.Username='${username}'));`;
-
-    var insert_request = new Request(insert_query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Failed insert query");
-      } else {
-        res.status(200).send("OK. Added.");
-      }
-    });
-
-    var search_request = new Request(search_query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Failed search query.");
-      } else if (rowCount >= 1) {
-        res.status(400).send("DUPLICATE");
-      } else {
-        console.log(`Going to execute query ${insert_query}`);
-        connection.execSql(insert_request);
-      }
-    });
-    connection.execSql(search_request);
-  }
-});
 
 
 app.get("/api/userinfo", withAuth, (req, res) => {
