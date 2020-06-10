@@ -34,15 +34,14 @@ const PersonalInformationForm = (props) => {
           (response) => {
             if (response.status === 200) {
               setIsLoading(false);
-              setAddress(response.data.Adresa);
-              setCategory(response.data.Categorie);
+              setAddress(response.data.Address);
+              setCategory(response.data.Category);
               setEmail(response.data.Email);
-              setCounty(response.data.Judet);
+              setCounty(response.data.County);
               setLot(response.data.Lot);
-              setLastName(response.data.Nume);
-              setFirstName(response.data.Prenume);
-              setMobilePhone(response.data.Telefon);
-              console.log(response.data);
+              setLastName(response.data.LastName);
+              setFirstName(response.data.FirstName);
+              setMobilePhone(response.data.PhoneNumber);
             }
           },
           (error) => {
