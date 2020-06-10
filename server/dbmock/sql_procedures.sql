@@ -80,6 +80,17 @@ INSERT INTO [dbo].[Season] (StartDate, EndDate)
 VALUES
 (CONVERT(DATETIME, @Start, 105), CONVERT(DATETIME, @End, 105));
 
+-- Get Unavailability Periods for a specific user
+CREATE PROCEDURE GetUnavailabilityPeriods
+@Username varchar(30)
+AS
+SELECT 
+    UP.StartDate as 'StartDate',
+    UP.EndDate as 'EndDate'
+FROM [dbo].[UnavailabilityPeriod] UP
+INNER JOIN[dbo].[Referee] R ON UP.RefereeID = R.ID
+INNER JOIN[dbo].[User] U ON R.UserID = U.ID
+WHERE U.Username = @Username;
 
 -- Get User Info
 CREATE PROCEDURE Getuserinfo @Username VARCHAR(30) 
