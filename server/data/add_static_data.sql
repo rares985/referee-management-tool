@@ -60,3 +60,10 @@ INSERT INTO category (name)
   ('IV'),
   ('Observator');
 GO
+
+INSERT INTO age_group (name)
+  VALUES ('Seniori'),
+  ('Juniori'),
+  ('Cadeti'),
+  ('Sperante'),
+  ('Minivolei');

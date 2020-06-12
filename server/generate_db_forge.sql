@@ -64,6 +64,8 @@ CREATE TABLE [referee-management-tool].dbo.team (
  ,age_group_id INT NOT NULL
  ,sex_id INT NOT NULL
  ,CONSTRAINT PK_team_id PRIMARY KEY CLUSTERED (id)
+ ,CONSTRAINT KEY_team UNIQUE (name, age_group_id, sex_id)
+ 
 )
 GO
 
@@ -82,6 +84,7 @@ CREATE TABLE [referee-management-tool].dbo.competition (
  ,age_group_id INT NOT NULL
  ,sex_id INT NOT NULL
  ,CONSTRAINT PK_competition_id PRIMARY KEY CLUSTERED (id)
+ ,CONSTRAINT KEY_competition UNIQUE (full_name, age_group_id, sex_id)
 )
 GO
 
