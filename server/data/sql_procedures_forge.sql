@@ -211,3 +211,30 @@ BEGIN
     ON r.county_id = cnt.id
   WHERE r.county_id = @CountyID;
 END
+
+-- Get UP per county
+CREATE PROCEDURE GetUnavailabilityPeriodsPerCounty @CountyID INT
+AS
+BEGIN
+  SET NOCOUNT ON
+  SELECT
+    r.id
+   ,r.first_name
+   ,r.last_name
+   ,r.address
+   ,r.email
+   ,r.phone_number
+   ,up.start_date
+   ,up.end_date
+   ,up.reason AS reason
+   ,c.name AS category
+   ,l.name AS lot
+  FROM referee r
+  INNER JOIN unavailability_period up
+    ON r.id = up.referee_id
+  INNER JOIN category c
+    ON r.category_id = c.id
+  INNER JOIN lot l
+    ON r.lot_id = l.id
+  WHERE r.county_id = 5
+END  
