@@ -144,7 +144,7 @@ app.post("/api/authenticate", (req, res) => {
 
 /* =============================== BUSINESS ROUTES ==================================== */
 /* GET PERSONAL INFO */
-app.get("/api/personalInfo", withAuth, (req, res) => {
+app.get("/api/personalInfo", (req, res) => {
   const username = req.query.username;
   console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
 

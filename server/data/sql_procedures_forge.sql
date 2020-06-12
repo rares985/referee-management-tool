@@ -241,7 +241,7 @@ END
 
 
 -- Procedure for getting personal information
-CREATE PROCEDURE GetPersonalInfo @Username VARCHAR(50)
+CREATE PROCEDURE dbo.GetPersonalInfo @Username VARCHAR(50)
 AS
 BEGIN
   SET NOCOUNT ON
@@ -264,8 +264,9 @@ BEGIN
     ON r.category_id = c1.id
   INNER JOIN lot l
     ON r.lot_id = l.id
-  WHERE u.username = 'alinmateizer'
+  WHERE u.username = @Username
 END
+GO
 
 -- Procedure for updating personal information
 CREATE PROCEDURE UpdatePersonalInfo @Username VARCHAR(50),
@@ -317,3 +318,80 @@ BEGIN
 
 END
 GO
+
+
+-- Procedure for creating a new competition 
+CREATE PROCEDURE dbo.CreateNewCompetition @FullName NVARCHAR(80),
+@AgeGroup NVARCHAR(20),
+@Sex NVARCHAR(20)
+AS
+BEGIN
+  SET NOCOUNT ON;
+  DECLARE @AgeGroupID INT;
+  DECLARE @SexID INT;
+
+  SET @AgeGroupID = (SELECT
+      id
+    FROM age_group ag
+    WHERE ag.name = @AgeGroup);
+  SET @SexID = (SELECT
+      id
+    FROM sex s
+    WHERE s.name = @Sex);
+
+  INSERT INTO competition (full_name, age_group_id, sex_id)
+    VALUES (@FullName, @AgeGroupID, @SexID);
+END
+GO
+
+
+-- Procedure for adding a new season
+CREATE PROCEDURE AddNewSeason @StartDate DATE,
+@EndDate DATE
+AS
+BEGIN
+  SET NOCOUNT ON;
+  INSERT INTO season (start_date, end_date)
+    VALUES (@StartDate, @EndDate)
+END
+
+EXEC AddNewSeason @StartDate = '2020-09-15'
+                 ,@EndDate = '2021-05-30'
+
+
+-- Procedure for adding a new team
+CREATE PROCEDURE AddNewTeam @Name NVARCHAR(20),
+@AgeGroup NVARCHAR(30),
+@Sex NVARCHAR(20)
+AS
+BEGIN
+  SET NOCOUNT ON;
+  DECLARE @AgeGroupID INT;
+  DECLARE @SexID INT;
+
+  SET @AgeGroupID = (SELECT
+      id
+    FROM age_group ag
+    WHERE ag.name = @AgeGroup);
+  SET @SexID = (SELECT
+      id
+    FROM sex s
+    WHERE s.name = @Sex);
+
+  INSERT INTO team (name, age_group_id, sex_id)
+    VALUES (@Name, @AgeGroupID, @SexID);
+END
+
+
+-- 
+CREATE PROCEDURE dbo.GetRefereesEligibleForCompetition @CompetitionInstanceID INT
+AS
+BEGIN
+  SELECT
+    cer.referee_id
+  FROM competition_eligible_referee cer
+    INNER JOIN referee r ON cer.referee_id = r.id
+  WHERE cer.competition_instance_id = @CompetitionInstanceID;
+END
+GO
+

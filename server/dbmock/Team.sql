@@ -1,203 +1,43 @@
+EXEC AddNewTeam @Name = N'CSM Volei Alba Blaj'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
 
+EXEC AddNewTeam @Name = N'CSM Dinamo București'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
 
--- Add data for TEAM table
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ocho Rios', 37, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Liushutun', 5, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Yaguachi Nuevo', 35, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Lirung', 28, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kelmė', 34, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kipen’', 35, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Lees Summit', 5, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Garanhuns', 14, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Detik Satu', 2, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Raposos', 26, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('San Casimiro', 11, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Veliki Preslav', 21, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Los Andes', 12, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Fangcun', 37, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Podbuzh', 9, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Vangaindrano', 28, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Huacrachuco', 10, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Yunfeng', 7, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Chengzhai', 28, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Coihaique', 15, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gesikan', 16, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Zhaigang', 11, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('El Carmen', 18, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Manolo Fortich', 24, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Belovo', 18, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Macapá', 7, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Minsk', 29, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Uppsala', 8, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Dunlewy', 17, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Riyue', 19, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gostyń', 3, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Álftanes', 32, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Popayán', 14, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sartrouville', 27, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Panognawan', 34, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Allen', 30, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Palma De Mallorca', 10, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Geser', 10, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Jiangning', 25, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Karangbaru', 23, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Genzi', 29, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ringin Kembar', 22, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Fartura', 30, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kérkyra', 21, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Volkhovskiy', 15, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Hanyuan', 38, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Winston Salem', 24, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('La Rochelle', 37, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Cotonou', 19, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kuanfeu', 14, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Banatsko Karađorđevo', 20, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kuluran', 36, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Barra do Piraí', 30, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Obollo-Afor', 25, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ấp Tân Ngãi', 17, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Llalli', 28, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Hoàn Kiếm', 21, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sychëvo', 27, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kloangpopot', 15, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Khlong Luang', 8, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Chmielno', 7, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Tangxian', 16, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Malasugui', 7, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Huangbei', 4, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gaspra', 36, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Margacina', 7, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Piraí', 31, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Łubowo', 42, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Tungi', 30, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('La Rochelle', 33, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Shuangshipu', 35, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Créteil', 2, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gedaliang', 2, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Randuboto', 26, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Daojiang', 13, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Várzea', 15, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Rio', 23, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kuantan', 39, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Harstad', 24, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Tasikona', 21, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Farkhor', 39, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Şūr', 24, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Warungsugan', 17, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Corcuera', 13, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Cangqian', 5, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Wensu', 18, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Buenos Aires', 15, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Karangbalong', 3, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Dongyong', 10, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gorzów Wielkopolski', 20, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Pancas', 13, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ljubovija', 5, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Pengjia Zhaizi', 23, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ban Takhun', 39, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Osieck', 27, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Buenavista', 42, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Marseille', 34, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Bardaskan', 29, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Petare', 1, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Maiduguri', 10, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Niños Heroes', 28, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Bonao', 19, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Lužani', 34, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kutno', 33, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sasovo', 7, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Feteira Pequena', 7, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Barcelona', 29, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Lamawan', 41, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Anau', 35, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Rennes', 39, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Norzagaray', 11, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Palaiochóri', 18, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('La Breita', 28, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Nalinggou', 39, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sambopinggir', 15, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Haveluloto', 37, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Dahu Satu', 20, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Aguilares', 22, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('San José de Río Tinto', 17, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gaotang', 19, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Samoljica', 21, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Yatsuomachi-higashikumisaka', 11, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Makiwalo', 23, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Tutul', 41, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sanxing', 36, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Čortanovci', 14, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Hecun', 35, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Yangjiao', 38, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gunjur Kuta', 7, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Empedrado', 8, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Beichengqu', 28, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sukamulya', 21, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('San Jose', 7, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Anton', 37, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('El Salitre', 41, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ban Kruat', 9, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Vila Nova de Milfontes', 9, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Tigaherang', 29, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Horred', 21, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Wotho', 28, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Bandar-e Ganāveh', 25, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Radamata', 3, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Río Grande', 37, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Betafo', 40, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Baturaja', 8, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Obodivka', 24, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Vinkkilä', 19, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Baranowo', 31, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Tanxi', 40, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Majzar', 15, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Xinlong', 25, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Menzel Abderhaman', 1, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Hamburg', 7, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Liangwangzhuang', 29, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sísion', 29, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Xiongguan', 12, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Melfort', 37, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Dengjia', 11, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Lanxi', 17, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Blatná', 21, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Chapayevka', 35, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Balakhta', 42, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Madolenihm', 10, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Nkayi', 17, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Радовиш', 6, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ramat HaSharon', 12, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Walakeri', 24, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ibeto', 18, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Sonquil', 17, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Salmi', 39, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Barbacoas', 28, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Volovo', 7, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Cevicos', 33, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Gajah', 39, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Zgornje Pirniče', 23, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Chelgard', 15, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Vodnyy', 4, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Marathon', 14, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Shancheng', 21, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Magok', 1, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Vranisht', 31, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Agustín Codazzi', 2, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Merdeka', 39, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Buayan', 31, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Loma Bonita', 15, 5, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Pleszew', 2, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Uchkeken', 33, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Shebunino', 16, 2, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Maricá', 40, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Xiaoling', 21, 3, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Patquía', 10, 4, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Rungis', 42, 3, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Kuala Lumpur', 19, 5, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Ladoeiro', 35, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Bristol', 13, 1, 2);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Uddevalla', 8, 2, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Shanxia', 18, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Uruaçu', 35, 1, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('San Antonio', 12, 4, 1);
-insert into Team (Name, CountyID, TeamLevelID, SexID) values ('Chaniá', 12, 1, 2);
+EXEC AddNewTeam @Name = N'CSM Târgoviște'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'CSM Știința Bacău'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'CSM Lugoj'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'CSU Belor Galați'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'CS Medgidia'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'FC Argeș'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'CS "U" NTT Data Cluj'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'CS Rapid București'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
+
+EXEC AddNewTeam @Name = N'CSO Voluntari 2005'
+               ,@AgeGroup = N'Seniori'
+               ,@Sex = N'Feminin';
