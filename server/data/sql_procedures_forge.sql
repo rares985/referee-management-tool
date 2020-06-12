@@ -237,4 +237,83 @@ BEGIN
   INNER JOIN lot l
     ON r.lot_id = l.id
   WHERE r.county_id = 5
-END  
+END
+
+
+-- Procedure for getting personal information
+CREATE PROCEDURE GetPersonalInfo @Username VARCHAR(50)
+AS
+BEGIN
+  SET NOCOUNT ON
+  SELECT
+    r.id
+   ,r.first_name
+   ,r.last_name
+   ,r.address
+   ,r.email
+   ,r.phone_number
+   ,c.name AS jud
+   ,c1.name AS cat
+   ,l.name AS lot
+  FROM referee r
+  INNER JOIN [user] u
+    ON r.user_id = u.id
+  INNER JOIN county c
+    ON r.county_id = c.id
+  INNER JOIN category c1
+    ON r.category_id = c1.id
+  INNER JOIN lot l
+    ON r.lot_id = l.id
+  WHERE u.username = 'alinmateizer'
+END
+
+-- Procedure for updating personal information
+CREATE PROCEDURE UpdatePersonalInfo @Username VARCHAR(50),
+@FirstName VARCHAR(30),
+@LastName VARCHAR(30),
+@Address VARCHAR(50),
+@Email VARCHAR(50),
+@PhoneNumber VARCHAR(10),
+@LotName NVARCHAR(20),
+@CountyName NVARCHAR(30),
+@CategoryName NVARCHAR(20)
+AS
+BEGIN
+  SET NOCOUNT ON
+
+    DECLARE @LotID INT;
+    DECLARE @CategoryID INT;
+    DECLARE @CountyID INT;
+    DECLARE @UserID BIGINT;
+
+  SET @LotID = (SELECT
+      id
+    FROM lot
+    WHERE name = @LotName);
+  SET @CategoryID = (SELECT
+      id
+    FROM category
+    WHERE name = @CategoryName);
+  SET @CountyID = (SELECT
+      id
+    FROM county
+    WHERE name = @CountyName);
+
+  SET @UserID = (SELECT
+      id
+    FROM [user]
+    WHERE username = @Username);
+
+  UPDATE referee
+  SET first_name = @FirstName
+     ,last_name = @LastName
+     ,address = @Address
+     ,email = @Email
+     ,phone_number = @PhoneNumber
+     ,lot_id = @LotID
+     ,category_id = @CategoryID
+     ,county_id = @CountyID
+  WHERE user_id = @UserID;
+
+END
+GO
