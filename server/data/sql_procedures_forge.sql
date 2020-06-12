@@ -58,3 +58,156 @@ BEGIN
     VALUES (@FirstName, @LastName, @Address, @Email, @PhoneNumber, SCOPE_IDENTITY(), @LotID, @CategoryID, @CountyID);
 
 END
+
+
+-- Procedure for adding a new Unavailability Period
+CREATE PROCEDURE AddUnavailabilityPeriod @Username VARCHAR(50),
+@Reason NVARCHAR(50),
+@StartDate DATE,
+@EndDate DATE
+AS
+BEGIN
+  SET NOCOUNT ON
+  DECLARE @RefereeID INT;
+  SET @RefereeID = (SELECT
+      r.id
+    FROM referee r
+    INNER JOIN [user] u
+      ON r.user_id = u.id
+    WHERE u.username = @Username);
+
+  INSERT INTO unavailability_period (referee_id, start_date, end_date, reason)
+    VALUES (@RefereeID, @StartDate, @EndDate, @Reason)
+END
+-- Example of how to call
+EXEC AddUnavailabilityPeriod @Username = 'cjaprahova'
+                            ,@Reason = N'suspendat'
+                            ,@StartDate = '2020-06-15'
+                            ,@EndDate = '2020-06-17'
+-------------------------------------------------------------------------------------------------------------
+
+-- Procedure for getting stored Unavailability Periods per person
+CREATE PROCEDURE GetUnavailabilityPeriod @Username VARCHAR(50)
+AS
+BEGIN
+  SET NOCOUNT ON
+  SELECT
+    up.start_date AS 'StartDate'
+   ,up.end_date AS 'EndDate'
+   ,up.reason AS 'Reason'
+  FROM unavailability_period up
+  INNER JOIN referee r
+    ON up.referee_id = r.id
+  INNER JOIN [user] u
+    ON r.user_id = u.id
+  WHERE u.Username = @Username;
+END
+
+-- Procedure for deleting stored Unavailability Period per person
+CREATE PROCEDURE DeleteUnavailabilityPeriod @Username VARCHAR(50),
+@StartDate DATE,
+@EndDate DATE
+AS
+BEGIN
+  SET NOCOUNT ON
+  DECLARE @RefereeID INT;
+  SET @RefereeID = (SELECT
+      r.id
+    FROM referee r
+    INNER JOIN [user] u
+      ON r.user_id = u.id
+    WHERE u.username = @Username);
+  DELETE FROM unavailability_period
+  WHERE start_date = @StartDate
+    AND end_date = @EndDate
+    AND referee_id = @RefereeID
+END
+
+--- Example how to run
+EXEC DeleteUnavailabilityPeriod @Username = 'cjaprahova'
+                               ,@StartDate = '2020-06-15'
+                               ,@EndDate = '2020-06-17'
+-------------------------------------------------------------------------------------------------------------
+
+
+
+-- Add entry in Referee table
+CREATE PROCEDURE CreateRefereeEntry @Username VARCHAR(50),
+@FirstName VARCHAR(30),
+@LastName VARCHAR(30),
+@Address VARCHAR(50),
+@Email VARCHAR(50),
+@PhoneNumber VARCHAR(10),
+@LotName NVARCHAR(20),
+@CountyName NVARCHAR(30),
+@CategoryName NVARCHAR(20)
+AS
+BEGIN
+  SET NOCOUNT ON
+  DECLARE @LotID INT;
+  DECLARE @CategoryID INT;
+  DECLARE @CountyID INT;
+  DECLARE @UserID INT;
+
+
+  SET @LotID = (SELECT
+      id
+    FROM lot
+    WHERE name = @LotName);
+  SET @CategoryID = (SELECT
+      id
+    FROM category
+    WHERE name = @CategoryName);
+  SET @CountyID = (SELECT
+      id
+    FROM county
+    WHERE name = @CountyName);
+
+  SET @UserID = (SELECT
+      id
+    FROM [user]
+    WHERE username = @Username);
+
+  INSERT INTO referee (first_name, last_name, address, email, phone_number, user_id, lot_id, category_id, county_id)
+    VALUES (@FirstName, @LastName, @Address, @Email, @PhoneNumber, @UserID, @LotID, @CategoryID, @CountyID);
+
+END
+
+-- EXAMPLE HOW TO RUN ----
+EXEC CreateRefereeEntry
+  @Username = 'cjaprahova',
+  @FirstName = 'CJA',
+  @LastName = 'Prahova',
+  @Address = 'Ploiesti, Bd. Independentei 5-7',
+  @Email = 'alinmateizer@yahoo.com',
+  @PhoneNumber = '0770235236',
+  @LotName = 'Observator',
+  @CountyName = 'Prahova',
+  @CategoryName = 'Observator';
+
+
+
+-- Get referees in county by countyid 
+CREATE PROCEDURE GetRefereesInCounty @CountyID INT
+AS
+BEGIN
+  SET NOCOUNT ON
+  SELECT
+    r.id
+   ,r.first_name
+   ,r.last_name
+   ,r.address
+   ,r.email
+   ,r.phone_number
+   ,lt.[name] AS 'lot'
+   ,ct.[name] AS 'cat'
+   ,cnt.[name] AS 'jud'
+  FROM referee r
+  INNER JOIN [dbo].[lot] lt
+    ON r.lot_id = lt.id
+  INNER JOIN category ct
+    ON r.category_id = ct.id
+  INNER JOIN county cnt
+    ON r.county_id = cnt.id
+  WHERE r.county_id = @CountyID;
+END
