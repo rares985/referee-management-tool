@@ -101,8 +101,8 @@ module.exports = (env) => {
         *
         * See `Options and Defaults` for information
         */
-      new webpack.ProgressPlugin(),
       new CleanWebpackPlugin(),
+      new webpack.ProgressPlugin(),
       new webpack.DefinePlugin(envKeys),
       new HtmlWebpackPlugin({
         /* Relative to output path: */

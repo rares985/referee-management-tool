@@ -177,7 +177,7 @@ app.get("/api/personalInfo", (req, res) => {
 });
 
 /* UPDATE PERSONAL INFO */
-app.post("/api/personalInfo", withAuth, (req, res) => {
+app.post("/api/personalInfo", (req, res) => {
   const { username, address, firstName, lastName, mobilePhone, email } = req.body;
   console.log(
     `UPDATE_PERSONAL_INFO: Got request: ${username}, ${address}, ${firstName}, ${lastName}, ${mobilePhone}, ${email}`
@@ -232,7 +232,7 @@ app.post("/api/personalInfo", withAuth, (req, res) => {
 });
 
 /* GET UNAVAILABILITY PERIODS */
-app.get("/api/addUnavailable", withAuth, (req, res) => {
+app.get("/api/addUnavailable", (req, res) => {
   const username = req.query.username;
 
   if (username === undefined) {
@@ -266,7 +266,7 @@ app.get("/api/addUnavailable", withAuth, (req, res) => {
 });
 
 /* ADD UNAVAILABILITY PERIOD */
-app.post("/api/addUnavailable", withAuth, (req, res) => {
+app.post("/api/addUnavailable", (req, res) => {
   const { username, startDate, endDate } = req.body;
 
   if (username === undefined || startDate === undefined || endDate === undefined) {
@@ -321,7 +321,7 @@ app.post("/api/addUnavailable", withAuth, (req, res) => {
 });
 
 /* GET PERSONAL MATCH HISTORY */
-app.get("/api/matchHistory", withAuth, (req, res) => {
+app.get("/api/matchHistory", (req, res) => {
   const username = req.query.username;
   console.log(`FETCH_MATCH_HISTORY: Got request: ${username}`);
 
@@ -385,7 +385,7 @@ app.get("/api/matchHistory", withAuth, (req, res) => {
   }
 });
 
-app.get("/api/userinfo", withAuth, (req, res) => {
+app.get("/api/userinfo", (req, res) => {
   const username = req.query.username;
   console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
 
@@ -447,6 +447,71 @@ app.get("/api/userinfo", withAuth, (req, res) => {
   }
 });
 
+app.get("/api/shortlist", (req, res) => {
+  const matchid = req.query.id;
+  console.log(`REFEREE_SHORTLIST: Got request: ${matchid}`);
+  if (matchid === undefined) {
+    res.status(400).send("Invalid parameters");
+  } else {
+    var query = `[dbo].GetRefsAvailableForMatch @MatchID = ${matchid}`;
+    let shortlist = [];
+
+    var request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Failed to query the database!");
+      } else {
+        res.status(200).send(shortlist);
+      }
+    });
+
+    request.on("row", (cols) => {
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      console.log(`Adding ${JSON.stringify(obj)}`);
+      shortlist.push(JSON.stringify(obj));
+    });
+
+    connection.execSql(request);
+  }
+});
+
+app.get("/api/eligiblefordelegable", (req, res) => {
+  const username = req.query.username;
+  console.log(`ELIGIBLE_FOR_DELEGATION_PER_MATCHID: Got request ${username}`);
+
+  if (username === undefined) {
+    res.status(400).send("Invalid parameters");
+  } else {
+    var query = `[dbo].[EligibleRefsForDelegableMatches] ${username}`;
+
+    let shortlist = [];
+    var request = new Request(query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Failed to query the database!");
+      } else {
+        res.status(200).send(shortlist);
+      }
+    });
+
+    request.on("row", (cols) => {
+      let obj = {};
+      cols.forEach((col) => {
+        obj[col.metadata.colName] = col.value;
+      });
+      console.log(`Adding ${JSON.stringify(obj)}`);
+      shortlist.push(JSON.stringify(obj));
+    });
+
+    connection.execSql(request);
+  }
+
+
+})
+
 app.get("/api/delegablematches", (req, res) => {
   const username = req.query.username;
   console.log(`GET_DELEGABLE_MATCHES: Got request: ${username}`);
@@ -484,7 +549,7 @@ app.get("/api/delegablematches", (req, res) => {
 
 /* =============================== SERVICE ROUTES ==================================== */
 /* Service routes for handling cookies & JWT tokens */
-app.get("/checkToken", withAuth, (req, res) => {
+app.get("/checkToken", (req, res) => {
   res.sendStatus(200);
 });
 
