@@ -39,7 +39,7 @@ const ChooseRefereeModal = (props) => {
                     <ListGroup>
                         {refs.map((ref, idx) => {
                             return (
-                                <ListGroup.Item action onClick={(idx) => setChosen(refs[idx])}>
+                                <ListGroup.Item action onClick={() => setChosen(ref)}>
                                     {ref}
                                 </ListGroup.Item>
                             );
