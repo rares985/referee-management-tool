@@ -60,6 +60,7 @@ const App = () => {
         linkColor="#777"
         logo={logo}
       />
+      <h4>Logat ca {authenticatedUser}</h4>
       <Router>
         <Home path="/" />
         <Matches path="/matches" />

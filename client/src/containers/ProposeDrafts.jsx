@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Modal, Button } from 'react-bootstrap';
 import { Pencil, ArrowUpDown } from '../components/Icons';
 
 const axios = require('axios').create({
@@ -7,6 +7,53 @@ const axios = require('axios').create({
 });
 
 /* eslint-disable */
+
+const ChooseRefereeModal = (props) => {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleSaveClose = () => {
+        props.onSaveCloseCB();
+        handleClose();
+    }
+    const handleShow = () => setShow(true);
+
+    return (
+        <>
+            <Button variant="primary" onClick={handleShow}>
+                <Pencil />
+            </Button>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Alege arbitru</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <ListGroup>
+                        <ListGroup.Item action>
+                            Link 1
+                        </ListGroup.Item>
+                        <ListGroup.Item action>
+                            Link 2
+                        </ListGroup.Item>
+                        <ListGroup.Item action>
+                            This one is a button
+                        </ListGroup.Item>
+                    </ListGroup>,
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Închide
+            </Button>
+                    <Button variant="primary" onClick={handleSaveClose}>
+                        Salvează
+            </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
+
+}
 const MatchTable = (props) => {
     return (
         <Table striped bordered size="sm">
@@ -45,13 +92,13 @@ const MatchTable = (props) => {
                                 {match.competition}
                             </td>
                             <td>
-                                <Pencil />
+                                <ChooseRefereeModal />
                             </td>
                             <td>
-                                <Pencil />
+                                <ChooseRefereeModal />
                             </td>
                             <td>
-                                <Pencil />
+                                <ChooseRefereeModal />
                             </td>
                             <td>
                                 {match.location}
