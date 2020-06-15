@@ -60,16 +60,22 @@ const App = () => {
         linkColor="#777"
         logo={logo}
       />
+      <h4>Logat ca {authenticatedUser}</h4>
       <Router>
         <Home path="/" />
         <Matches path="/matches" />
         {!loggedIn && <LoginStub path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
         {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} authenticatedUser={authenticatedUser} userCallback={setAuthenticatedUser} navigate={navigate} />}
-        <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} />
-        <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} />
-        <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} />
-        <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
-        <PrpsDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
+        {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+        <PersonalInformationForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} />
+        {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+        <PersonalMatchHistory path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} />
+        {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+        <CalendarPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} />
+        {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+        <ApproveDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
+        {/* <PrpsDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+        <ProposeDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
       </Router>
     </div>
   );

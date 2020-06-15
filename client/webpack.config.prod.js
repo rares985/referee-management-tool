@@ -21,14 +21,14 @@ module.exports = (env) => {
   return {
     /* Entry point  */
     entry: './src/index.jsx',
-  
+
     /* Where the bundle.js file will be created */
     output: {
       path: __dirname + '/dist',
       // publicPath: '/',
-      filename: '[name].bundle.[hash].js',
+      filename: '[name].bundle.js',
     },
-  
+
     module: {
       rules: [
         /* Transpile To <= ES5 */
@@ -37,7 +37,7 @@ module.exports = (env) => {
           exclude: path.resolve(__dirname, 'node_modules'),
           use: ['babel-loader', 'eslint-loader'],
         },
-  
+
         /* Load SCSS, then CSS */
         {
           test: /\.s[ac]ss$/i,
@@ -47,7 +47,7 @@ module.exports = (env) => {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
         },
-  
+
         /* Load images and fonts */
         {
           test: /\.(png|jpg|gif|eot|ttf|woff|woff2|svg)$/,
@@ -60,7 +60,7 @@ module.exports = (env) => {
         },
       ],
     },
-  
+
     optimization: {
       splitChunks: {
         cacheGroups: {
@@ -84,25 +84,25 @@ module.exports = (env) => {
         }),
       ],
     },
-  
+
     resolve: {
       extensions: ['*', '.js', '.jsx'],
     },
-  
+
     plugins: [
-    /**
-      * All files inside webpack's output.path directory will be removed once, but the
-      * directory itself will not be. If using webpack 4+'s default configuration,
-      * everything under <PROJECT_DIR>/dist/ will be removed.
-      * Use cleanOnceBeforeBuildPatterns to override this behavior.
-      *
-      * During rebuilds, all webpack assets that are not used anymore
-      * will be removed automatically.
-      *
-      * See `Options and Defaults` for information
-      */
-      new webpack.ProgressPlugin(),
+      /**
+        * All files inside webpack's output.path directory will be removed once, but the
+        * directory itself will not be. If using webpack 4+'s default configuration,
+        * everything under <PROJECT_DIR>/dist/ will be removed.
+        * Use cleanOnceBeforeBuildPatterns to override this behavior.
+        *
+        * During rebuilds, all webpack assets that are not used anymore
+        * will be removed automatically.
+        *
+        * See `Options and Defaults` for information
+        */
       new CleanWebpackPlugin(),
+      new webpack.ProgressPlugin(),
       new webpack.DefinePlugin(envKeys),
       new HtmlWebpackPlugin({
         /* Relative to output path: */

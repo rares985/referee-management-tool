@@ -33,6 +33,7 @@ const Dashboard = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasDelegationRights, setHasDelegationRights] = useState(false);
   const [hasApprovalRights, setHasApprovalRights] = useState(false);
+  const [hasTeamRights, setHasTeamRights] = useState(false);
 
   useEffect(() => {
     if (isLoading) {
@@ -47,6 +48,7 @@ const Dashboard = (props) => {
           setIsLoading(false);
           setHasApprovalRights(resp.data.HasApprovalRights);
           setHasDelegationRights(resp.data.HasDelegationRights);
+          setHasTeamRights(resp.data.HasTeamRights);
         })
         .catch(err => {
           console.error(err);
@@ -171,6 +173,24 @@ const Dashboard = (props) => {
                     <Card.Body>
                       <Card.Title>Aprobă delegări </Card.Title>
                       <Card.Text>Vizualizați și aprobați delegări pentru arbitri</Card.Text>
+                      <Button variant="primary" onClick={() => props.navigate('/approvedrafts')}>
+                        Vizualizare
+                  </Button>
+                    </Card.Body>
+                  </Card>
+                </div>
+              </Col>}
+
+            {hasApprovalRights &&
+              <Col>
+                <div className="personalized-card">
+                  <Card border="dark" style={{ width: '18rem' }}>
+                    <div className="avatar">
+                      <BoxArrowLeft />
+                    </div>
+                    <Card.Body>
+                      <Card.Title>Echipa mea </Card.Title>
+                      <Card.Text>Vizualizați și aprobați informații despre echipa dvs.</Card.Text>
                       <Button variant="primary" onClick={() => props.navigate('/approvedrafts')}>
                         Vizualizare
                   </Button>
