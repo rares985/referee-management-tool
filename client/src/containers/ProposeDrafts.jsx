@@ -19,34 +19,42 @@ const MatchTable = (props) => {
                     <th>Competitie <ArrowUpDown /></th>
                     <th>A1</th>
                     <th>A2</th>
+                    <th>Obs</th>
+                    <th>Locație </th>
                 </tr>
             </thead>
             <tbody>
                 {props.matches.map((match, idx) => {
-                    const d = new Date(match.matchday);
+                    const d = new Date(match.match_date);
                     const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
                     return (
                         <tr>
                             <td>
-                                {match.matchno}
+                                {match.match_no}
                             </td>
                             <td>
                                 {dstr}
                             </td>
                             <td>
-                                {match.TeamA}
+                                {match.team_a_name}
                             </td>
                             <td>
-                                {match.TeamB}
+                                {match.team_b_name}
                             </td>
                             <td>
-                                {match.Competitie}
+                                {match.competition}
+                            </td>
+                            <td>
+                                <Pencil />
                             </td>
                             <td>
                                 <Pencil />
                             </td>
                             <td>
                                 <Pencil />
+                            </td>
+                            <td>
+                                {match.location}
                             </td>
                         </tr>
                     )

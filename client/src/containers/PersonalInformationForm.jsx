@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, FormGroup, FormControl, FormLabel, Card, Spinner } from 'react-bootstrap';
-import {PersonBoundingBox} from '../components/Icons';
+import { PersonBoundingBox } from '../components/Icons';
 
 /* eslint-disable */
 const axios = require('axios').create({
@@ -15,7 +15,7 @@ const PersonalInformationForm = (props) => {
   const [birthDate, setBirthDate] = useState('');
   const [mobilePhone, setMobilePhone] = useState('');
   const [email, setEmail] = useState('');
-  const [isLoading , setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   /* Read-only, should not be modified by user */
   const [county, setCounty] = useState('');
@@ -34,14 +34,14 @@ const PersonalInformationForm = (props) => {
           (response) => {
             if (response.status === 200) {
               setIsLoading(false);
-              setAddress(response.data.Address);
-              setCategory(response.data.Category);
-              setEmail(response.data.Email);
-              setCounty(response.data.County);
-              setLot(response.data.Lot);
-              setLastName(response.data.LastName);
-              setFirstName(response.data.FirstName);
-              setMobilePhone(response.data.PhoneNumber);
+              setAddress(response.data.address);
+              setCategory(response.data.cat);
+              setEmail(response.data.email);
+              setCounty(response.data.jud);
+              setLot(response.data.lot);
+              setLastName(response.data.last_name);
+              setFirstName(response.data.first_name);
+              setMobilePhone(response.data.phone_number);
             }
           },
           (error) => {
@@ -90,8 +90,8 @@ const PersonalInformationForm = (props) => {
 
   return (
     <div className="page-container">
-      { isLoading && <Spinner animation="border" />}
-      { !isLoading && 
+      {isLoading && <Spinner animation="border" />}
+      {!isLoading &&
         <div className="login">
           <Card border="dark">
             <form onSubmit={handleSubmit}>
@@ -105,7 +105,7 @@ const PersonalInformationForm = (props) => {
                   type="text"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  />
+                />
               </FormGroup>
               <FormGroup controlId="first_name">
                 <FormLabel>Prenume</FormLabel>
@@ -123,7 +123,7 @@ const PersonalInformationForm = (props) => {
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  />
+                />
               </FormGroup>
               <FormGroup controlId="birth_date">
                 <FormLabel>Data nașterii</FormLabel>
@@ -132,7 +132,7 @@ const PersonalInformationForm = (props) => {
                   type="date"
                   value={birthDate}
                   onChange={(e) => setBirthDate(e.target.value)}
-                  />
+                />
               </FormGroup>
               <FormGroup controlId="mobile_phone">
                 <FormLabel>Număr telefon mobil</FormLabel>
@@ -142,7 +142,7 @@ const PersonalInformationForm = (props) => {
                   pattern="07[1-9][0-9][0-9]{6}"
                   value={mobilePhone}
                   onChange={(e) => setMobilePhone(e.target.value)}
-                  />
+                />
               </FormGroup>
               <FormGroup controlId="personal_email">
                 <FormLabel>Adresă e-mail</FormLabel>
@@ -151,7 +151,7 @@ const PersonalInformationForm = (props) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  />
+                />
               </FormGroup>
               <FormGroup controlId="category">
                 <FormLabel>Categorie</FormLabel>
@@ -184,7 +184,7 @@ const PersonalInformationForm = (props) => {
           </Card>
         </div>
       }
-      </div>
+    </div>
   );
 };
 

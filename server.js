@@ -239,7 +239,7 @@ app.get("/api/addUnavailable", withAuth, (req, res) => {
     res.status(400).send("Invalid params...");
   } else {
     console.log(`GET_UNAVAILABILITY_PERIOD: Got request: ${username}`);
-    var query = `[dbo].[GetUnavailabilityPeriods] @Username='${username}'`;
+    var query = `[dbo].[GetUnavailabilityPeriod] @Username='${username}'`;
     console.log(`Going to execute query ${query}`);
 
     let periods = [];
@@ -392,30 +392,58 @@ app.get("/api/userinfo", withAuth, (req, res) => {
   if (username === undefined) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
-    var query = `[dbo].[GetUserInfo] '${username}';`;
 
-    console.log(`Going to execute query ${query}`);
+    let user_rights = {
+      HasDelegationRights: false,
+      HasApprovalRights: false,
+      HasTeamRights: false
+    };
 
-    var userinfo;
-
-    var request = new Request(query, (err, rowCount) => {
+    var delegable_query = `[dbo].[GetDelegableCompetitions] ${username}`;
+    var delegable_request = new Request(delegable_query, (err, rowCount) => {
       if (err) {
         console.error(err);
-        res.status(400).send("Failed insert query");
+        res.status(400).send("Could not perform database query!");
       } else {
-        res.status(200).send(userinfo);
+        if (rowCount > 0) {
+          user_rights.HasDelegationRights = true;
+        }
+        res.status(200).send(user_rights);
       }
     });
 
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      userinfo = JSON.stringify(obj);
+    var approval_query = `[dbo].[GetApprovableCompetitions] ${username}`;
+    var approval_request = new Request(approval_query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Could not perform database query!");
+      } else {
+        if (rowCount > 0) {
+          user_rights.HasApprovalRights = true;
+        }
+        connection.execSql(delegable_request);
+      }
     });
 
-    connection.execSql(request);
+    var check_cja_query = `[dbo].[CheckIfCJAUser] ${username}`;
+    var check_cja_request = new Request(check_cja_query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Could not perform database query, please try again.");
+      } else {
+        if (rowCount > 0) {
+          user_rights.HasTeamRights = true;
+          user_rights.HasDelegationRights = true;
+          user_rights.HasApprovalRights = true;
+          res.status(200).send(user_rights);
+        } else {
+          connection.execSql(approval_request);
+        }
+      }
+    });
+
+    connection.execSql(check_cja_request);
+
   }
 });
 
