@@ -6,10 +6,11 @@ const axios = require('axios').create({
   baseURL: process.env.API_ENDPOINT
 });
 
+
 const HIDE_PASSWORD_DELAY_MS = 500;
 
 /* eslint-disable */
-const LoginStub = (props) => {
+const Login = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isMasked, setMasked] = useState(true);
@@ -104,4 +105,4 @@ const LoginStub = (props) => {
 };
 /* eslint-enable */
 
-export default LoginStub;
+export default Login;

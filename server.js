@@ -19,29 +19,6 @@ const expressStaticGzip = require("express-static-gzip");
 /* JWT secret */
 const secret = process.env.JWT_SECRET;
 
-const executeQuery = (query) => {
-  console.log(`Going to execute query ${query}`);
-  request = new Request(query, (err, rowCount) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(rowCount + "rows");
-    }
-  });
-
-  request.on("row", (cols) => {
-    cols.forEach((col) => {
-      if (col.value == null) {
-        console.log("NULL");
-      } else {
-        console.log(col.value);
-      }
-    });
-  });
-
-  connection.execSql(request);
-};
-
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -193,20 +170,13 @@ app.post("/api/personalInfo", (req, res) => {
   ) {
     res.status(401).send("Invalid parameters!");
   } else {
-    var query = `UPDATE [dbo].[SensitiveInfo]
-      SET FirstName = '${firstName}',
-      LastName = '${lastName}',
-      Address = '${address}',
-      PersonalEmail = '${email}',
-      PhoneNumber = '${mobilePhone}'
-    WHERE ID = (SELECT 
-                  SI.ID 
-                FROM[dbo].[User] U
-                INNER JOIN[dbo].[Referee] R
-                  ON R.UserID = U.ID
-                INNER JOIN[dbo].[SensitiveInfo] SI
-                  ON R.SensitiveInfoID = SI.ID
-                WHERE U.Username = '${username}');`;
+    var query = `[dbo].[UpdatePersonalInfo]
+      @Username = '${username}',
+      @FirstName = '${firstName}',
+      @LastName = '${lastName}',
+      @Address = '${address}',
+      @Email = '${email}',
+      @PhoneNumber = '${mobilePhone}'`;
 
     console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
@@ -393,11 +363,27 @@ app.get("/api/userinfo", (req, res) => {
     res.status(401).send("Invalid parameters for authentication");
   } else {
 
-    let user_rights = {
+    let user_info = {
+      userid: -1,
       HasDelegationRights: false,
       HasApprovalRights: false,
       HasTeamRights: false
     };
+
+    var id_query = `SELECT id from [user] WHERE username='${username}'`;
+    var id_request = new Request(id_query, (err, rowCount) => {
+      if (err) {
+        console.error(err);
+        res.status(400).send("Could not perform the database query!");
+      } else {
+        console.log('id_request OK');
+        res.status(200).send(user_info);
+      }
+    });
+
+    id_request.on("row", (cols) => {
+      user_info.userid = parseInt(cols[0].value);
+    });
 
     var delegable_query = `[dbo].[GetDelegableCompetitions] ${username}`;
     var delegable_request = new Request(delegable_query, (err, rowCount) => {
@@ -405,10 +391,11 @@ app.get("/api/userinfo", (req, res) => {
         console.error(err);
         res.status(400).send("Could not perform database query!");
       } else {
+        console.log('delegable_request OK');
         if (rowCount > 0) {
-          user_rights.HasDelegationRights = true;
+          user_info.HasDelegationRights = true;
         }
-        res.status(200).send(user_rights);
+        connection.execSql(id_request);
       }
     });
 
@@ -418,8 +405,9 @@ app.get("/api/userinfo", (req, res) => {
         console.error(err);
         res.status(400).send("Could not perform database query!");
       } else {
+        console.log('approval_request OK');
         if (rowCount > 0) {
-          user_rights.HasApprovalRights = true;
+          user_info.HasApprovalRights = true;
         }
         connection.execSql(delegable_request);
       }
@@ -431,20 +419,32 @@ app.get("/api/userinfo", (req, res) => {
         console.error(err);
         res.status(400).send("Could not perform database query, please try again.");
       } else {
+        console.log('check_cja_request OK');
         if (rowCount > 0) {
-          user_rights.HasTeamRights = true;
-          user_rights.HasDelegationRights = true;
-          user_rights.HasApprovalRights = true;
-          res.status(200).send(user_rights);
-        } else {
-          connection.execSql(approval_request);
+          user_info.HasTeamRights = true;
         }
+        connection.execSql(approval_request);
       }
     });
 
     connection.execSql(check_cja_request);
 
   }
+});
+
+
+app.post("/api/drafts", (req, res) => {
+
+  var base_query = `INSERT INTO delegation_draft(created_by, first_referee_id, second_referee_id, observer_id, match_id) VALUES`;
+  let value_rows = req.body.matches.map(draft =>
+    `(${draft.created_by}, ${draft.first_referee_id}, ${draft.second_referee_id}, ${draft.observer_id}, ${draft.match_id})`
+  );
+
+  var query = `${base_query} ${value_rows.join(',')};`;
+  console.log(query);
+
+  res.status(200).send("OK");
+
 });
 
 app.get("/api/shortlist", (req, res) => {
@@ -510,6 +510,32 @@ app.get("/api/eligiblefordelegable", (req, res) => {
   }
 
 
+})
+
+app.get("/api/publicmatches", (req, res) => {
+  console.log(`GET_PUBLIC_MATCHES: Got request`);
+
+  var query = `[dbo].[GetPublicMatches]`;
+  let matches = [];
+  var request = new Request(query, (err, rowCount) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send("Failed to query the database");
+    } else {
+      res.status(200).send(matches);
+    }
+  });
+
+  request.on("row", (cols) => {
+    let obj = {};
+    cols.forEach((col) => {
+      obj[col.metadata.colName] = col.value;
+    });
+    console.log(`Adding ${JSON.stringify(obj)}`);
+    matches.push(JSON.stringify(obj));
+  });
+
+  connection.execSql(request);
 })
 
 app.get("/api/delegablematches", (req, res) => {

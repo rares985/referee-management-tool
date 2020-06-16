@@ -49,6 +49,7 @@ const Dashboard = (props) => {
           setHasApprovalRights(resp.data.HasApprovalRights);
           setHasDelegationRights(resp.data.HasDelegationRights);
           setHasTeamRights(resp.data.HasTeamRights);
+          props.useridCB(resp.data.userid);
         })
         .catch(err => {
           console.error(err);
@@ -181,7 +182,7 @@ const Dashboard = (props) => {
                 </div>
               </Col>}
 
-            {hasApprovalRights &&
+            {hasTeamRights &&
               <Col>
                 <div className="personalized-card">
                   <Card border="dark" style={{ width: '18rem' }}>

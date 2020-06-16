@@ -24,7 +24,7 @@ module.exports = (env) => {
 
     /* Where the bundle.js file will be created */
     output: {
-      path: __dirname + '/dist',
+      path: __dirname + '/build',
       // publicPath: '/',
       filename: '[name].bundle.js',
     },
@@ -93,7 +93,7 @@ module.exports = (env) => {
       /**
         * All files inside webpack's output.path directory will be removed once, but the
         * directory itself will not be. If using webpack 4+'s default configuration,
-        * everything under <PROJECT_DIR>/dist/ will be removed.
+        * everything under <PROJECT_DIR>/build/ will be removed.
         * Use cleanOnceBeforeBuildPatterns to override this behavior.
         *
         * During rebuilds, all webpack assets that are not used anymore
@@ -107,7 +107,7 @@ module.exports = (env) => {
       new HtmlWebpackPlugin({
         /* Relative to output path: */
         // filename: 'index.html',
-        template: 'src/index.html',
+        template: 'public/index.html',
       }),
       new CompressionPlugin({
         filename: '[path].gz[query]',
