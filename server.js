@@ -170,20 +170,13 @@ app.post("/api/personalInfo", (req, res) => {
   ) {
     res.status(401).send("Invalid parameters!");
   } else {
-    var query = `UPDATE [dbo].[SensitiveInfo]
-      SET FirstName = '${firstName}',
-      LastName = '${lastName}',
-      Address = '${address}',
-      PersonalEmail = '${email}',
-      PhoneNumber = '${mobilePhone}'
-    WHERE ID = (SELECT 
-                  SI.ID 
-                FROM[dbo].[User] U
-                INNER JOIN[dbo].[Referee] R
-                  ON R.UserID = U.ID
-                INNER JOIN[dbo].[SensitiveInfo] SI
-                  ON R.SensitiveInfoID = SI.ID
-                WHERE U.Username = '${username}');`;
+    var query = `[dbo].[UpdatePersonalInfo]
+      @Username = '${username}',
+      @FirstName = '${firstName}',
+      @LastName = '${lastName}',
+      @Address = '${address}',
+      @Email = '${email}',
+      @PhoneNumber = '${mobilePhone}'`;
 
     console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
