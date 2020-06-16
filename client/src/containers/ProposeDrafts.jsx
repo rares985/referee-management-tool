@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Spinner, Modal, Button, ListGroup, Form } from 'react-bootstrap';
 import { Pencil, ArrowUpDown } from '../components/Icons';
-import { groupBy } from 'lodash';
+import { groupBy, filter } from 'lodash';
 
 const axios = require('axios').create({
     baseURL: process.env.API_ENDPOINT
@@ -12,6 +12,7 @@ const axios = require('axios').create({
 const ChooseRefereeModal = (props) => {
     const [show, setShow] = useState(false);
     const [chosen, setChosen] = useState({});
+    const [query, setQuery] = useState('');
 
     const handleClose = () => setShow(false);
     const handleSaveClose = () => {
@@ -21,8 +22,17 @@ const ChooseRefereeModal = (props) => {
 
     const handleShow = () => setShow(true);
 
+    const removeAccents = (str) => {
+        const accent_map = { 'a': 'ă|â', 'i': 'î', 's': 'ș', 't': 'ț' }
+        for (var pattern in accent_map) {
+            str = str.replace(new RegExp(accent_map[pattern], 'g'), pattern);
+        }
+        return str;
+    }
+
     let shortlist_match = props.shortlist[props.matchid];
     let refs = shortlist_match.map(elem => elem.referee);
+    const matching = filter(refs, elem => query === "" ? true : removeAccents(elem.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1);
 
     return (
         <>
@@ -35,9 +45,17 @@ const ChooseRefereeModal = (props) => {
                     <Modal.Title>Alege arbitru</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form.Control className="mb-3" type="text" placeholder="Cauta" />
+                    <Form.Control
+                        autoFocus
+                        className="mb-3"
+                        type="text"
+                        placeholder="Cauta arbitru..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                    />
                     <ListGroup>
-                        {refs.map((ref, idx) => {
+
+                        {matching.map((ref, idx) => {
                             return (
                                 <ListGroup.Item action onClick={() => setChosen(ref)}>
                                     {ref}
@@ -60,65 +78,67 @@ const ChooseRefereeModal = (props) => {
 
 }
 
-const parseMatches = (matches) => {
-    return matches.map(match => JSON.parse(match));
-}
-
 const ProposeDrafts = (props) => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [matches, setMatches] = useState([]);
-    const [delegated, setDelegated] = useState([]);
-    const [delegations, setDelegations] = useState([]);
-    const [shortlist, setShortlist] = useState([]);
+    const [state, setState] = useState({
+        isLoading: true,
+        matches: [],
+        shortlist: []
+    })
+    // const [delegated, setDelegated] = useState([]);
+    // const [delegations, setDelegations] = useState([]);
 
 
     useEffect(() => {
-        if (isLoading) {
+        if (state.isLoading) {
             axios
                 .get('/api/delegablematches', {
                     params: {
                         username: props.authenticatedUser
                     }
                 })
-                .then(
-                    (response) => {
-                        if (response.status === 200) {
-                            let matches = parseMatches(response.data);
-                            axios
-                                .get('/api/eligiblefordelegable', {
-                                    params: {
-                                        username: props.authenticatedUser
-                                    }
-                                })
-                                .then(
-                                    (response) => {
-                                        if (response.status === 200) {
-                                            let grouped = _.groupBy(response.data.map(elem => JSON.parse(elem)), elem => elem.id)
-                                            setShortlist(grouped);
-                                            setMatches(matches);
-                                            setIsLoading(false);
-                                        }
-                                    },
-                                    (error) => {
-                                        console.error(error);
-                                        setIsLoading(false);
-                                    }
-                                )
-                        }
-                    },
-                    (error) => {
-                        console.error(error);
-                        setIsLoading(false);
+                .then(response => {
+                    if (response.status === 200) {
+                        console.log(response);
+                        const matches = response.data.map(elem => JSON.parse(elem));
+                        axios
+                            .get('/api/eligiblefordelegable', {
+                                params: {
+                                    username: props.authenticatedUser
+                                }
+                            })
+                            .then(response => {
+                                if (response.status === 200) {
+                                    console.log(response);
+                                    const shortlist = groupBy(response.data.map(elem => JSON.parse(elem)), elem => elem.id);
+                                    setState({
+                                        isLoading: false,
+                                        matches: matches,
+                                        shortlist: shortlist
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error(error);
+                                setState({
+                                    isLoading: false
+                                });
+                            })
                     }
-                )
+                })
+                .catch(error => {
+                    console.error(error);
+                    setState({
+                        isLoading: false
+                    })
+                })
         }
     });
 
 
     return (
         <div className="page-container">
-            {isLoading && <Spinner animation="border" />}
-            {!isLoading && <Table striped bordered size="sm">
+            {state.isLoading && <Spinner animation="border" />}
+            {!state.isLoading && <Table striped bordered size="sm">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -133,7 +153,7 @@ const ProposeDrafts = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {matches.map((match, idx) => {
+                    {state.matches.map((match, idx) => {
                         const d = new Date(match.match_date);
                         const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
                         return (
@@ -154,13 +174,13 @@ const ProposeDrafts = (props) => {
                                     {match.competition}
                                 </td>
                                 <td>
-                                    <ChooseRefereeModal shortlist={shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
+                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
                                 </td>
                                 <td>
-                                    <ChooseRefereeModal shortlist={shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
+                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
                                 </td>
                                 <td>
-                                    <ChooseRefereeModal shortlist={shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
+                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
                                 </td>
                                 <td>
                                     {match.location}
