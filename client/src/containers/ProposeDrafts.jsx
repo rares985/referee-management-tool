@@ -8,6 +8,36 @@ const axios = require('axios').create({
     baseURL: process.env.API_ENDPOINT
 });
 
+const removeAccents = (str) => {
+    const accent_map = { 'a': 'ă|â', 'i': 'î', 's': 'ș', 't': 'ț' }
+    for (var pattern in accent_map) {
+        str = str.replace(new RegExp(accent_map[pattern], 'g'), pattern);
+    }
+    return str;
+}
+
+
+const addUpdateArray = (arr, matchid, key, value) => {
+    const idx = arr.findIndex(elem => elem.matchid === matchid);
+    let new_arr = [];
+    let new_elem = {};
+
+    if (idx !== -1) {
+        /* Yes, element already in array, just update specified key */
+        new_elem = { ...arr[idx] };
+        new_elem[key] = value;
+
+        new_arr = [...arr.slice(0, idx), new_elem, ...arr.slice(idx + 1, arr.length)];
+    } else {
+        /* No, element not in array */
+        new_elem["matchid"] = matchid;
+        new_elem[key] = value;
+        new_arr = [...arr, new_elem]
+    }
+    return new_arr;
+}
+
+
 
 const ChooseRefereeModal = (props) => {
     const [show, setShow] = useState(false);
@@ -16,23 +46,15 @@ const ChooseRefereeModal = (props) => {
 
     const handleClose = () => setShow(false);
     const handleSaveClose = () => {
-        props.onSaveCloseCB(chosen);
+        props.onSaveCloseCB(props.matchid, chosen);
         handleClose();
     }
 
     const handleShow = () => setShow(true);
 
-    const removeAccents = (str) => {
-        const accent_map = { 'a': 'ă|â', 'i': 'î', 's': 'ș', 't': 'ț' }
-        for (var pattern in accent_map) {
-            str = str.replace(new RegExp(accent_map[pattern], 'g'), pattern);
-        }
-        return str;
-    }
-
     let shortlist_match = props.shortlist[props.matchid];
-    let refs = shortlist_match.map(elem => elem.referee);
-    const matching = filter(refs, elem => query === "" ? true : removeAccents(elem.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1);
+    let refs = shortlist_match.map(elem => ({ "referee": elem.referee, "refid": elem.refid }));
+    const matching = filter(refs, elem => query === "" ? true : removeAccents(elem.referee.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1);
 
     return (
         <>
@@ -57,8 +79,8 @@ const ChooseRefereeModal = (props) => {
 
                         {matching.map((ref, idx) => {
                             return (
-                                <ListGroup.Item action onClick={() => setChosen(ref)}>
-                                    {ref}
+                                <ListGroup.Item key={ref.refid} action onClick={() => setChosen(ref)}>
+                                    {ref.referee}
                                 </ListGroup.Item>
                             );
                         })}
@@ -83,9 +105,9 @@ const ProposeDrafts = (props) => {
         isLoading: true,
         matches: [],
         shortlist: []
-    })
-    // const [delegated, setDelegated] = useState([]);
-    // const [delegations, setDelegations] = useState([]);
+    });
+    const [delegated, setDelegated] = useState([]);
+    const [delegations, setDelegations] = useState([]);
 
 
     useEffect(() => {
@@ -98,7 +120,6 @@ const ProposeDrafts = (props) => {
                 })
                 .then(response => {
                     if (response.status === 200) {
-                        console.log(response);
                         const matches = response.data.map(elem => JSON.parse(elem));
                         axios
                             .get('/api/eligiblefordelegable', {
@@ -108,7 +129,6 @@ const ProposeDrafts = (props) => {
                             })
                             .then(response => {
                                 if (response.status === 200) {
-                                    console.log(response);
                                     const shortlist = groupBy(response.data.map(elem => JSON.parse(elem)), elem => elem.id);
                                     setState({
                                         isLoading: false,
@@ -134,6 +154,35 @@ const ProposeDrafts = (props) => {
         }
     });
 
+    const OnRefSelectedA1 = (matchid, ref) => {
+        console.log(`Selected ${ref.referee} for ${matchid} as A1`);
+
+        const new_delegations = addUpdateArray(delegations, matchid, "a1", ref);
+        console.log(new_delegations);
+        setDelegations(new_delegations);
+    }
+    const OnRefSelectedA2 = (matchid, ref) => {
+        console.log(`Selected ${ref.referee} for ${matchid} as A2`);
+        const new_delegations = addUpdateArray(delegations, matchid, "a2", ref);
+        console.log(new_delegations);
+        setDelegations(new_delegations);
+    }
+    const OnRefSelectedObs = (matchid, ref) => {
+        console.log(`Selected ${ref.referee} for ${matchid} as Observer`);
+        const new_delegations = addUpdateArray(delegations, matchid, "Obs", ref);
+        console.log(new_delegations);
+        setDelegations(new_delegations);
+    }
+
+    const GetRefereeName = (matchid, pos) => {
+        const idx = delegations.findIndex(elem => elem.matchid === matchid);
+        if (idx !== -1) {
+            if (delegations[idx].hasOwnProperty(pos)) {
+                return delegations[idx][pos].referee;
+            }
+        }
+        return 'Arbitru nedelegat';
+    }
 
     return (
         <div className="page-container">
@@ -157,7 +206,7 @@ const ProposeDrafts = (props) => {
                         const d = new Date(match.match_date);
                         const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
                         return (
-                            <tr>
+                            <tr key={match.id}>
                                 <td>
                                     {match.match_no}
                                 </td>
@@ -174,13 +223,16 @@ const ProposeDrafts = (props) => {
                                     {match.competition}
                                 </td>
                                 <td>
-                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
+                                    {GetRefereeName(match.id, "a1")}
+                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={OnRefSelectedA1} />
                                 </td>
                                 <td>
-                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
+                                    {GetRefereeName(match.id, "a2")}
+                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={OnRefSelectedA2} />
                                 </td>
                                 <td>
-                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={(ref) => console.log(ref)} />
+                                    {GetRefereeName(match.id, "Obs")}
+                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={OnRefSelectedObs} />
                                 </td>
                                 <td>
                                     {match.location}
