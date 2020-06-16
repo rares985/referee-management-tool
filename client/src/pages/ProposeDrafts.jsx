@@ -155,22 +155,15 @@ const ProposeDrafts = (props) => {
     });
 
     const OnRefSelectedA1 = (matchid, ref) => {
-        console.log(`Selected ${ref.referee} for ${matchid} as A1`);
-
         const new_delegations = addUpdateArray(delegations, matchid, "a1", ref);
-        console.log(new_delegations);
         setDelegations(new_delegations);
     }
     const OnRefSelectedA2 = (matchid, ref) => {
-        console.log(`Selected ${ref.referee} for ${matchid} as A2`);
         const new_delegations = addUpdateArray(delegations, matchid, "a2", ref);
-        console.log(new_delegations);
         setDelegations(new_delegations);
     }
     const OnRefSelectedObs = (matchid, ref) => {
-        console.log(`Selected ${ref.referee} for ${matchid} as Observer`);
         const new_delegations = addUpdateArray(delegations, matchid, "Obs", ref);
-        console.log(new_delegations);
         setDelegations(new_delegations);
     }
 
@@ -182,6 +175,32 @@ const ProposeDrafts = (props) => {
             }
         }
         return 'Arbitru nedelegat';
+    }
+
+    const handleDelegationSubmit = (event) => {
+        event.preventDefault();
+        let formatted = delegations.map(elem => ({
+            "created_by": props.userid,
+            "first_referee_id": elem.a1.refid,
+            "second_referee_id": elem.a2.refid,
+            "observer_id": elem.Obs.refid,
+            "match_id": elem.matchid
+        }));
+
+        axios
+            .post("/api/drafts", {
+                matches: formatted
+            })
+            .then(response => {
+                if (response.status === 200) {
+                    console.log('OK, drafts posted');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+        console.log(formatted);
     }
 
     return (
@@ -242,6 +261,11 @@ const ProposeDrafts = (props) => {
                     })}
                 </tbody>
             </Table>}
+            {!state.isLoading &&
+                <Button onClick={handleDelegationSubmit}>
+                    Trimite pentru aprobare
+            </Button>
+            }
         </div>
     );
 }

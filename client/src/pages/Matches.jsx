@@ -80,11 +80,12 @@ const Matches = () => {
                             <th>Obs</th>
                         </tr>
                     </thead>
+                    <tbody>
                     {matches.map((match) => {
                         const dt = new Date(match.match_date);
                         const dtstr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
                         return (
-                            <tbody>
+                            <tr>
                                 <td>
                                     {match.match_no}
                                 </td>
@@ -109,9 +110,10 @@ const Matches = () => {
                                 <td>
                                     null
                                     </td>
-                            </tbody>
+                            </tr>
                         );
                     })}
+                    </tbody>
                 </Table>
             }
             <DummyTable />

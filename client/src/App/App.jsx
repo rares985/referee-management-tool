@@ -2,21 +2,22 @@ import React, { useState } from 'react';
 import { Router, navigate } from '@reach/router';
 import ResponsiveNavigation from '../components/ResponsiveNavigation';
 import logo from '../assets/frv_logo_no_bg.png';
-import Home from '../containers/Home';
-import Matches from '../containers/Matches';
-import LoginStub from '../containers/LoginStub';
-import Dashboard from '../containers/Dashboard';
-import PersonalInformationForm from '../containers/PersonalInformationForm';
-import PersonalMatchHistory from '../containers/PersonalMatchHistory';
-import CalendarPicker from '../containers/CalendarPicker';
-import ProposeDrafts from '../containers/ProposeDrafts';
-import ApproveDrafts from '../containers/ApproveDrafts';
+import Home from '../pages/Home';
+import Matches from '../pages/Matches';
+import Login from '../pages/Login';
+import Dashboard from '../pages/Dashboard';
+import PersonalInformationForm from '../pages/PersonalInformationForm';
+import PersonalMatchHistory from '../pages/PersonalMatchHistory';
+import CalendarPicker from '../pages/CalendarPicker';
+import ProposeDrafts from '../pages/ProposeDrafts';
+import ApproveDrafts from '../pages/ApproveDrafts';
 import WithAuth from '../components/withAuth';
 /* eslint-disable */
 
 const App = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [authenticatedUser, setAuthenticatedUser] = useState('');
+  const [userId, setUserId] = useState(-1);
   const guestLinks = [
     {
       text: 'Home',
@@ -64,8 +65,8 @@ const App = () => {
       <Router>
         <Home path="/" />
         <Matches path="/matches" />
-        {!loggedIn && <LoginStub path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
-        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} authenticatedUser={authenticatedUser} userCallback={setAuthenticatedUser} navigate={navigate} />}
+        {!loggedIn && <Login path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
+        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} authenticatedUser={authenticatedUser} userCallback={setAuthenticatedUser} useridCB={setUserId} navigate={navigate} />}
         {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
         <PersonalInformationForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} />
         {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
@@ -73,9 +74,9 @@ const App = () => {
         {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
         <CalendarPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} />
         {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <ApproveDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
+        <ApproveDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} userid={userId} navigate={navigate} />
         {/* <PrpsDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <ProposeDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} navigate={navigate} />
+        <ProposeDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} userid={userId} navigate={navigate} />
       </Router>
     </div>
   );
