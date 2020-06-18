@@ -6,7 +6,7 @@ import { Table, Spinner, Modal, Button, ListGroup, Form } from 'react-bootstrap'
 import { Pencil, ArrowUpDown } from '../components/Icons';
 import { groupBy, filter } from 'lodash';
 
-import { FetchDelegableMatches, FetchEligibleRefs } from '../actions/index';
+import { FetchDelegableMatches, FetchEligibleRefs } from '../actions/ProposeDraftsActions';
 
 
 const mapStateToProps = (state) => ({

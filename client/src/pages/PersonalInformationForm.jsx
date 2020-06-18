@@ -1,12 +1,29 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+
 import { Button, FormGroup, FormControl, FormLabel, Card, Spinner } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
-/* eslint-disable */
+import FetchPersonalInfo from '../actions/PersonalInfoActions';
+
+// eslint-disable-next-line no-unused-vars
 const axios = require('axios').create({
   baseURL: process.env.API_ENDPOINT
 });
 
+const mapStateToProps = (state) => ({
+  user: state.login.logged_user,
+  info: state.personal.info,
+  loading: state.personal.loading,
+  error: state.personal.error
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  doFetchPersonalInfo: (request) => {
+    dispatch(FetchPersonalInfo(request));
+  }
+});
 
 const PersonalInformationForm = (props) => {
   const [firstName, setFirstName] = useState('');
@@ -15,39 +32,25 @@ const PersonalInformationForm = (props) => {
   const [birthDate, setBirthDate] = useState('');
   const [mobilePhone, setMobilePhone] = useState('');
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
 
   /* Read-only, should not be modified by user */
+  // eslint-disable-next-line no-unused-vars
   const [county, setCounty] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [category, setCategory] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [lot, setLot] = useState('');
 
+  // eslint-disable-next-line no-unused-vars
+  const { user, info, loading, error } = props;
+
   useEffect(() => {
-    if (isLoading) {
-      axios
-        .get('/api/personalInfo', {
-          params: {
-            username: props.authenticatedUser,
-          }
-        })
-        .then(
-          (response) => {
-            if (response.status === 200) {
-              setIsLoading(false);
-              setAddress(response.data.address);
-              setCategory(response.data.cat);
-              setEmail(response.data.email);
-              setCounty(response.data.jud);
-              setLot(response.data.lot);
-              setLastName(response.data.last_name);
-              setFirstName(response.data.first_name);
-              setMobilePhone(response.data.phone_number);
-            }
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+    // eslint-disable-next-line react/prop-types
+    const { doFetchPersonalInfo } = props;
+    if (loading) {
+      doFetchPersonalInfo({
+        username: user
+      });
     }
   });
 
@@ -65,22 +68,22 @@ const PersonalInformationForm = (props) => {
     console.log('Submitted');
     axios
       .post('/api/personalInfo', {
-        username: props.authenticatedUser,
-        address: address,
-        firstName: firstName,
-        lastName: lastName,
-        mobilePhone: mobilePhone,
-        email: email
+        username: user,
+        address,
+        firstName,
+        lastName,
+        mobilePhone,
+        email,
       })
       .then(
         (response) => {
-          if (response.status == 200) {
-            console.log(`Updated information in database for user ${username}`);
+          if (response.status === 200) {
+            console.log(`Updated information in database for user ${user}`);
           }
         },
-        (error) => {
-          if (error.response) {
-            if (error.response.status === 401) {
+        (err) => {
+          if (err.response) {
+            if (err.response.status === 401) {
               alert("Invalid params...");
             }
           }
@@ -88,10 +91,12 @@ const PersonalInformationForm = (props) => {
       );
   };
 
+  console.log(info);
+
   return (
     <div className="page-container">
-      {isLoading && <Spinner animation="border" />}
-      {!isLoading &&
+      {loading && <Spinner animation="border" />}
+      {!loading &&
         <div className="login">
           <Card border="dark">
             <form onSubmit={handleSubmit}>
@@ -103,7 +108,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  value={lastName}
+                  value={lastName === '' ? info.last_name : lastName}
                   onChange={(e) => setLastName(e.target.value)}
                 />
               </FormGroup>
@@ -112,7 +117,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  value={firstName}
+                  value={firstName === '' ? info.first_name : firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </FormGroup>
@@ -121,7 +126,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  value={address}
+                  value={address === '' ? info.address : address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </FormGroup>
@@ -140,7 +145,7 @@ const PersonalInformationForm = (props) => {
                   autoFocus
                   type="tel"
                   pattern="07[1-9][0-9][0-9]{6}"
-                  value={mobilePhone}
+                  value={mobilePhone === '' ? info.phone_number : mobilePhone}
                   onChange={(e) => setMobilePhone(e.target.value)}
                 />
               </FormGroup>
@@ -149,7 +154,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="email"
-                  value={email}
+                  value={email === '' ? info.email : email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormGroup>
@@ -158,7 +163,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={category}
+                  defaultValue={info.category}
                   readOnly />
               </FormGroup>
               <FormGroup controlId="lot">
@@ -166,7 +171,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={lot}
+                  defaultValue={info.lot}
                   readOnly />
               </FormGroup>
               <FormGroup controlId="county">
@@ -174,7 +179,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={county}
+                  defaultValue={info.county}
                   readOnly />
               </FormGroup>
               <Button block disabled={!validateForm()} type="submit">
@@ -190,4 +195,9 @@ const PersonalInformationForm = (props) => {
 
 /* eslint-enable */
 
-export default PersonalInformationForm;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PersonalInformationForm);
+
+/* eslint-enable */

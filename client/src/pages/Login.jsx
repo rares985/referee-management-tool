@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
 import { EyeOpenIcon, EyeClosedIcon, LockIcon } from '../components/Icons';
 
-import { LoginAction } from '../actions/index';
+import LoginAction from '../actions/LoginAction';
 
 const HIDE_PASSWORD_DELAY_MS = 500;
 

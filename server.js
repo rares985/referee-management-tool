@@ -145,8 +145,7 @@ app.get("/api/personalInfo", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      console.log(`Sending ${JSON.stringify(obj)}`);
-      res.status(200).send(JSON.stringify(obj));
+      res.status(200).send(obj);
     });
 
     connection.execSql(request);
@@ -357,7 +356,7 @@ app.get("/api/matchHistory", (req, res) => {
 
 app.get("/api/userinfo", (req, res) => {
   const username = req.query.username;
-  console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
+  console.log(`USER_INFO: Got request: ${username}`);
 
   if (username === undefined) {
     res.status(401).send("Invalid parameters for authentication");

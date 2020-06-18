@@ -2,7 +2,7 @@ import { Table, Spinner } from 'react-bootstrap';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { FetchMatches } from '../actions/index';
+import { FetchMatches } from '../actions/MatchesActions';
 
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
@@ -64,9 +64,7 @@ const Matches = (props) => {
     const { matches, loading, error } = props;
 
     useEffect(() => {
-        console.log(`Loading is ${loading}`);
         if (loading) {
-            console.log("Dispatching...");
             doFetchMatches();
         }
     });
@@ -128,12 +126,6 @@ const Matches = (props) => {
         </div >
     );
 };
-
-Matches.defaultProps = {
-    matches: [],
-    loading: true,
-    error: false
-}
 
 export default connect(
     mapStateToProps,
