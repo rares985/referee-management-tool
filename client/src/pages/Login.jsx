@@ -10,9 +10,9 @@ const HIDE_PASSWORD_DELAY_MS = 500;
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 const mapStateToProps = (state) => ({
-  logged_user: state.loginPage.logged_user,
-  loading: state.loginPage.loading,
-  error: state.loginPage.error
+  logged_user: state.login.logged_user,
+  loading: state.login.loading,
+  error: state.login.error
 });
 
 const mapDispatchToProps = (dispatch) => ({

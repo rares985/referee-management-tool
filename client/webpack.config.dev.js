@@ -7,7 +7,7 @@ module.exports = {
 
   /* Where the bundle.js file will be created */
   output: {
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './build'),
     // publicPath: '/',
     filename: 'bundle.js',
   },
@@ -55,14 +55,14 @@ module.exports = {
   ],
   devServer: {
     inline: true,
-    contentBase: 'dist/',
+    contentBase: 'build/',
     proxy: {
       '/api/*': 'http://localhost:5001'
     },
     headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-        "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
     },
     disableHostCheck: true,
     open: 'chrome',

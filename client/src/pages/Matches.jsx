@@ -7,9 +7,9 @@ import { FetchMatches } from '../actions/index';
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 const mapStateToProps = (state) => ({
-    matches: state.matchesPage.matches,
-    loading: state.matchesPage.loading,
-    error: state.matchesPage.error
+    matches: state.matches.matches,
+    loading: state.matches.loading,
+    error: state.matches.error
 });
 
 const mapDispatchToProps = (dispatch) => ({
