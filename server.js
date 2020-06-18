@@ -502,8 +502,7 @@ app.get("/api/eligiblefordelegable", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      console.log(`Adding ${JSON.stringify(obj)}`);
-      shortlist.push(JSON.stringify(obj));
+      shortlist.push(obj);
     });
 
     connection.execSql(request);
@@ -566,8 +565,7 @@ app.get("/api/delegablematches", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      console.log(`Adding ${JSON.stringify(obj)}`);
-      matches.push(JSON.stringify(obj));
+      matches.push(obj);
     });
 
     connection.execSql(request);

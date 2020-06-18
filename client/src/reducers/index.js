@@ -4,7 +4,13 @@ import {
   LOGIN_FAILURE,
   FETCH_MATCHES_BEGIN,
   FETCH_MATCHES_SUCCESS,
-  FETCH_MATCHES_FAILURE
+  FETCH_MATCHES_FAILURE,
+  FETCH_DELEGABLE_MATCHES_BEGIN,
+  FETCH_DELEGABLE_MATCHES_SUCCESS,
+  FETCH_DELEGABLE_MATCHES_FAILURE,
+  FETCH_ELIGIBLE_REFS_BEGIN,
+  FETCH_ELIGIBLE_REFS_SUCCESS,
+  FETCH_ELIGIBLE_REFS_FAILURE,
 } from '../constants/action-types';
 
 const initialState = {
@@ -17,7 +23,14 @@ const initialState = {
     logged_user: '',
     loading: false, // only loads on submit
     error: null
-  }
+  },
+  draftsPage: {
+    matches: [],
+    shortlist: [],
+    matchesLoading: true,
+    shortlistLoading: false,
+    error: null
+  },
 }
 
 const rootReducer = (state = initialState, action) => {
@@ -69,6 +82,70 @@ const rootReducer = (state = initialState, action) => {
         matchesPage: {
           ...state.matchesPage,
           loading: false,
+          error: action.payload.error,
+        }
+      };
+
+    case FETCH_DELEGABLE_MATCHES_BEGIN:
+      return {
+        ...state,
+        draftsPage: {
+          ...state.draftsPage,
+          matchesLoading: true,
+          shortlistLoading: false,
+          error: null,
+        }
+      };
+    case FETCH_DELEGABLE_MATCHES_SUCCESS:
+      return {
+        ...state,
+        draftsPage: {
+          ...state.draftsPage,
+          matchesLoading: false,
+          shortlistLoading: true,
+          error: null,
+          matches: action.payload.matches,
+        }
+
+      };
+    case FETCH_DELEGABLE_MATCHES_FAILURE:
+      return {
+        ...state,
+        draftsPage: {
+          ...state.draftsPage,
+          matchesLoading: false,
+          shortlistLoading: true,
+          error: action.payload.error,
+        }
+
+      };
+    case FETCH_ELIGIBLE_REFS_BEGIN:
+      return {
+        ...state,
+        draftsPage: {
+          ...state.draftsPage,
+          shortlistLoading: true,
+          error: null,
+        }
+
+      };
+    case FETCH_ELIGIBLE_REFS_SUCCESS:
+      return {
+        ...state,
+        draftsPage: {
+          ...state.draftsPage,
+          shortlistLoading: false,
+          error: null,
+          shortlist: action.payload.shortlist
+        }
+
+      };
+    case FETCH_ELIGIBLE_REFS_FAILURE:
+      return {
+        ...state,
+        draftsPage: {
+          ...state.draftsPage,
+          shortlistLoading: false,
           error: action.payload.error,
         }
       };
