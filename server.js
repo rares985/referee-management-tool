@@ -364,9 +364,9 @@ app.get("/api/userinfo", (req, res) => {
 
     let user_info = {
       userid: -1,
-      HasDelegationRights: false,
-      HasApprovalRights: false,
-      HasTeamRights: false
+      delegation: false,
+      approval: false,
+      team: false
     };
 
     var id_query = `SELECT id from [user] WHERE username='${username}'`;
@@ -392,7 +392,7 @@ app.get("/api/userinfo", (req, res) => {
       } else {
         console.log('delegable_request OK');
         if (rowCount > 0) {
-          user_info.HasDelegationRights = true;
+          user_info.delegation = true;
         }
         connection.execSql(id_request);
       }
@@ -406,7 +406,7 @@ app.get("/api/userinfo", (req, res) => {
       } else {
         console.log('approval_request OK');
         if (rowCount > 0) {
-          user_info.HasApprovalRights = true;
+          user_info.approval = true;
         }
         connection.execSql(delegable_request);
       }
@@ -420,7 +420,7 @@ app.get("/api/userinfo", (req, res) => {
       } else {
         console.log('check_cja_request OK');
         if (rowCount > 0) {
-          user_info.HasTeamRights = true;
+          user_info.team = true;
         }
         connection.execSql(approval_request);
       }

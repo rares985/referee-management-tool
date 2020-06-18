@@ -193,11 +193,8 @@ const PersonalInformationForm = (props) => {
   );
 };
 
-/* eslint-enable */
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(PersonalInformationForm);
 
-/* eslint-enable */

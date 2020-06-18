@@ -1,59 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
+
+/* eslint-disable react/prop-types */
+
 import { Card, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
-import { Clock, PersonBoundingBox, Calendar, BoxArrowLeft, getIcon } from '../components/Icons';
+import { Clock, PersonBoundingBox, Calendar, BoxArrowLeft } from '../components/Icons';
+
+import FetchUserRights from '../actions/DashboardActions';
 
 const axios = require('axios').create({
   baseURL: process.env.API_ENDPOINT
 });
 
-/* eslint-disable */
+const mapStateToProps = (state) => ({
+  user: state.login.logged_user,
+  rights: state.user.rights,
+  loading: state.user.loading,
+  error: state.user.error
+});
 
-const DashboardLink = (props) => {
-  return (
-    <div className="personalized-card">
-      <Card border="dark" style={{ width: '18rem' }}>
-        <div className="avatar">
-          {getIcon(props.iconName)}
-        </div>
-        <Card.Body>
-          <Card.Title>{props.cardTitle}</Card.Title>
-          <Card.Text>{props.cardText}</Card.Text>
-          <Button variant="primary" onClick={() => props.cardButtonAction()}>
-            {props.buttonText}
-          </Button>
-        </Card.Body>
-      </Card>
-    </div>
-  );
-}
+const mapDispatchToProps = (dispatch) => ({
+  doFetchUserRights: (request) => {
+    dispatch(FetchUserRights(request));
+  }
+});
 
 
 
 const Dashboard = (props) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasDelegationRights, setHasDelegationRights] = useState(false);
-  const [hasApprovalRights, setHasApprovalRights] = useState(false);
-  const [hasTeamRights, setHasTeamRights] = useState(false);
+
+  // eslint-disable-next-line no-unused-vars
+  const { user, rights, loading, error } = props;
 
   useEffect(() => {
-    if (isLoading) {
-      axios
-        .get('/api/userinfo', {
-          params: {
-            username: props.authenticatedUser
-          }
-        })
-        .then(resp => {
-          console.log(resp);
-          setIsLoading(false);
-          setHasApprovalRights(resp.data.HasApprovalRights);
-          setHasDelegationRights(resp.data.HasDelegationRights);
-          setHasTeamRights(resp.data.HasTeamRights);
-          props.useridCB(resp.data.userid);
-        })
-        .catch(err => {
-          console.error(err);
-        });
+    const { doFetchUserRights } = props;
+    if (loading) {
+      doFetchUserRights({
+        username: user
+      });
     }
   });
 
@@ -74,8 +58,8 @@ const Dashboard = (props) => {
 
   return (
     <div className="page-container" >
-      {isLoading && <Spinner animation="border" />}
-      {!isLoading &&
+      {loading && <Spinner animation="border" />}
+      {!loading &&
         <Container>
           <Row xs={1} md={2} lg={3}>
             <Col>
@@ -146,7 +130,7 @@ const Dashboard = (props) => {
               </div>
             </Col>
 
-            {hasDelegationRights &&
+            {rights.delegation &&
               <Col>
                 <div className="personalized-card">
                   <Card border="dark" style={{ width: '18rem' }}>
@@ -164,7 +148,7 @@ const Dashboard = (props) => {
                 </div>
               </Col>}
 
-            {hasApprovalRights &&
+            {rights.approval &&
               <Col>
                 <div className="personalized-card">
                   <Card border="dark" style={{ width: '18rem' }}>
@@ -182,7 +166,7 @@ const Dashboard = (props) => {
                 </div>
               </Col>}
 
-            {hasTeamRights &&
+            {rights.team &&
               <Col>
                 <div className="personalized-card">
                   <Card border="dark" style={{ width: '18rem' }}>
@@ -206,6 +190,7 @@ const Dashboard = (props) => {
   );
 };
 
-/* eslint-enable */
-
-export default Dashboard;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Dashboard);

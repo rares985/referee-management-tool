@@ -3,6 +3,7 @@ import draftsReducer from './draftsReducer';
 import loginReducer from './loginReducer';
 import matchesReducer from './matchesReducer';
 import personalInfoReducer from './personalInfoReducer';
+import dashboardReducer from './dashboardReducer';
 
 
 export default combineReducers({
@@ -10,4 +11,5 @@ export default combineReducers({
   drafts: draftsReducer,
   login: loginReducer,
   personal: personalInfoReducer,
+  user: dashboardReducer,
 });
