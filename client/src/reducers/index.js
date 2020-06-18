@@ -14,8 +14,8 @@ const initialState = {
     error: null
   },
   loginPage: {
-    matches: [],
-    loading: true,
+    logged_user: '',
+    loading: false, // only loads on submit
     error: null
   }
 }
@@ -24,15 +24,27 @@ const rootReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_BEGIN:
       return {
-        ...state
+        ...state,
+        loading: true,
+        error: null
       };
     case LOGIN_SUCCESS:
       return {
-        ...state
+        ...state,
+        loginPage: {
+          logged_user: action.payload.username,
+          loading: false,
+          error: null
+        }
       };
     case LOGIN_FAILURE:
       return {
-        ...state
+        ...state,
+        loginPage: {
+          ...state.loginPage,
+          loading: false,
+          error: action.payload.error
+        }
       };
     case FETCH_MATCHES_BEGIN:
       return {
