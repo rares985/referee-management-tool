@@ -10,12 +10,12 @@ import { FetchDelegableMatches, FetchEligibleRefs } from '../actions/index';
 
 
 const mapStateToProps = (state) => ({
-    user: state.loginPage.logged_user,
-    matches: state.draftsPage.matches,
-    shortlist: state.draftsPage.shortlist,
-    matchesLoading: state.draftsPage.matchesLoading,
-    shortlistLoading: state.draftsPage.shortlistLoading,
-    error: state.draftsPage.error
+    user: state.login.logged_user,
+    matches: state.drafts.matches,
+    shortlist: state.drafts.shortlist,
+    matchesLoading: state.drafts.matchesLoading,
+    shortlistLoading: state.drafts.shortlistLoading,
+    error: state.drafts.error
 });
 
 const mapDispatchToProps = (dispatch) => ({
