@@ -522,6 +522,8 @@ app.get("/api/publicmatches", (req, res) => {
       console.error(err);
       res.status(400).send("Failed to query the database");
     } else {
+      console.log('Sending...');
+      console.log(matches);
       res.status(200).send(matches);
     }
   });
@@ -531,8 +533,7 @@ app.get("/api/publicmatches", (req, res) => {
     cols.forEach((col) => {
       obj[col.metadata.colName] = col.value;
     });
-    console.log(`Adding ${JSON.stringify(obj)}`);
-    matches.push(JSON.stringify(obj));
+    matches.push(obj);
   });
 
   connection.execSql(request);
