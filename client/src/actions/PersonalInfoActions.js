@@ -2,6 +2,9 @@ import {
   FETCH_PERSONAL_INFO_BEGIN,
   FETCH_PERSONAL_INFO_SUCCESS,
   FETCH_PERSONAL_INFO_FAILURE,
+  UPDATE_PERSONAL_INFO_BEGIN,
+  UPDATE_PERSONAL_INFO_SUCCESS,
+  UPDATE_PERSONAL_INFO_FAILURE
 } from '../constants/action-types';
 
 const axios = require('axios').create({
@@ -27,10 +30,9 @@ const PersonalInfoFailure = (error) => ({
   }
 });
 
-const FetchPersonalInfo = (request) => {
+export const FetchPersonalInfo = (request) => {
   const GetRequest = { params: request };
   return (dispatch) => {
-    console.log('Yess');
     dispatch(PersonalInfoBegin());
     axios
       .get('/api/personalInfo', GetRequest)
@@ -43,4 +45,34 @@ const FetchPersonalInfo = (request) => {
   };
 };
 
-export default FetchPersonalInfo;
+const UpdatePersonalInfoBegin = () => ({
+  type: UPDATE_PERSONAL_INFO_BEGIN
+});
+
+const UpdatePersonalInfoSuccess = (info) => ({
+  type: UPDATE_PERSONAL_INFO_SUCCESS,
+  payload: {
+    info
+  }
+});
+
+const UpdatePersonalInfoFailure = (error) => ({
+  type: UPDATE_PERSONAL_INFO_FAILURE,
+  payload: {
+    error
+  }
+});
+
+export const UpdatePersonalInfo = (request) => {
+  return (dispatch) => {
+    dispatch(UpdatePersonalInfoBegin());
+    axios
+      .post('/api/personalInfo', request)
+      .then(res => {
+        dispatch(UpdatePersonalInfoSuccess(res));
+      })
+      .catch(err => {
+        dispatch(UpdatePersonalInfoFailure(err.error));
+      })
+  }
+}

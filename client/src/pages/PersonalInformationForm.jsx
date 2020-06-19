@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Button, FormGroup, FormControl, FormLabel, Card, Spinner } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
-import FetchPersonalInfo from '../actions/PersonalInfoActions';
+import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
 
 // eslint-disable-next-line no-unused-vars
 const axios = require('axios').create({
@@ -22,6 +22,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   doFetchPersonalInfo: (request) => {
     dispatch(FetchPersonalInfo(request));
+  },
+  doUpdatePersonalInfo: (request) => {
+    dispatch(UpdatePersonalInfo(request));
   }
 });
 
@@ -42,56 +45,45 @@ const PersonalInformationForm = (props) => {
   const [lot, setLot] = useState('');
 
   // eslint-disable-next-line no-unused-vars
-  const { user, info, loading, error } = props;
+  const { user, info, loading, updated, error } = props;
+  const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
 
   useEffect(() => {
     // eslint-disable-next-line react/prop-types
-    const { doFetchPersonalInfo } = props;
     if (loading) {
       doFetchPersonalInfo({
         username: user
       });
+    } else {
+      /* Loading has finished, update local state */
+      setFirstName(info.first_name);
+      setLastName(info.last_name);
+      setAddress(info.address);
+      setMobilePhone(info.phone_number);
+      setEmail(info.email);
+      setCounty(info.county);
+      setCategory(info.category);
+      setLot(info.lot);
     }
-  });
+  }, [loading]);
 
   const validateForm = () => {
-    return (
-      firstName.length > 0 &&
-      lastName.length > 0 &&
-      address.length > 0 &&
-      mobilePhone.length > 0 &&
-      email.length > 0
-    );
+    return true;
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Submitted');
-    axios
-      .post('/api/personalInfo', {
-        username: user,
-        address,
-        firstName,
-        lastName,
-        mobilePhone,
-        email,
-      })
-      .then(
-        (response) => {
-          if (response.status === 200) {
-            console.log(`Updated information in database for user ${user}`);
-          }
-        },
-        (err) => {
-          if (err.response) {
-            if (err.response.status === 401) {
-              alert("Invalid params...");
-            }
-          }
-        }
-      );
-  };
 
-  console.log(info);
+    const request = {
+      username: user,
+      address,
+      firstName,
+      lastName,
+      mobilePhone,
+      email,
+    };
+    console.log(request);
+    doUpdatePersonalInfo(request);
+  };
 
   return (
     <div className="page-container">
@@ -108,7 +100,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  value={lastName === '' ? info.last_name : lastName}
+                  value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                 />
               </FormGroup>
@@ -117,7 +109,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  value={firstName === '' ? info.first_name : firstName}
+                  value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </FormGroup>
@@ -126,7 +118,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  value={address === '' ? info.address : address}
+                  value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </FormGroup>
@@ -145,7 +137,7 @@ const PersonalInformationForm = (props) => {
                   autoFocus
                   type="tel"
                   pattern="07[1-9][0-9][0-9]{6}"
-                  value={mobilePhone === '' ? info.phone_number : mobilePhone}
+                  value={mobilePhone}
                   onChange={(e) => setMobilePhone(e.target.value)}
                 />
               </FormGroup>
@@ -163,7 +155,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={info.category}
+                  defaultValue={category}
                   readOnly />
               </FormGroup>
               <FormGroup controlId="lot">
@@ -171,7 +163,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={info.lot}
+                  defaultValue={lot}
                   readOnly />
               </FormGroup>
               <FormGroup controlId="county">
@@ -179,7 +171,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={info.county}
+                  defaultValue={county}
                   readOnly />
               </FormGroup>
               <Button block disabled={!validateForm()} type="submit">

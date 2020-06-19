@@ -183,19 +183,9 @@ app.post("/api/personalInfo", (req, res) => {
         console.error(err);
         res.status(400).send("User information not in database!");
       } else {
-        console.log(`Got ${rowCount} rows`);
+        res.status(200).send("Success!");
       }
     });
-
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      console.log(`Sending ${JSON.stringify(obj)}`);
-      res.status(200).send(JSON.stringify(obj));
-    });
-
     connection.execSql(request);
   }
 });

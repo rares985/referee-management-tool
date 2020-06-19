@@ -37,9 +37,6 @@ export const FetchDelegableMatches = (request) => {
 
     axios.get('/api/delegablematches', GetRequest)
       .then(res => {
-        console.log('FetchDelegable');
-        console.log(res);
-        console.log(res.data);
         dispatch(FetchDelegableMatchesSuccess(res.data));
       })
       .catch(err => {
@@ -75,9 +72,6 @@ export const FetchEligibleRefs = (request) => {
 
     axios.get('/api/eligiblefordelegable', GetRequest)
       .then(res => {
-        console.log('eligiblefordelegable');
-        console.log(res);
-        console.log(res.data);
         dispatch(FetchEligibleRefsSuccess(res.data));
       })
       .catch(err => {
