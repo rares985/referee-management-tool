@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import draftsReducer from './draftsReducer';
+import delegateReducer from './delegateReducer';
 import loginReducer from './loginReducer';
 import matchesReducer from './matchesReducer';
 import personalInfoReducer from './personalInfoReducer';
@@ -9,7 +9,7 @@ import unavailabilityPeriodsReducer from './unavailabilityPeriodsReducer';
 
 export default combineReducers({
   matches: matchesReducer,
-  drafts: draftsReducer,
+  delegate: delegateReducer,
   login: loginReducer,
   personal: personalInfoReducer,
   user: dashboardReducer,

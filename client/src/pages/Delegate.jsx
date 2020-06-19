@@ -6,17 +6,26 @@ import { Table, Spinner, Modal, Button, ListGroup, Form } from 'react-bootstrap'
 import { Pencil, ArrowUpDown } from '../components/Icons';
 import { groupBy, filter } from 'lodash';
 
-import { FetchDelegableMatches, FetchEligibleRefs } from '../actions/ProposeDraftsActions';
+import { FetchDelegableMatches, FetchEligibleRefs, FetchProposedDrafts, FetchRejectedDrafts } from '../actions/DelegateActions';
 
 
 const mapStateToProps = (state) => ({
     user: state.login.user,
-    matches: state.drafts.matches,
-    shortlist: state.drafts.shortlist,
-    matchesLoading: state.drafts.matchesLoading,
-    shortlistLoading: state.drafts.shortlistLoading,
-    error: state.drafts.error
+
+    delegableMatches: state.drafts.delegable.matches,
+    delegableMatchesLoading: state.drafts.delegable.matchesLoading,
+
+    delegableMatchesShortlist: state.drafts.delegable.shortlist,
+    delegableMatchesShortlistLoading: state.drafts.delegable.shortlistLoading,
+
+    proposedDrafts: state.drafts.proposedDrafts,
+    proposedDraftsLoading: state.drafts.proposedDraftsLoading,
+    rejectedDrafts: state.drafts.rejectedDrafts,
+    rejectedDraftsLoading: state.drafts.rejectedDraftsLoading,
+    rejectedDraftsShortlistLoading: state.drafts.rejectedDraftsShortlistLoading,
+    error: state.drafts.error,
 });
+
 
 const mapDispatchToProps = (dispatch) => ({
     doFetchDelegableMatches: (request) => {
@@ -25,6 +34,12 @@ const mapDispatchToProps = (dispatch) => ({
     doFetchEligibleRefs: (request) => {
         dispatch(FetchEligibleRefs(request));
     },
+    doFetchProposedDrafts: (request) => {
+        dispatch(FetchProposedDrafts(request));
+    },
+    doFetchRejectedDrafts: (request) => {
+        dispatch(FetchRejectedDrafts(request));
+    }
 });
 
 const removeAccents = (str) => {
@@ -119,7 +134,7 @@ const ChooseRefereeModal = (props) => {
 
 }
 
-const ProposeDrafts = (props) => {
+const Delegate = (props) => {
     const [delegated, setDelegated] = useState([]);
     const [delegations, setDelegations] = useState([]);
 
@@ -127,7 +142,7 @@ const ProposeDrafts = (props) => {
 
 
     useEffect(() => {
-        const { doFetchDelegableMatches, doFetchEligibleRefs } = props;
+        const { doFetchDelegableMatches, doFetchEligibleRefs, doFetchProposedDrafts, doFetchRejectedDrafts } = props;
         if (matchesLoading && user !== '') {
             doFetchDelegableMatches({
                 username: user
@@ -192,6 +207,10 @@ const ProposeDrafts = (props) => {
     const shortlist_by_id = groupBy(shortlist, elem => elem.id);
     return (
         <div className="page-container">
+            <h1> Meciuri delegabile</h1>
+            {delegableMatchesLoading && <Spinner animation="border" />}
+            <h1> Propuneri trimise spre aprobare</h1>
+            <h1> Propuneri respinse </h1>
             {matchesLoading && <Spinner animation="border" />}
             {!matchesLoading && <Table striped bordered size="sm">
                 <thead>
@@ -266,4 +285,4 @@ const ProposeDrafts = (props) => {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(ProposeDrafts);
+)(Delegate);

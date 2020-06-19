@@ -135,7 +135,7 @@ const Dashboard = (props) => {
                     <Card.Body>
                       <Card.Title>Delegare </Card.Title>
                       <Card.Text>Propuneți arbitri pentru delegare</Card.Text>
-                      <Button variant="primary" onClick={() => props.navigate('/proposedrafts')}>
+                      <Button variant="primary" onClick={() => props.navigate('/delegate')}>
                         Delegă
                   </Button>
                     </Card.Body>
