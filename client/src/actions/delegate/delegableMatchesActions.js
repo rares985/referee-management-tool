@@ -5,13 +5,7 @@ import {
   FETCH_ELIGIBLE_REFS_BEGIN,
   FETCH_ELIGIBLE_REFS_SUCCESS,
   FETCH_ELIGIBLE_REFS_FAILURE,
-  FETCH_PROPOSED_DRAFTS_BEGIN,
-  FETCH_PROPOSED_DRAFTS_SUCCESS,
-  FETCH_PROPOSED_DRAFTS_FAILURE,
-  FETCH_REJECTED_DRAFTS_BEGIN,
-  FETCH_REJECTED_DRAFTS_SUCCESS,
-  FETCH_REJECTED_DRAFTS_FAILURE,
-} from '../constants/action-types';
+} from '../../constants/action-types';
 
 const axios = require('axios').create({
   baseURL: process.env.API_ENDPOINT
@@ -86,70 +80,6 @@ export const FetchEligibleRefs = (request) => {
   }
 };
 
-const FetchProposedDraftsBegin = () => ({
-  type: FETCH_PROPOSED_DRAFTS_BEGIN,
-});
 
-const FetchProposedDraftsSuccess = (proposedDrafts) => ({
-  type: FETCH_PROPOSED_DRAFTS_SUCCESS,
-  payload: {
-    proposedDrafts
-  }
-});
 
-const FetchProposedDraftsFailure = (error) => ({
-  type: FETCH_PROPOSED_DRAFTS_FAILURE,
-  payload: {
-    error
-  }
-});
 
-export const FetchProposedDrafts = (request) => {
-  const GetRequest = { params: request };
-  return (dispatch) => {
-    dispatch(FetchProposedDraftsBegin());
-
-    axios
-      .get('/api/proposed', GetRequest)
-      .then(res => {
-        dispatch(FetchProposedDraftsSuccess(res.data));
-      })
-      .catch(err => {
-        dispatch(FetchProposedDraftsFailure(err.error));
-      })
-  }
-}
-
-const FetchRejectedDraftsBegin = () => ({
-  type: FETCH_REJECTED_DRAFTS_BEGIN,
-});
-
-const FetchRejectedDraftsSuccess = (rejectedDrafts) => ({
-  type: FETCH_REJECTED_DRAFTS_SUCCESS,
-  payload: {
-    rejectedDrafts
-  }
-});
-
-const FetchRejectedDraftsFailure = (error) => ({
-  type: FETCH_REJECTED_DRAFTS_FAILURE,
-  payload: {
-    error
-  }
-});
-
-export const FetchRejectedDrafts = (request) => {
-  const GetRequest = { params: request };
-  return (dispatch) => {
-    dispatch(FetchRejectedDraftsBegin());
-
-    axios
-      .get('/api/rejected', GetRequest)
-      .then(res => {
-        dispatch(FetchRejectedDraftsSuccess(res.data));
-      })
-      .catch(err => {
-        dispatch(FetchRejectedDraftsFailure(err.error));
-      })
-  }
-}
