@@ -145,8 +145,7 @@ app.get("/api/personalInfo", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      console.log(`Sending ${JSON.stringify(obj)}`);
-      res.status(200).send(JSON.stringify(obj));
+      res.status(200).send(obj);
     });
 
     connection.execSql(request);
@@ -184,25 +183,15 @@ app.post("/api/personalInfo", (req, res) => {
         console.error(err);
         res.status(400).send("User information not in database!");
       } else {
-        console.log(`Got ${rowCount} rows`);
+        res.status(200).send("Success!");
       }
     });
-
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      console.log(`Sending ${JSON.stringify(obj)}`);
-      res.status(200).send(JSON.stringify(obj));
-    });
-
     connection.execSql(request);
   }
 });
 
 /* GET UNAVAILABILITY PERIODS */
-app.get("/api/addUnavailable", (req, res) => {
+app.get("/api/unavailabilityPeriods", (req, res) => {
   const username = req.query.username;
 
   if (username === undefined) {
@@ -236,7 +225,7 @@ app.get("/api/addUnavailable", (req, res) => {
 });
 
 /* ADD UNAVAILABILITY PERIOD */
-app.post("/api/addUnavailable", (req, res) => {
+app.post("/api/unavailabilityPeriods", (req, res) => {
   const { username, startDate, endDate } = req.body;
 
   if (username === undefined || startDate === undefined || endDate === undefined) {
@@ -357,7 +346,7 @@ app.get("/api/matchHistory", (req, res) => {
 
 app.get("/api/userinfo", (req, res) => {
   const username = req.query.username;
-  console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
+  console.log(`USER_INFO: Got request: ${username}`);
 
   if (username === undefined) {
     res.status(401).send("Invalid parameters for authentication");
@@ -365,9 +354,9 @@ app.get("/api/userinfo", (req, res) => {
 
     let user_info = {
       userid: -1,
-      HasDelegationRights: false,
-      HasApprovalRights: false,
-      HasTeamRights: false
+      delegation: false,
+      approval: false,
+      team: false
     };
 
     var id_query = `SELECT id from [user] WHERE username='${username}'`;
@@ -393,7 +382,7 @@ app.get("/api/userinfo", (req, res) => {
       } else {
         console.log('delegable_request OK');
         if (rowCount > 0) {
-          user_info.HasDelegationRights = true;
+          user_info.delegation = true;
         }
         connection.execSql(id_request);
       }
@@ -407,7 +396,7 @@ app.get("/api/userinfo", (req, res) => {
       } else {
         console.log('approval_request OK');
         if (rowCount > 0) {
-          user_info.HasApprovalRights = true;
+          user_info.approval = true;
         }
         connection.execSql(delegable_request);
       }
@@ -421,7 +410,7 @@ app.get("/api/userinfo", (req, res) => {
       } else {
         console.log('check_cja_request OK');
         if (rowCount > 0) {
-          user_info.HasTeamRights = true;
+          user_info.team = true;
         }
         connection.execSql(approval_request);
       }
@@ -502,8 +491,7 @@ app.get("/api/eligiblefordelegable", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      console.log(`Adding ${JSON.stringify(obj)}`);
-      shortlist.push(JSON.stringify(obj));
+      shortlist.push(obj);
     });
 
     connection.execSql(request);
@@ -522,6 +510,8 @@ app.get("/api/publicmatches", (req, res) => {
       console.error(err);
       res.status(400).send("Failed to query the database");
     } else {
+      console.log('Sending...');
+      console.log(matches);
       res.status(200).send(matches);
     }
   });
@@ -531,8 +521,7 @@ app.get("/api/publicmatches", (req, res) => {
     cols.forEach((col) => {
       obj[col.metadata.colName] = col.value;
     });
-    console.log(`Adding ${JSON.stringify(obj)}`);
-    matches.push(JSON.stringify(obj));
+    matches.push(obj);
   });
 
   connection.execSql(request);
@@ -565,8 +554,7 @@ app.get("/api/delegablematches", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      console.log(`Adding ${JSON.stringify(obj)}`);
-      matches.push(JSON.stringify(obj));
+      matches.push(obj);
     });
 
     connection.execSql(request);

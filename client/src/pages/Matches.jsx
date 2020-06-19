@@ -1,8 +1,21 @@
 import { Table, Spinner } from 'react-bootstrap';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 
-const axios = require('axios').create({
-    baseURL: process.env.API_ENDPOINT
+import { FetchMatches } from '../actions/MatchesActions';
+
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+const mapStateToProps = (state) => ({
+    matches: state.matches.matches,
+    loading: state.matches.loading,
+    error: state.matches.error
+});
+
+const mapDispatchToProps = (dispatch) => ({
+    onFetchMatches: (request) => {
+        dispatch(FetchMatches(request));
+    }
 });
 
 const DummyTable = () => {
@@ -40,33 +53,26 @@ const DummyTable = () => {
 }
 
 
-const Matches = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    const [matches, setMatches] = useState([]);
+const Matches = (props) => {
+
+    const doFetchMatches = () => {
+        const request = { msg: "Dispatched ON_FETCH_MATCHES" };
+        const { onFetchMatches } = props;
+        onFetchMatches(request);
+    };
+
+    const { matches, loading, error } = props;
 
     useEffect(() => {
-        if (isLoading) {
-            axios
-                .get('/api/publicmatches')
-                .then(
-                    (response) => {
-                        setMatches(response.data.map(elem => JSON.parse(elem)));
-                        setIsLoading(false);
-                    },
-                    (error) => {
-                        /* eslint-disable no-console */
-                        console.error(error);
-                        /* eslint-enable no-console */
-                        setIsLoading(false);
-                    }
-                );
+        if (loading) {
+            doFetchMatches();
         }
     });
 
     return (
         <div className="page-container">
-            {isLoading && <Spinner animation="border" />}
-            {!isLoading &&
+            {loading && <Spinner animation="border" />}
+            {!loading &&
                 <Table striped bordered size="sm">
                     <thead>
                         <tr>
@@ -81,38 +87,38 @@ const Matches = () => {
                         </tr>
                     </thead>
                     <tbody>
-                    {matches.map((match) => {
-                        const dt = new Date(match.match_date);
-                        const dtstr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
-                        return (
-                            <tr>
-                                <td>
-                                    {match.match_no}
-                                </td>
-                                <td>
-                                    {dtstr}
-                                </td>
-                                <td>
-                                    {match.team_a_name}
-                                </td>
-                                <td>
-                                    {match.team_b_name}
-                                </td>
-                                <td>
-                                    {match.location}
-                                </td>
-                                <td>
-                                    null
+                        {matches.map((match) => {
+                            const dt = new Date(match.match_date);
+                            const dtstr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
+                            return (
+                                <tr>
+                                    <td>
+                                        {match.match_no}
                                     </td>
-                                <td>
-                                    null
+                                    <td>
+                                        {dtstr}
                                     </td>
-                                <td>
-                                    null
+                                    <td>
+                                        {match.team_a_name}
                                     </td>
-                            </tr>
-                        );
-                    })}
+                                    <td>
+                                        {match.team_b_name}
+                                    </td>
+                                    <td>
+                                        {match.location}
+                                    </td>
+                                    <td>
+                                        null
+                                    </td>
+                                    <td>
+                                        null
+                                    </td>
+                                    <td>
+                                        null
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </Table>
             }
@@ -121,4 +127,10 @@ const Matches = () => {
     );
 };
 
-export default Matches;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Matches);
+
+/* eslint-enable react/prop-types */
+/* eslint-enable no-unused-vars */

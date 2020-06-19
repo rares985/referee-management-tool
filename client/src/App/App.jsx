@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Router, navigate } from '@reach/router';
+import { connect } from 'react-redux';
 import ResponsiveNavigation from '../components/ResponsiveNavigation';
 import logo from '../assets/frv_logo_no_bg.png';
 import Home from '../pages/Home';
@@ -9,15 +10,18 @@ import Dashboard from '../pages/Dashboard';
 import PersonalInformationForm from '../pages/PersonalInformationForm';
 import PersonalMatchHistory from '../pages/PersonalMatchHistory';
 import CalendarPicker from '../pages/CalendarPicker';
-import ProposeDrafts from '../pages/ProposeDrafts';
+import Delegate from '../pages/Delegate';
 import ApproveDrafts from '../pages/ApproveDrafts';
 import WithAuth from '../components/withAuth';
 /* eslint-disable */
 
-const App = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [authenticatedUser, setAuthenticatedUser] = useState('');
-  const [userId, setUserId] = useState(-1);
+const mapStateToProps = (state) => ({
+  user: state.login.user,
+  finished: state.login.finished,
+});
+
+
+const App = (props) => {
   const guestLinks = [
     {
       text: 'Home',
@@ -50,36 +54,44 @@ const App = () => {
   const PersMatchHist = WithAuth(PersonalMatchHistory);
   const CalndPicker = WithAuth(CalendarPicker);
   const ApprvDrafts = WithAuth(ApproveDrafts);
-  const PrpsDrafts = WithAuth(ProposeDrafts);
+  const Dlgt = WithAuth(Delegate);
+
+  const { user, finished } = props;
+
+  useEffect(() => {
+    if (finished) {
+      navigate("/account");
+    }
+  }, [finished]);
 
   return (
     <div className="app">
       <ResponsiveNavigation
-        navLinks={loggedIn ? userLinks : guestLinks}
+        navLinks={(user !== '') ? userLinks : guestLinks}
         background="#000000"
         hoverBackground="#ddd"
         linkColor="#777"
         logo={logo}
       />
-      <h4>Logat ca {authenticatedUser}</h4>
+      <h4>Logat ca {user}</h4>
       <Router>
         <Home path="/" />
         <Matches path="/matches" />
-        {!loggedIn && <Login path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
-        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} authenticatedUser={authenticatedUser} userCallback={setAuthenticatedUser} useridCB={setUserId} navigate={navigate} />}
+        {(user === '') && <Login path="/login" navigate={navigate} />}
+        {(user !== '') && <Dashboard path="/account" navigate={navigate} />}
         {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <PersonalInformationForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} />
+        <PersonalInformationForm path="/updateinfo" navigate={navigate} />
         {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <PersonalMatchHistory path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} />
+        <PersonalMatchHistory path="/viewhistory" authenticatedUser={user} navigate={navigate} />
         {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <CalendarPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} />
+        <CalendarPicker path="/addunavailable" navigate={navigate} />
         {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <ApproveDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} userid={userId} navigate={navigate} />
-        {/* <PrpsDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <ProposeDrafts path="/proposedrafts" authenticatedUser={authenticatedUser} userid={userId} navigate={navigate} />
+        <ApproveDrafts path="/approvedrafts" navigate={navigate} />
+        {/* <PrpsDrafts path="/delegate" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+        <Delegate path="/delegate" navigate={navigate} />
       </Router>
     </div>
   );
 };
 
-export default App;
+export default connect(mapStateToProps)(App);

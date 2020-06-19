@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
 import { EyeOpenIcon, EyeClosedIcon, LockIcon } from '../components/Icons';
 
-const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
-});
-
+import LoginAction from '../actions/LoginAction';
 
 const HIDE_PASSWORD_DELAY_MS = 500;
+
+const mapStateToProps = (state) => ({
+  user: state.login.user,
+  finished: state.login.finished,
+  loading: state.login.loading,
+  error: state.login.error
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  onSubmitLoginRequest: (request) => {
+    dispatch(LoginAction(request));
+  }
+});
 
 /* eslint-disable */
 const Login = (props) => {
@@ -19,42 +30,28 @@ const Login = (props) => {
     return username.length > 0 && password.length > 0;
   }
 
+  const { navigate, user, finished, loading, error } = props;
+
   function handleSubmit(event) {
     event.preventDefault();
 
-    axios
-      .post('/api/authenticate', {
-        username: username,
-        password: password,
-      })
-      .then(
-        (response) => {
-          if (response.status == 200) {
-            console.log(`Setting user to ${username}`);
-            props.userCallback(username);
-            props.loginCallback(true);
-            props.navigate('/account');
-          }
-        },
-        (error) => {
-          if (error.response) {
-            if (error.response.status === 401) {
-              alert('Login failure. Please try again');
-            }
-          }
-        }
-      );
+    const { onSubmitLoginRequest } = props;
+
+    onSubmitLoginRequest({
+      username: username,
+      password: password
+    });
   }
-
-
 
   const EyeIcon = (props) => {
     if (props.isMasked) return <EyeClosedIcon />;
     return <EyeOpenIcon />;
   };
 
+
   return (
-    <div className="page-container">
+
+    < div className="page-container" >
       <div className="login">
         <h3> Autentificare </h3>
         <Card>
@@ -100,9 +97,12 @@ const Login = (props) => {
           </form>
         </Card>
       </div>
-    </div>
+    </div >
   );
 };
 /* eslint-enable */
 
-export default Login;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);

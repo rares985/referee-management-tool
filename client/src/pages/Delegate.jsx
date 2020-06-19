@@ -1,11 +1,45 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+
 import { Table, Spinner, Modal, Button, ListGroup, Form } from 'react-bootstrap';
 import { Pencil, ArrowUpDown } from '../components/Icons';
 import { groupBy, filter } from 'lodash';
 
-const axios = require('axios').create({
-    baseURL: process.env.API_ENDPOINT
+import { FetchDelegableMatches, FetchEligibleRefs, FetchProposedDrafts, FetchRejectedDrafts } from '../actions/DelegateActions';
+
+
+const mapStateToProps = (state) => ({
+    user: state.login.user,
+
+    delegableMatches: state.drafts.delegable.matches,
+    delegableMatchesLoading: state.drafts.delegable.matchesLoading,
+
+    delegableMatchesShortlist: state.drafts.delegable.shortlist,
+    delegableMatchesShortlistLoading: state.drafts.delegable.shortlistLoading,
+
+    proposedDrafts: state.drafts.proposedDrafts,
+    proposedDraftsLoading: state.drafts.proposedDraftsLoading,
+    rejectedDrafts: state.drafts.rejectedDrafts,
+    rejectedDraftsLoading: state.drafts.rejectedDraftsLoading,
+    rejectedDraftsShortlistLoading: state.drafts.rejectedDraftsShortlistLoading,
+    error: state.drafts.error,
+});
+
+
+const mapDispatchToProps = (dispatch) => ({
+    doFetchDelegableMatches: (request) => {
+        dispatch(FetchDelegableMatches(request));
+    },
+    doFetchEligibleRefs: (request) => {
+        dispatch(FetchEligibleRefs(request));
+    },
+    doFetchProposedDrafts: (request) => {
+        dispatch(FetchProposedDrafts(request));
+    },
+    doFetchRejectedDrafts: (request) => {
+        dispatch(FetchRejectedDrafts(request));
+    }
 });
 
 const removeAccents = (str) => {
@@ -100,57 +134,24 @@ const ChooseRefereeModal = (props) => {
 
 }
 
-const ProposeDrafts = (props) => {
-    const [state, setState] = useState({
-        isLoading: true,
-        matches: [],
-        shortlist: []
-    });
+const Delegate = (props) => {
     const [delegated, setDelegated] = useState([]);
     const [delegations, setDelegations] = useState([]);
 
+    const { user, matches, shortlist, matchesLoading, shortlistLoading, error } = props;
+
 
     useEffect(() => {
-        if (state.isLoading) {
-            axios
-                .get('/api/delegablematches', {
-                    params: {
-                        username: props.authenticatedUser
-                    }
-                })
-                .then(response => {
-                    if (response.status === 200) {
-                        const matches = response.data.map(elem => JSON.parse(elem));
-                        axios
-                            .get('/api/eligiblefordelegable', {
-                                params: {
-                                    username: props.authenticatedUser
-                                }
-                            })
-                            .then(response => {
-                                if (response.status === 200) {
-                                    const shortlist = groupBy(response.data.map(elem => JSON.parse(elem)), elem => elem.id);
-                                    setState({
-                                        isLoading: false,
-                                        matches: matches,
-                                        shortlist: shortlist
-                                    });
-                                }
-                            })
-                            .catch(error => {
-                                console.error(error);
-                                setState({
-                                    isLoading: false
-                                });
-                            })
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    setState({
-                        isLoading: false
-                    })
-                })
+        const { doFetchDelegableMatches, doFetchEligibleRefs, doFetchProposedDrafts, doFetchRejectedDrafts } = props;
+        if (matchesLoading && user !== '') {
+            doFetchDelegableMatches({
+                username: user
+            })
+        }
+        if (shortlistLoading) {
+            doFetchEligibleRefs({
+                username: user
+            })
         }
     });
 
@@ -187,26 +188,31 @@ const ProposeDrafts = (props) => {
             "match_id": elem.matchid
         }));
 
-        axios
-            .post("/api/drafts", {
-                matches: formatted
-            })
-            .then(response => {
-                if (response.status === 200) {
-                    console.log('OK, drafts posted');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-            });
+        // axios
+        //     .post("/api/drafts", {
+        //         matches: formatted
+        //     })
+        //     .then(response => {
+        //         if (response.status === 200) {
+        //             console.log('OK, drafts posted');
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.error(err);
+        //     });
 
         console.log(formatted);
     }
 
+    const shortlist_by_id = groupBy(shortlist, elem => elem.id);
     return (
         <div className="page-container">
-            {state.isLoading && <Spinner animation="border" />}
-            {!state.isLoading && <Table striped bordered size="sm">
+            <h1> Meciuri delegabile</h1>
+            {delegableMatchesLoading && <Spinner animation="border" />}
+            <h1> Propuneri trimise spre aprobare</h1>
+            <h1> Propuneri respinse </h1>
+            {matchesLoading && <Spinner animation="border" />}
+            {!matchesLoading && <Table striped bordered size="sm">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -221,7 +227,7 @@ const ProposeDrafts = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {state.matches.map((match, idx) => {
+                    {matches.map((match, idx) => {
                         const d = new Date(match.match_date);
                         const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
                         return (
@@ -243,15 +249,21 @@ const ProposeDrafts = (props) => {
                                 </td>
                                 <td>
                                     {GetRefereeName(match.id, "a1")}
-                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={OnRefSelectedA1} />
+                                    {!shortlistLoading &&
+                                        <ChooseRefereeModal shortlist={shortlist_by_id} matchid={match.id} onSaveCloseCB={OnRefSelectedA1} />
+                                    }
                                 </td>
                                 <td>
                                     {GetRefereeName(match.id, "a2")}
-                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={OnRefSelectedA2} />
+                                    {!shortlistLoading &&
+                                        <ChooseRefereeModal shortlist={shortlist_by_id} matchid={match.id} onSaveCloseCB={OnRefSelectedA2} />
+                                    }
                                 </td>
                                 <td>
                                     {GetRefereeName(match.id, "Obs")}
-                                    <ChooseRefereeModal shortlist={state.shortlist} matchid={match.id} onSaveCloseCB={OnRefSelectedObs} />
+                                    {!shortlistLoading &&
+                                        <ChooseRefereeModal shortlist={shortlist_by_id} matchid={match.id} onSaveCloseCB={OnRefSelectedObs} />
+                                    }
                                 </td>
                                 <td>
                                     {match.location}
@@ -261,7 +273,7 @@ const ProposeDrafts = (props) => {
                     })}
                 </tbody>
             </Table>}
-            {!state.isLoading &&
+            {!matchesLoading &&
                 <Button onClick={handleDelegationSubmit}>
                     Trimite pentru aprobare
             </Button>
@@ -270,4 +282,7 @@ const ProposeDrafts = (props) => {
     );
 }
 /* eslint-enable */
-export default ProposeDrafts;
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(Delegate);
