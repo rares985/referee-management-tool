@@ -1,9 +1,6 @@
 import React from 'react';
 
 /* eslint-disable */
-const axios = require('axios').create({
-    baseURL: process.env.API_ENDPOINT
-});
 
 const ApproveDrafts = (props) => {
     return (

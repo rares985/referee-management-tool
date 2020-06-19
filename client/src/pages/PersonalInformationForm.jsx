@@ -1,12 +1,32 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+
 import { Button, FormGroup, FormControl, FormLabel, Card, Spinner } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
-/* eslint-disable */
+import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
+
+// eslint-disable-next-line no-unused-vars
 const axios = require('axios').create({
   baseURL: process.env.API_ENDPOINT
 });
 
+const mapStateToProps = (state) => ({
+  user: state.login.user,
+  info: state.personal.info,
+  loading: state.personal.loading,
+  error: state.personal.error
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  doFetchPersonalInfo: (request) => {
+    dispatch(FetchPersonalInfo(request));
+  },
+  doUpdatePersonalInfo: (request) => {
+    dispatch(UpdatePersonalInfo(request));
+  }
+});
 
 const PersonalInformationForm = (props) => {
   const [firstName, setFirstName] = useState('');
@@ -15,83 +35,60 @@ const PersonalInformationForm = (props) => {
   const [birthDate, setBirthDate] = useState('');
   const [mobilePhone, setMobilePhone] = useState('');
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
 
   /* Read-only, should not be modified by user */
+  // eslint-disable-next-line no-unused-vars
   const [county, setCounty] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [category, setCategory] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [lot, setLot] = useState('');
 
+  // eslint-disable-next-line no-unused-vars
+  const { user, info, loading, updated, error } = props;
+  const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
+
   useEffect(() => {
-    if (isLoading) {
-      axios
-        .get('/api/personalInfo', {
-          params: {
-            username: props.authenticatedUser,
-          }
-        })
-        .then(
-          (response) => {
-            if (response.status === 200) {
-              setIsLoading(false);
-              setAddress(response.data.address);
-              setCategory(response.data.cat);
-              setEmail(response.data.email);
-              setCounty(response.data.jud);
-              setLot(response.data.lot);
-              setLastName(response.data.last_name);
-              setFirstName(response.data.first_name);
-              setMobilePhone(response.data.phone_number);
-            }
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+    // eslint-disable-next-line react/prop-types
+    if (loading) {
+      doFetchPersonalInfo({
+        username: user
+      });
+    } else {
+      /* Loading has finished, update local state */
+      setFirstName(info.first_name);
+      setLastName(info.last_name);
+      setAddress(info.address);
+      setMobilePhone(info.phone_number);
+      setEmail(info.email);
+      setCounty(info.county);
+      setCategory(info.category);
+      setLot(info.lot);
     }
-  });
+  }, [loading]);
 
   const validateForm = () => {
-    return (
-      firstName.length > 0 &&
-      lastName.length > 0 &&
-      address.length > 0 &&
-      mobilePhone.length > 0 &&
-      email.length > 0
-    );
+    return true;
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log('Submitted');
-    axios
-      .post('/api/personalInfo', {
-        username: props.authenticatedUser,
-        address: address,
-        firstName: firstName,
-        lastName: lastName,
-        mobilePhone: mobilePhone,
-        email: email
-      })
-      .then(
-        (response) => {
-          if (response.status == 200) {
-            console.log(`Updated information in database for user ${username}`);
-          }
-        },
-        (error) => {
-          if (error.response) {
-            if (error.response.status === 401) {
-              alert("Invalid params...");
-            }
-          }
-        }
-      );
+
+    const request = {
+      username: user,
+      address,
+      firstName,
+      lastName,
+      mobilePhone,
+      email,
+    };
+    console.log(request);
+    doUpdatePersonalInfo(request);
   };
 
   return (
     <div className="page-container">
-      {isLoading && <Spinner animation="border" />}
-      {!isLoading &&
+      {loading && <Spinner animation="border" />}
+      {!loading &&
         <div className="login">
           <Card border="dark">
             <form onSubmit={handleSubmit}>
@@ -149,7 +146,7 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="email"
-                  value={email}
+                  value={email === '' ? info.email : email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormGroup>
@@ -188,6 +185,8 @@ const PersonalInformationForm = (props) => {
   );
 };
 
-/* eslint-enable */
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PersonalInformationForm);
 
-export default PersonalInformationForm;
