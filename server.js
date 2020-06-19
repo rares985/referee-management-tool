@@ -201,7 +201,7 @@ app.post("/api/personalInfo", (req, res) => {
 });
 
 /* GET UNAVAILABILITY PERIODS */
-app.get("/api/addUnavailable", (req, res) => {
+app.get("/api/unavailabilityPeriods", (req, res) => {
   const username = req.query.username;
 
   if (username === undefined) {
@@ -235,7 +235,7 @@ app.get("/api/addUnavailable", (req, res) => {
 });
 
 /* ADD UNAVAILABILITY PERIOD */
-app.post("/api/addUnavailable", (req, res) => {
+app.post("/api/unavailabilityPeriods", (req, res) => {
   const { username, startDate, endDate } = req.body;
 
   if (username === undefined || startDate === undefined || endDate === undefined) {

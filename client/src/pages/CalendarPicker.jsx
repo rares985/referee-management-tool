@@ -1,9 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Button, FormGroup, FormControl, FormLabel, Table, Spinner } from 'react-bootstrap';
 import { XIcon } from '../components/Icons';
+import FetchUnavailabilityPeriods from '../actions/UnavailabilityPeriodActions';
 
-const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
+const mapStateToProps = (state) => ({
+  user: state.login.logged_user,
+  confirmedDates: state.unavailabilityPeriods.confirmedDates,
+  loading: state.unavailabilityPeriods.loading,
+  error: state.unavailabilityPeriods.error,
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  doFetchUnavailabilityPeriods: (request) => {
+    dispatch(FetchUnavailabilityPeriods(request));
+  }
 });
 
 const dateConverter = (date) => {
@@ -49,9 +60,9 @@ const UnavailableDatesTable = (props) => {
 const CalendarPicker = (props) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [isLoading, setIsLoading] = useState(true);
 
-  const [confirmedUnavailabilityDates, setConfirmedUnavailabilityDates] = useState([]);
+  const { user, confirmedDates, loading, error } = props;
+
   const [newUnavailabilityDates, setNewUnavailabilityDates] = useState([]);
 
   const validateForm = () => {
@@ -61,25 +72,11 @@ const CalendarPicker = (props) => {
 
 
   useEffect(() => {
-    if (isLoading) {
-      axios
-        .get('/api/addUnavailable', {
-          params: {
-            username: props.authenticatedUser
-          }
-        })
-        .then(
-          (response) => {
-            if (response.status === 200) {
-              setIsLoading(false);
-              setConfirmedUnavailabilityDates(response.data);
-              console.log('OK!');
-            }
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+    const { doFetchUnavailabilityPeriods } = props;
+    if (loading) {
+      doFetchUnavailabilityPeriods({
+        username: user
+      });
     }
   });
 
@@ -96,12 +93,12 @@ const CalendarPicker = (props) => {
 
   return (
     <div className="page-container">
-      {isLoading && <Spinner animation="border" />}
+      {loading && <Spinner animation="border" />}
       <h2>Perioade de indisponibilitate deja confirmate</h2>
-      {!isLoading && <UnavailableDatesTable dates={confirmedUnavailabilityDates} />}
+      {!loading && <UnavailableDatesTable dates={confirmedDates} />}
       <h2>Perioade de indisponibilitate noi</h2>
-      {!isLoading && <UnavailableDatesTable deletable dates={newUnavailabilityDates} />}
-      {!isLoading &&
+      {!loading && <UnavailableDatesTable deletable dates={newUnavailabilityDates} />}
+      {!loading &&
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="start_date">
             <FormLabel>Data începerii</FormLabel>
@@ -131,4 +128,4 @@ const CalendarPicker = (props) => {
 };
 /* eslint-enable */
 
-export default CalendarPicker;
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarPicker);

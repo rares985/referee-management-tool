@@ -66,7 +66,7 @@ const App = () => {
         <Home path="/" />
         <Matches path="/matches" />
         {!loggedIn && <Login path="/login" navigate={navigate} userCallback={setAuthenticatedUser} loginCallback={setLoggedIn} />}
-        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} authenticatedUser={authenticatedUser} userCallback={setAuthenticatedUser} useridCB={setUserId} navigate={navigate} />}
+        {loggedIn && <Dashboard path="/account" logoutCallback={setLoggedIn} useridCB={setUserId} navigate={navigate} />}
         {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
         <PersonalInformationForm path="/updateinfo" navigate={navigate} />
         {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}

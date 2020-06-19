@@ -4,6 +4,7 @@ import loginReducer from './loginReducer';
 import matchesReducer from './matchesReducer';
 import personalInfoReducer from './personalInfoReducer';
 import dashboardReducer from './dashboardReducer';
+import unavailabilityPeriodsReducer from './unavailabilityPeriodsReducer';
 
 
 export default combineReducers({
@@ -12,4 +13,5 @@ export default combineReducers({
   login: loginReducer,
   personal: personalInfoReducer,
   user: dashboardReducer,
+  unavailabilityPeriods: unavailabilityPeriodsReducer,
 });
