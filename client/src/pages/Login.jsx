@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
 import { EyeOpenIcon, EyeClosedIcon, LockIcon } from '../components/Icons';
@@ -7,10 +7,9 @@ import LoginAction from '../actions/LoginAction';
 
 const HIDE_PASSWORD_DELAY_MS = 500;
 
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 const mapStateToProps = (state) => ({
-  logged_user: state.login.logged_user,
+  user: state.login.user,
+  finished: state.login.finished,
   loading: state.login.loading,
   error: state.login.error
 });
@@ -31,7 +30,7 @@ const Login = (props) => {
     return username.length > 0 && password.length > 0;
   }
 
-  const { logged_user, loading, error } = props;
+  const { navigate, user, finished, loading, error } = props;
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -43,16 +42,6 @@ const Login = (props) => {
       password: password
     });
   }
-
-  useEffect(() => {
-    if (logged_user !== '' && !loading && !error) {
-      console.log(`Logged in as ${props.logged_user}`);
-      props.userCallback(username);
-      props.loginCallback(true);
-      props.navigate('/account');
-    }
-  });
-
 
   const EyeIcon = (props) => {
     if (props.isMasked) return <EyeClosedIcon />;

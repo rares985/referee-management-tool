@@ -1,23 +1,18 @@
 import {
-  FETCH_USER_RIGHTS_BEGIN,
-  FETCH_USER_RIGHTS_SUCCESS,
-  FETCH_USER_RIGHTS_FAILURE,
-  LOGOUT_SUCCESS,
-  // LOGOUT_BEGIN,
-  // LOGOUT_FAILURE
+  CHECK_TOKEN_BEGIN,
+  CHECK_TOKEN_SUCCESS,
+  CHECK_TOKEN_FAILURE,
 } from '../constants/action-types';
 
 const initialState = {
-  rights: {
-    delegation: false,
-    approval: false,
-    team: false,
-  },
+  redirectTime: REDIRECT_WAIT_SEC,
+  message: '',
+  error: null,
   loading: true,
-  error: null
+  redirect: false,
 };
 
-const dashboardReducer = (state = initialState, action) => {
+const checkTokenReducer = (state = initialState, action) => {
   switch (action.type) {
     case FETCH_USER_RIGHTS_BEGIN:
       return {
@@ -28,7 +23,6 @@ const dashboardReducer = (state = initialState, action) => {
     case FETCH_USER_RIGHTS_SUCCESS:
       return {
         ...state,
-        rights: action.payload.rights,
         loading: false,
         error: null
       };
@@ -36,17 +30,13 @@ const dashboardReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
+        redirect: true,
         error: action.payload.error
       };
-    case LOGOUT_SUCCESS:
-      return {
-        ...state,
-        loading: true // to re-trigger user info download on login as different user in same sess
-      }
     default:
       return state;
   }
 };
 
 
-export default dashboardReducer;
+export default checkTokenReducer;

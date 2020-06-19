@@ -2,11 +2,14 @@ import {
   LOGIN_BEGIN,
   LOGIN_SUCCESS,
   LOGIN_FAILURE,
+  LOGOUT_SUCCESS,
 } from '../constants/action-types';
 
+
 const initialState = {
-  logged_user: '',
+  user: '',
   loading: false, // only loads on submit
+  finished: false, // set to true on login success
   error: null
 };
 
@@ -21,7 +24,8 @@ const loginReducer = (state = initialState, action) => {
     case LOGIN_SUCCESS:
       return {
         ...state,
-        logged_user: action.payload.username,
+        user: action.payload.username,
+        finished: true,
         loading: false,
         error: null
       };
@@ -31,6 +35,12 @@ const loginReducer = (state = initialState, action) => {
         loading: false,
         error: action.payload.error
       };
+    case LOGOUT_SUCCESS:
+      return {
+        ...state,
+        user: '',
+        finished: false,
+      }
     default:
       return state;
   }

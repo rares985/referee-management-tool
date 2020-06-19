@@ -10,7 +10,7 @@ import { FetchDelegableMatches, FetchEligibleRefs } from '../actions/ProposeDraf
 
 
 const mapStateToProps = (state) => ({
-    user: state.login.logged_user,
+    user: state.login.user,
     matches: state.drafts.matches,
     shortlist: state.drafts.shortlist,
     matchesLoading: state.drafts.matchesLoading,

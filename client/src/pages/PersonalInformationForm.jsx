@@ -13,7 +13,7 @@ const axios = require('axios').create({
 });
 
 const mapStateToProps = (state) => ({
-  user: state.login.logged_user,
+  user: state.login.user,
   info: state.personal.info,
   loading: state.personal.loading,
   error: state.personal.error

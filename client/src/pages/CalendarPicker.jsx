@@ -5,7 +5,7 @@ import { XIcon } from '../components/Icons';
 import FetchUnavailabilityPeriods from '../actions/UnavailabilityPeriodActions';
 
 const mapStateToProps = (state) => ({
-  user: state.login.logged_user,
+  user: state.login.user,
   confirmedDates: state.unavailabilityPeriods.confirmedDates,
   loading: state.unavailabilityPeriods.loading,
   error: state.unavailabilityPeriods.error,

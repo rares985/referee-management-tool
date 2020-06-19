@@ -6,14 +6,10 @@ import { connect } from 'react-redux';
 import { Card, Button, Container, Row, Col, Spinner } from 'react-bootstrap';
 import { Clock, PersonBoundingBox, Calendar, BoxArrowLeft } from '../components/Icons';
 
-import FetchUserRights from '../actions/DashboardActions';
-
-const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
-});
+import { FetchUserRights, LogoutUser } from '../actions/DashboardActions';
 
 const mapStateToProps = (state) => ({
-  user: state.login.logged_user,
+  user: state.login.user,
   rights: state.user.rights,
   loading: state.user.loading,
   error: state.user.error
@@ -22,6 +18,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   doFetchUserRights: (request) => {
     dispatch(FetchUserRights(request));
+  },
+  doLogoutUser: (request) => {
+    dispatch(LogoutUser(request));
   }
 });
 
@@ -42,18 +41,14 @@ const Dashboard = (props) => {
   });
 
   const handleLogout = () => {
-    props.logoutCallback(false);
-    axios
-      .get('/api/logout')
-      .then(resp => {
-        console.log(resp);
-      })
-      .catch(err => {
-        console.error(err);
-      });
 
-    props.userCallback('');
-    props.navigate('/login');
+    const { doLogoutUser, navigate } = props;
+
+    doLogoutUser({
+      username: user
+    });
+
+    navigate('/login');
   };
 
   return (

@@ -1,7 +1,10 @@
 import {
   FETCH_USER_RIGHTS_BEGIN,
   FETCH_USER_RIGHTS_SUCCESS,
-  FETCH_USER_RIGHTS_FAILURE
+  FETCH_USER_RIGHTS_FAILURE,
+  LOGOUT_BEGIN,
+  LOGOUT_SUCCESS,
+  LOGOUT_FAILURE
 } from '../constants/action-types';
 
 const axios = require('axios').create({
@@ -27,7 +30,7 @@ const FetchUserRightsFailure = (error) => ({
 });
 
 
-const FetchUserRights = (request) => {
+export const FetchUserRights = (request) => {
   const GetRequest = { params: request };
   return (dispatch) => {
     dispatch(FetchUserRightsBegin());
@@ -42,4 +45,34 @@ const FetchUserRights = (request) => {
   }
 };
 
-export default FetchUserRights;
+const LogoutBegin = () => ({
+  type: LOGOUT_BEGIN
+});
+
+const LogoutSuccess = () => ({
+  type: LOGOUT_SUCCESS,
+});
+
+const LogoutFailure = (error) => ({
+  type: LOGOUT_FAILURE,
+  payload: {
+    error
+  }
+});
+
+
+export const LogoutUser = (request) => {
+  const GetRequest = { params: request };
+  return (dispatch) => {
+    dispatch(LogoutBegin());
+
+    axios.get('/api/logout', GetRequest)
+      // eslint-disable-next-line no-unused-vars
+      .then(res => {
+        dispatch(LogoutSuccess());
+      })
+      .catch(err => {
+        dispatch(LogoutFailure(err.error));
+      })
+  }
+};
