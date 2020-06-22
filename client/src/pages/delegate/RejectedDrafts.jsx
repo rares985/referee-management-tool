@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import connect from 'react-redux';
+import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
 
 /* eslint-disable react/prop-types */

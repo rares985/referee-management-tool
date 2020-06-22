@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import connect from 'react-redux';
+import { connect } from 'react-redux';
 import { Spinner } from 'react-bootstrap';
 
 /* eslint-disable react/prop-types */
@@ -54,4 +54,7 @@ const ProposedDrafts = (props) => {
   );
 };
 /* eslint-enable react/prop-types */
-export default connect(mapStateToProps, mapDispatchToProps)(ProposedDrafts);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProposedDrafts);

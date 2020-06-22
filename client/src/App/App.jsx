@@ -9,7 +9,7 @@ import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import PersonalInformationForm from '../pages/PersonalInformationForm';
 import PersonalMatchHistory from '../pages/PersonalMatchHistory';
-import CalendarPicker from '../pages/CalendarPicker';
+import UnavailabilityPeriods from '../pages/UnavailabilityPeriods';
 import Delegate from '../pages/Delegate';
 import ApproveDrafts from '../pages/ApproveDrafts';
 import WithAuth from '../components/withAuth';
@@ -52,7 +52,7 @@ const App = (props) => {
   /* Declare routes as protected */
   const PersInfoForm = WithAuth(PersonalInformationForm);
   const PersMatchHist = WithAuth(PersonalMatchHistory);
-  const CalndPicker = WithAuth(CalendarPicker);
+  const CalndPicker = WithAuth(UnavailabilityPeriods);
   const ApprvDrafts = WithAuth(ApproveDrafts);
   const Dlgt = WithAuth(Delegate);
 
@@ -84,7 +84,7 @@ const App = (props) => {
         {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
         <PersonalMatchHistory path="/viewhistory" authenticatedUser={user} navigate={navigate} />
         {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <CalendarPicker path="/addunavailable" navigate={navigate} />
+        <UnavailabilityPeriods path="/addunavailable" navigate={navigate} />
         {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
         <ApproveDrafts path="/approvedrafts" navigate={navigate} />
         {/* <PrpsDrafts path="/delegate" authenticatedUser={authenticatedUser} navigate={navigate} /> */}

@@ -9,6 +9,10 @@ div.page-container {
   }
 }
 
+div.page-container > section {
+  margin-bottom: 5em;
+}
+
 div.personalized-card {
   margin-bottom: 10px;
 }
