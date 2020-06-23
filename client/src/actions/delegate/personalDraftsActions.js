@@ -1,7 +1,7 @@
 import {
-  FETCH_PERSONAL_DRAFTS_BEGIN,
-  FETCH_PERSONAL_DRAFTS_SUCCESS,
-  FETCH_PERSONAL_DRAFTS_FAILURE
+  PERSONAL_DRAFTS_BEGIN,
+  PERSONAL_DRAFTS_SUCCESS,
+  PERSONAL_DRAFTS_FAILURE
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -9,18 +9,18 @@ const axios = require('axios').create({
 });
 
 const FetchPersonalDraftsBegin = () => ({
-  type: FETCH_PERSONAL_DRAFTS_BEGIN,
+  type: PERSONAL_DRAFTS_BEGIN,
 });
 
 const FetchPersonalDraftsSuccess = (drafts) => ({
-  type: FETCH_PERSONAL_DRAFTS_SUCCESS,
+  type: PERSONAL_DRAFTS_SUCCESS,
   payload: {
     drafts
   }
 });
 
 const FetchPersonalDraftsFailure = (error) => ({
-  type: FETCH_PERSONAL_DRAFTS_FAILURE,
+  type: PERSONAL_DRAFTS_FAILURE,
   payload: {
     error
   }
@@ -36,8 +36,6 @@ export const FetchPersonalDrafts = (request) => {
     axios
       .get('/api/delegate/drafts/matches', GetRequest)
       .then(res => {
-        console.log(res);
-        console.log(res.data);
         dispatch(FetchPersonalDraftsSuccess(res.data));
       })
       .catch(err => {

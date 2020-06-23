@@ -11,10 +11,12 @@ import { ArrowUpDown } from '../../components/Icons';
 import addUpdateArray from '../../utils/arraymanip';
 
 
-
-
 const mapStateToProps = (state) => ({
   user: state.login.user,
+  matches: state.delegate.delegable.matches,
+  matchesLoading: state.delegate.delegable.matchesLoading,
+  shortlist: state.delegate.delegable.shortlist,
+  shortlistLoading: state.delegate.delegable.shortlistLoading
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -50,7 +52,7 @@ const DelegableMatches = (props) => {
       });
     }
 
-  });
+  }, [matchesLoading, shortlistLoading]);
 
   const OnRefSelectedA1 = (matchid, ref) => {
     setDelegations(addUpdateArray(delegations, matchid, "a1", ref));

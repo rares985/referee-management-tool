@@ -6,7 +6,7 @@ require("dotenv").config({
 var Connection = require("tedious").Connection;
 
 /* DB configuration */
-var config = {
+var connectionConfig = {
   server: process.env.DB_SERVER,
   options: {
     database: process.env.DB_NAME,
@@ -18,10 +18,11 @@ var config = {
     options: {
       userName: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-    },
-  },
+    }
+  }
 };
 
-const connection = new Connection(config);
+const connection = new Connection(connectionConfig);
+
 
 module.exports = connection;

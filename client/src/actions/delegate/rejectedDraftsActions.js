@@ -35,7 +35,7 @@ export const FetchRejectedDrafts = (request) => {
     dispatch(FetchRejectedDraftsBegin());
 
     axios
-      .get('/api/rejected/matches', GetRequest)
+      .get('/api/delegate/rejected/matches', GetRequest)
       .then(res => {
         dispatch(FetchRejectedDraftsSuccess(res.data));
       })
@@ -69,7 +69,7 @@ export const FetchRejectedShortlist = (request) => {
     dispatch(FetchRejectedShortlistBegin());
 
     axios
-      .get('/api/rejected/shortlist', GetRequest)
+      .get('/api/delegate/rejected/shortlist', GetRequest)
       .then(res => {
         dispatch(FetchRejectedShortlistSuccess(res.data));
       })

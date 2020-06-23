@@ -11,24 +11,19 @@ import PersonalDrafts from './delegate/PersonalDrafts';
 /* eslint-disable react/prop-types */
 // eslint-disable-next-line no-unused-vars
 const Delegate = (props) => {
-
-
-
-
-
     return (
         <div className="page-container">
             <section>
                 <h1> Meciuri delegabile</h1>
-                {/* <DelegableMatches /> */}
+                <DelegableMatches />
             </section>
             <section>
                 <h1> Propuneri trimise spre aprobare</h1>
-                {/* <ProposedDrafts /> */}
+                <ProposedDrafts />
             </section>
             <section>
                 <h1> Propuneri respinse </h1>
-                {/* <RejectedDrafts /> */}
+                <RejectedDrafts />
             </section>
             <section>
                 <h1> În lucru (ciorne) </h1>

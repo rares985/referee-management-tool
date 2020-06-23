@@ -1,7 +1,7 @@
 import {
-  FETCH_PROPOSED_DRAFTS_BEGIN,
-  FETCH_PROPOSED_DRAFTS_SUCCESS,
-  FETCH_PROPOSED_DRAFTS_FAILURE,
+  PROPOSED_DRAFTS_BEGIN,
+  PROPOSED_DRAFTS_SUCCESS,
+  PROPOSED_DRAFTS_FAILURE,
   FETCH_PROPOSED_SHORTLIST_BEGIN,
   FETCH_PROPOSED_SHORTLIST_SUCCESS,
   FETCH_PROPOSED_SHORTLIST_FAILURE,
@@ -16,18 +16,20 @@ const initialState = {
 
 const proposedDraftsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_PROPOSED_DRAFTS_BEGIN:
+    case PROPOSED_DRAFTS_BEGIN:
       return {
         ...state,
       };
-    case FETCH_PROPOSED_DRAFTS_SUCCESS:
+    case PROPOSED_DRAFTS_SUCCESS:
       return {
+        ...state,
         proposedLoading: false,
         shortlistLoading: true,
         proposed: action.payload.proposed
       };
-    case FETCH_PROPOSED_DRAFTS_FAILURE:
+    case PROPOSED_DRAFTS_FAILURE:
       return {
+        ...state,
         proposedLoading: false,
         error: action.payload.error,
       };
@@ -37,11 +39,13 @@ const proposedDraftsReducer = (state = initialState, action) => {
       };
     case FETCH_PROPOSED_SHORTLIST_SUCCESS:
       return {
+        ...state,
         shortlistLoading: false,
         shortlist: action.payload.shortlist
       };
     case FETCH_PROPOSED_SHORTLIST_FAILURE:
       return {
+        ...state,
         shortlistLoading: false
       };
     default:

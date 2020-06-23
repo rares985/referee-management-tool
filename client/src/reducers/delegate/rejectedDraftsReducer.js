@@ -22,12 +22,14 @@ const rejectedDraftsReducer = (state = initialState, action) => {
       };
     case FETCH_REJECTED_DRAFTS_SUCCESS:
       return {
+        ...state,
         rejectedLoading: false,
         shortlistLoading: true,
         rejected: action.payload.rejected
       };
     case FETCH_REJECTED_DRAFTS_FAILURE:
       return {
+        ...state,
         rejectedLoading: false,
         error: action.payload.error,
       };
@@ -37,11 +39,13 @@ const rejectedDraftsReducer = (state = initialState, action) => {
       };
     case FETCH_REJECTED_SHORTLIST_SUCCESS:
       return {
+        ...state,
         shortlistLoading: false,
         shortlist: action.payload.shortlist
       };
     case FETCH_REJECTED_SHORTLIST_FAILURE:
       return {
+        ...state,
         shortlistLoading: false
       };
     default:
