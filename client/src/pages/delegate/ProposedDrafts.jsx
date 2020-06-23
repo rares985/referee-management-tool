@@ -7,6 +7,7 @@ import { FetchProposedDrafts, FetchProposedShortlist } from '../../actions/deleg
 
 
 const mapStateToProps = (state) => ({
+  user: state.login.user,
   drafts: state.delegate.proposed.proposed,
   draftsLoading: state.delegate.proposed.draftsLoading,
   shortlist: state.delegate.proposed.shortlist,

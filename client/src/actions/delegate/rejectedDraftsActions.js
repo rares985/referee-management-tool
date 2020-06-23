@@ -35,7 +35,7 @@ export const FetchRejectedDrafts = (request) => {
     dispatch(FetchRejectedDraftsBegin());
 
     axios
-      .get('/api/rejected/drafts', GetRequest)
+      .get('/api/rejected/matches', GetRequest)
       .then(res => {
         dispatch(FetchRejectedDraftsSuccess(res.data));
       })

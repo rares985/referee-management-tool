@@ -32,7 +32,7 @@ const CheckToken = (request) => {
   return (dispatch) => {
     dispatch(CheckTokenBegin());
 
-    axios.get('/api/checkToken', GetRequest)
+    axios.get('/api/authenticate/checkToken', GetRequest)
       .then(res => {
         dispatch(CheckTokenSuccess(res.data));
       })

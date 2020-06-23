@@ -45,7 +45,7 @@ const PersonalInformationForm = (props) => {
   const [lot, setLot] = useState('');
 
   // eslint-disable-next-line no-unused-vars
-  const { user, info, loading, updated, error } = props;
+  const { user, info, loading, error } = props;
   const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
 
   useEffect(() => {
@@ -61,8 +61,8 @@ const PersonalInformationForm = (props) => {
       setAddress(info.address);
       setMobilePhone(info.phone_number);
       setEmail(info.email);
-      setCounty(info.county);
-      setCategory(info.category);
+      setCounty(info.jud);
+      setCategory(info.cat);
       setLot(info.lot);
     }
   }, [loading]);
@@ -155,24 +155,27 @@ const PersonalInformationForm = (props) => {
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={category}
-                  readOnly />
+                  value={category}
+                  readOnly
+                />
               </FormGroup>
               <FormGroup controlId="lot">
                 <FormLabel>Lot</FormLabel>
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={lot}
-                  readOnly />
+                  value={lot}
+                  readOnly
+                />
               </FormGroup>
               <FormGroup controlId="county">
                 <FormLabel>Judet</FormLabel>
                 <FormControl
                   autoFocus
                   type="text"
-                  defaultValue={county}
-                  readOnly />
+                  value={county}
+                  readOnly
+                />
               </FormGroup>
               <Button block disabled={!validateForm()} type="submit">
                 Actualizare

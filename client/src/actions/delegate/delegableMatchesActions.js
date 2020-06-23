@@ -35,7 +35,7 @@ export const FetchDelegableMatches = (request) => {
   return (dispatch) => {
     dispatch(FetchDelegableMatchesBegin());
 
-    axios.get('/api/delegablematches', GetRequest)
+    axios.get('/api/delegate/delegable/matches', GetRequest)
       .then(res => {
         dispatch(FetchDelegableMatchesSuccess(res.data));
       })
@@ -70,7 +70,7 @@ export const FetchEligibleRefs = (request) => {
   return (dispatch) => {
     dispatch(FetchEligibleRefsBegin());
 
-    axios.get('/api/eligiblefordelegable', GetRequest)
+    axios.get('/api/delegate/delegable/shortlist', GetRequest)
       .then(res => {
         dispatch(FetchEligibleRefsSuccess(res.data));
       })

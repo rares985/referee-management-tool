@@ -35,7 +35,7 @@ export const FetchProposedDrafts = (request) => {
     dispatch(FetchProposedDraftsBegin());
 
     axios
-      .get('/api/proposed/drafts', GetRequest)
+      .get('/api/proposed/matches', GetRequest)
       .then(res => {
         dispatch(FetchProposedDraftsSuccess(res.data));
       })

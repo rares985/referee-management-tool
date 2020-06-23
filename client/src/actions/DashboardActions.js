@@ -66,7 +66,7 @@ export const LogoutUser = (request) => {
   return (dispatch) => {
     dispatch(LogoutBegin());
 
-    axios.get('/api/logout', GetRequest)
+    axios.get('/api/authenticate/logout', GetRequest)
       // eslint-disable-next-line no-unused-vars
       .then(res => {
         dispatch(LogoutSuccess());

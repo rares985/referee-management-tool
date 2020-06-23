@@ -6,10 +6,11 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const unavailableRouter = require('./server/routers/unavailable.js');
 const delegateRouter = require('./server/routers/delegate.js')
+const personalRouter = require('./server/routers/personal.js');
+const authRouter = require('./server/routers/auth.js');
 
 var Request = require("tedious").Request;
 
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const connection = require("./server/db-conn");
@@ -18,8 +19,6 @@ const withAuth = require("./server/auth_middleware");
 
 const expressStaticGzip = require("express-static-gzip");
 
-/* JWT secret */
-const secret = process.env.JWT_SECRET;
 
 const app = express();
 app.use(bodyParser.json());
@@ -29,6 +28,8 @@ app.use(cookieParser());
 
 app.use("/api/unavailable", unavailableRouter);
 app.use("/api/delegate", delegateRouter);
+app.use("/api/personal", personalRouter);
+app.use("/api/authenticate", authRouter);
 
 app.use(
   "/",
@@ -73,128 +74,7 @@ app.post("/api/register", (req, res) => {
   }
 });
 
-/* AUTHENTICATE route */
-app.post("/api/authenticate", (req, res) => {
-  const { username, password } = req.body;
-  console.log(`AUTH: Got request: ${username}, ${password}`);
 
-  if (username === undefined || password === undefined) {
-    res.status(401).send("Invalid parameters for authentication");
-  } else {
-    var query = `SELECT Password FROM [dbo].[User] WHERE Username='${username}'`;
-
-    console.log(`Going to execute query ${query}`);
-    request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-      } else {
-        if (rowCount === 0) {
-          res.status(401).send("Login failure!");
-        }
-        console.log(`Got ${rowCount} rows`);
-      }
-    });
-
-    request.on("row", (cols) => {
-      cols.forEach((col) => {
-        if (col.value == null) {
-          console.log("Got NULL value");
-        } else {
-          bcrypt.compare(password, col.value, (err, result) => {
-            if (err) {
-              throw err;
-            } else {
-              console.log(result);
-              if (result) {
-                console.log("Password Check OK. Issuing Token");
-                const payload = { username };
-                const token = jwt.sign(payload, secret, {
-                  expiresIn: "1h",
-                });
-                res.cookie("token", token, { httpOnly: true }).sendStatus(200);
-              } else {
-                res.status(401).send("Login failure!");
-              }
-            }
-          });
-        }
-      });
-    });
-
-    connection.execSql(request);
-  }
-});
-
-/* =============================== BUSINESS ROUTES ==================================== */
-/* GET PERSONAL INFO */
-app.get("/api/personalInfo", (req, res) => {
-  const username = req.query.username;
-  console.log(`FETCH_PERSONAL_INFO: Got request: ${username}`);
-
-  if (username === undefined) {
-    res.status(401).send("Invalid parameters for authentication");
-  } else {
-    var query = `[dbo].[GetPersonalInfo] '${username}';`;
-
-    console.log(`Going to execute query ${query}`);
-    request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("User information not in database!");
-      } else {
-        console.log(`Got ${rowCount} rows`);
-      }
-    });
-
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      res.status(200).send(obj);
-    });
-
-    connection.execSql(request);
-  }
-});
-
-/* UPDATE PERSONAL INFO */
-app.post("/api/personalInfo", (req, res) => {
-  const { username, address, firstName, lastName, mobilePhone, email } = req.body;
-  console.log(
-    `UPDATE_PERSONAL_INFO: Got request: ${username}, ${address}, ${firstName}, ${lastName}, ${mobilePhone}, ${email}`
-  );
-
-  if (
-    username === undefined ||
-    address === undefined ||
-    firstName === undefined ||
-    lastName === undefined ||
-    mobilePhone === undefined ||
-    email === undefined
-  ) {
-    res.status(401).send("Invalid parameters!");
-  } else {
-    var query = `[dbo].[UpdatePersonalInfo]
-      @Username = '${username}',
-      @FirstName = '${firstName}',
-      @LastName = '${lastName}',
-      @Address = '${address}',
-      @Email = '${email}',
-      @PhoneNumber = '${mobilePhone}'`;
-
-    console.log(`Going to execute query ${query}`);
-    request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("User information not in database!");
-      } else {
-        res.status(200).send("Success!");
-      }
-    });
-    connection.execSql(request);
-  }
-});
 
 /* GET PERSONAL MATCH HISTORY */
 app.get("/api/matchHistory", (req, res) => {
@@ -384,39 +264,6 @@ app.get("/api/shortlist", (req, res) => {
   }
 });
 
-app.get("/api/eligiblefordelegable", (req, res) => {
-  const username = req.query.username;
-  console.log(`ELIGIBLE_FOR_DELEGATION_PER_MATCHID: Got request ${username}`);
-
-  if (username === undefined) {
-    res.status(400).send("Invalid parameters");
-  } else {
-    var query = `[dbo].[EligibleRefsForDelegableMatches] ${username}`;
-
-    let shortlist = [];
-    var request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Failed to query the database!");
-      } else {
-        res.status(200).send(shortlist);
-      }
-    });
-
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      shortlist.push(obj);
-    });
-
-    connection.execSql(request);
-  }
-
-
-})
-
 app.get("/api/publicmatches", (req, res) => {
   console.log(`GET_PUBLIC_MATCHES: Got request`);
 
@@ -444,51 +291,10 @@ app.get("/api/publicmatches", (req, res) => {
   connection.execSql(request);
 })
 
-app.get("/api/delegablematches", (req, res) => {
-  const username = req.query.username;
-  console.log(`GET_DELEGABLE_MATCHES: Got request: ${username}`);
 
-  if (username === undefined) {
-    res.status(401).send("Invalid parameters for authentication");
-  } else {
-    var query = `[dbo].[GetMyDelegableMatches] '${username}';`;
-
-    console.log(`Going to execute query ${query}`);
-
-    var matches = [];
-
-    var request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Failed search query");
-      } else {
-        res.status(200).send(matches);
-      }
-    });
-
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      matches.push(obj);
-    });
-
-    connection.execSql(request);
-  }
-});
 
 /* =============================== SERVICE ROUTES ==================================== */
-/* Service routes for handling cookies & JWT tokens */
-app.get("/checkToken", (req, res) => {
-  res.sendStatus(200);
-});
 
-/* Logout , for deleting the cookie */
-app.get("/api/logout", (req, res) => {
-  res.clearCookie("token");
-  res.sendStatus(200);
-});
 
 /* =============================== DEFAULT ROUTES ==================================== */
 
