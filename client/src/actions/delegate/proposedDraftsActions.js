@@ -2,9 +2,9 @@ import {
   PROPOSED_DRAFTS_BEGIN,
   PROPOSED_DRAFTS_SUCCESS,
   PROPOSED_DRAFTS_FAILURE,
-  FETCH_PROPOSED_SHORTLIST_BEGIN,
-  FETCH_PROPOSED_SHORTLIST_SUCCESS,
-  FETCH_PROPOSED_SHORTLIST_FAILURE,
+  PROPOSED_SHORTLIST__BEGIN,
+  PROPOSED_SHORTLIST__SUCCESS,
+  PROPOSED_SHORTLIST__FAILURE,
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -49,18 +49,18 @@ export const FetchProposedDrafts = (request) => {
 
 
 const FetchProposedShortlistBegin = () => ({
-  type: FETCH_PROPOSED_SHORTLIST_BEGIN,
+  type: PROPOSED_SHORTLIST__BEGIN,
 });
 
 const FetchProposedShortlistSuccess = (proposedDrafts) => ({
-  type: FETCH_PROPOSED_SHORTLIST_SUCCESS,
+  type: PROPOSED_SHORTLIST__SUCCESS,
   payload: {
     proposedDrafts
   }
 });
 
 const FetchProposedShortlistFailure = (error) => ({
-  type: FETCH_PROPOSED_SHORTLIST_FAILURE,
+  type: PROPOSED_SHORTLIST__FAILURE,
   payload: {
     error
   }

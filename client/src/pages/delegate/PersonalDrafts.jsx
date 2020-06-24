@@ -20,6 +20,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
+/* eslint-disable no-unused-vars */
 
 const ProposedDrafts = (props) => {
 
@@ -34,8 +35,7 @@ const ProposedDrafts = (props) => {
         username: user,
       });
     }
-
-  });
+  }, [draftsLoading]);
 
   return (
     <>

@@ -18,16 +18,16 @@ const Delegate = (props) => {
                 <DelegableMatches />
             </section>
             <section>
+                <h1> În lucru (ciorne) </h1>
+                <PersonalDrafts />
+            </section>
+            <section>
                 <h1> Propuneri trimise spre aprobare</h1>
                 <ProposedDrafts />
             </section>
             <section>
                 <h1> Propuneri respinse </h1>
                 <RejectedDrafts />
-            </section>
-            <section>
-                <h1> În lucru (ciorne) </h1>
-                <PersonalDrafts />
             </section>
         </div >
     );

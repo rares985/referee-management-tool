@@ -171,7 +171,7 @@ const Dashboard = (props) => {
                     <Card.Body>
                       <Card.Title>Echipa mea </Card.Title>
                       <Card.Text>Vizualizați și aprobați informații despre echipa dvs.</Card.Text>
-                      <Button variant="primary" onClick={() => props.navigate('/approvedrafts')}>
+                      <Button variant="primary" onClick={() => props.navigate('/team')}>
                         Vizualizare
                   </Button>
                     </Card.Body>

@@ -10,9 +10,11 @@ import Dashboard from '../pages/Dashboard';
 import PersonalInformationForm from '../pages/PersonalInformationForm';
 import PersonalMatchHistory from '../pages/PersonalMatchHistory';
 import UnavailabilityPeriods from '../pages/UnavailabilityPeriods';
+import Team from '../pages/Team';
 import Delegate from '../pages/Delegate';
 import ApproveDrafts from '../pages/ApproveDrafts';
 import WithAuth from '../components/withAuth';
+
 /* eslint-disable */
 
 const mapStateToProps = (state) => ({
@@ -89,6 +91,7 @@ const App = (props) => {
         <ApproveDrafts path="/approvedrafts" navigate={navigate} />
         {/* <PrpsDrafts path="/delegate" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
         <Delegate path="/delegate" navigate={navigate} />
+        <Team path="/team" navigate={navigate} />
       </Router>
     </div>
   );

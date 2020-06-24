@@ -2,9 +2,9 @@ import {
   PROPOSED_DRAFTS_BEGIN,
   PROPOSED_DRAFTS_SUCCESS,
   PROPOSED_DRAFTS_FAILURE,
-  FETCH_PROPOSED_SHORTLIST_BEGIN,
-  FETCH_PROPOSED_SHORTLIST_SUCCESS,
-  FETCH_PROPOSED_SHORTLIST_FAILURE,
+  PROPOSED_SHORTLIST__BEGIN,
+  PROPOSED_SHORTLIST__SUCCESS,
+  PROPOSED_SHORTLIST__FAILURE,
 } from '../../constants/action-types';
 
 const initialState = {
@@ -33,17 +33,17 @@ const proposedDraftsReducer = (state = initialState, action) => {
         proposedLoading: false,
         error: action.payload.error,
       };
-    case FETCH_PROPOSED_SHORTLIST_BEGIN:
+    case PROPOSED_SHORTLIST__BEGIN:
       return {
         ...state,
       };
-    case FETCH_PROPOSED_SHORTLIST_SUCCESS:
+    case PROPOSED_SHORTLIST__SUCCESS:
       return {
         ...state,
         shortlistLoading: false,
         shortlist: action.payload.shortlist
       };
-    case FETCH_PROPOSED_SHORTLIST_FAILURE:
+    case PROPOSED_SHORTLIST__FAILURE:
       return {
         ...state,
         shortlistLoading: false
