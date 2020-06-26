@@ -8,6 +8,7 @@ import { FetchDelegableMatches, FetchEligibleRefs } from '../../actions/delegate
 import ChooseRefereeModal from '../../components/ChooseRefereeModal';
 
 import { ArrowUpDown } from '../../components/Icons';
+import TableHeaderSelector from '../../components/TableHeaderSelector';
 import addUpdateArray from '../../utils/arraymanip';
 
 
@@ -107,6 +108,7 @@ const DelegableMatches = (props) => {
       {matchesLoading && <Spinner animation="border" />}
       {!matchesLoading &&
         <>
+          <TableHeaderSelector />
           <Table striped bordered>
             <thead>
               <tr>

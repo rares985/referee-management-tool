@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
+import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card, Container } from 'react-bootstrap';
+import Typography from '@material-ui/core/Typography';
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import LockTwoTone from '@material-ui/icons/LockTwoTone';
 import { EyeOpenIcon, EyeClosedIcon, LockIcon } from '../components/Icons';
 
 import LoginAction from '../actions/LoginAction';
@@ -20,7 +24,6 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-/* eslint-disable */
 const Login = (props) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -30,21 +33,20 @@ const Login = (props) => {
     return username.length > 0 && password.length > 0;
   }
 
-  const { navigate, user, finished, loading, error } = props;
+  const { navigate, user, finished, loading, error, onSubmitLoginRequest } = props;
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    const { onSubmitLoginRequest } = props;
-
     onSubmitLoginRequest({
-      username: username,
-      password: password
+      username,
+      password
     });
   }
 
-  const EyeIcon = (props) => {
-    if (props.isMasked) return <EyeClosedIcon />;
+  const EyeIcon = (prps) => {
+    const { masked } = prps;
+    if (masked) return <EyeClosedIcon />;
     return <EyeOpenIcon />;
   };
 
@@ -52,50 +54,56 @@ const Login = (props) => {
   return (
 
     < div className="page-container" >
+
       <div className="login">
-        <h3> Autentificare </h3>
-        <Card>
-          <form onSubmit={handleSubmit}>
-            <div className="avatar">
-              <LockIcon />
-            </div>
-            <FormGroup controlId="username">
-              <FormLabel>username</FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </FormGroup>
-            <FormLabel>Password</FormLabel>
-            <InputGroup className="mb-3">
-              <FormControl
-                type={isMasked ? 'password' : 'text'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <InputGroup.Append>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => {
-                    /* Invert password mask */
-                    setMasked(!isMasked);
-                    setTimeout(() => {
-                      /* At timeout, forcefully hide password */
-                      setMasked(true);
-                    }, HIDE_PASSWORD_DELAY_MS);
-                  }}
-                >
-                  <EyeIcon isMasked={isMasked} />
-                </Button>
-              </InputGroup.Append>
-            </InputGroup>
-            <Button block disabled={!validateForm()} type="submit">
-              Autentificare
+        <Container>
+
+          <Typography className="page-title" variant="h4" component="h4">
+            Autentificare
+        </Typography>
+          <Card>
+            <form onSubmit={handleSubmit}>
+              <div className="avatar">
+                <LockTwoTone style={{ fontSize: 60 }} />
+              </div>
+              <FormGroup controlId="username">
+                <FormLabel>username</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </FormGroup>
+              <FormLabel>Password</FormLabel>
+              <InputGroup className="mb-3">
+                <FormControl
+                  type={isMasked ? 'password' : 'text'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <InputGroup.Append>
+                  <Button
+                    variant="outline-secondary"
+                    onClick={() => {
+                      /* Invert password mask */
+                      setMasked(!isMasked);
+                      setTimeout(() => {
+                        /* At timeout, forcefully hide password */
+                        setMasked(true);
+                      }, HIDE_PASSWORD_DELAY_MS);
+                    }}
+                  >
+                    <EyeIcon isMasked={isMasked} />
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
+              <Button variant="info" block disabled={!validateForm()} type="submit">
+                Autentificare
             </Button>
-          </form>
-        </Card>
+            </form>
+          </Card>
+        </Container>
       </div>
     </div >
   );

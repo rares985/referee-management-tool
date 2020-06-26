@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import { FetchMatches } from '../actions/MatchesActions';
 
+import DismissibleHelper from '../components/DismissibleHelper';
+
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 const mapStateToProps = (state) => ({
@@ -73,54 +75,57 @@ const Matches = (props) => {
         <div className="page-container">
             {loading && <Spinner animation="border" />}
             {!loading &&
-                <Table striped bordered size="sm">
-                    <thead>
-                        <tr>
-                            <th>Nr. Meci</th>
-                            <th>Data desfasurarii</th>
-                            <th>Echipa A</th>
-                            <th>Echipa B</th>
-                            <th>Locatie</th>
-                            <th>A1</th>
-                            <th>A2</th>
-                            <th>Obs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {matches.map((match) => {
-                            const dt = new Date(match.match_date);
-                            const dtstr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
-                            return (
-                                <tr>
-                                    <td>
-                                        {match.match_no}
+                <>
+                    <DismissibleHelper heading="Tip" text="Aici poti vedea delegarile confirmate" />
+                    <Table striped bordered size="sm">
+                        <thead>
+                            <tr>
+                                <th>Nr. Meci</th>
+                                <th>Data desfasurarii</th>
+                                <th>Echipa A</th>
+                                <th>Echipa B</th>
+                                <th>Locatie</th>
+                                <th>A1</th>
+                                <th>A2</th>
+                                <th>Obs</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {matches.map((match) => {
+                                const dt = new Date(match.match_date);
+                                const dtstr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
+                                return (
+                                    <tr>
+                                        <td>
+                                            {match.match_no}
+                                        </td>
+                                        <td>
+                                            {dtstr}
+                                        </td>
+                                        <td>
+                                            {match.team_a_name}
+                                        </td>
+                                        <td>
+                                            {match.team_b_name}
+                                        </td>
+                                        <td>
+                                            {match.location}
+                                        </td>
+                                        <td>
+                                            null
                                     </td>
-                                    <td>
-                                        {dtstr}
+                                        <td>
+                                            null
                                     </td>
-                                    <td>
-                                        {match.team_a_name}
+                                        <td>
+                                            null
                                     </td>
-                                    <td>
-                                        {match.team_b_name}
-                                    </td>
-                                    <td>
-                                        {match.location}
-                                    </td>
-                                    <td>
-                                        null
-                                    </td>
-                                    <td>
-                                        null
-                                    </td>
-                                    <td>
-                                        null
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </Table>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </Table>
+                </>
             }
             <DummyTable />
         </div >
