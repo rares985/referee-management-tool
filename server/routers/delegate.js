@@ -5,11 +5,6 @@ const sql = require('mssql');
 const poolConnect = require('../db-conn-mssql');
 const connection = require('../db-conn');
 
-var Request = require('tedious').Request;
-var TYPES = require('tedious').TYPES;
-
-
-
 
 const GetPersonalDrafts = (req, res) => {
   console.log(req.query);

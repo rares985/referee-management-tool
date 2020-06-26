@@ -101,7 +101,7 @@ const DelegableMatches = (props) => {
   }
 
 
-  const shortlistById = groupBy(shortlist, elem => elem.id);
+  const shortlistById = groupBy(shortlist, elem => elem.match_id);
   return (
     <>
       {matchesLoading && <Spinner animation="border" />}
@@ -140,24 +140,24 @@ const DelegableMatches = (props) => {
                       {match.team_b_name}
                     </td>
                     <td>
-                      {match.competition}
+                      {match.full_name_competition}
                     </td>
                     <td>
                       {GetRefereeName(match.id, "a1")}
                       {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.id} onSaveCloseCB={OnRefSelectedA1} />
+                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedA1} />
                       }
                     </td>
                     <td>
                       {GetRefereeName(match.id, "a2")}
                       {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.id} onSaveCloseCB={OnRefSelectedA2} />
+                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedA2} />
                       }
                     </td>
                     <td>
                       {GetRefereeName(match.id, "Obs")}
                       {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.id} onSaveCloseCB={OnRefSelectedObs} />
+                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedObs} />
                       }
                     </td>
                     <td>

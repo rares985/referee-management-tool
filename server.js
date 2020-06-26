@@ -6,6 +6,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const unavailableRouter = require('./server/routers/unavailable.js');
 const delegateRouter = require('./server/routers/delegate.js')
+const approveRouter = require('./server/routers/approve.js');
 const personalRouter = require('./server/routers/personal.js');
 const authRouter = require('./server/routers/auth.js');
 
@@ -28,6 +29,7 @@ app.use(cookieParser());
 
 app.use("/api/unavailable", unavailableRouter);
 app.use("/api/delegate", delegateRouter);
+app.use("/api/approve", approveRouter);
 app.use("/api/personal", personalRouter);
 app.use("/api/authenticate", authRouter);
 
@@ -62,7 +64,7 @@ app.post("/api/register", (req, res) => {
         var query = `EXEC [dbo].[RegisterNewUser]  @Username = '${username}', @Password = '${hash}';`;
         const request = new Request(query, (err, rowCount) => {
           if (err) {
-            res.status(401).send(`Could not register!`);
+            res.status(500).send(`Could not register!`);
             console.error(err);
           } else {
             res.status(200).send(`Welcome to the club, ${username}!`);
