@@ -1,10 +1,10 @@
 import {
-  FETCH_REJECTED_DRAFTS_BEGIN,
-  FETCH_REJECTED_DRAFTS_SUCCESS,
-  FETCH_REJECTED_DRAFTS_FAILURE,
-  FETCH_REJECTED_SHORTLIST_BEGIN,
-  FETCH_REJECTED_SHORTLIST_SUCCESS,
-  FETCH_REJECTED_SHORTLIST_FAILURE,
+  REJECTED_DRAFTS_BEGIN,
+  REJECTED_DRAFTS_SUCCESS,
+  REJECTED_DRAFTS_FAILURE,
+  REJECTED_SHORTLISTBEGIN,
+  REJECTED_SHORTLISTSUCCESS,
+  REJECTED_SHORTLISTFAILURE,
 } from '../../constants/action-types';
 
 const initialState = {
@@ -16,32 +16,36 @@ const initialState = {
 
 const rejectedDraftsReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_REJECTED_DRAFTS_BEGIN:
+    case REJECTED_DRAFTS_BEGIN:
       return {
         ...state,
       };
-    case FETCH_REJECTED_DRAFTS_SUCCESS:
+    case REJECTED_DRAFTS_SUCCESS:
       return {
+        ...state,
         rejectedLoading: false,
         shortlistLoading: true,
         rejected: action.payload.rejected
       };
-    case FETCH_REJECTED_DRAFTS_FAILURE:
+    case REJECTED_DRAFTS_FAILURE:
       return {
+        ...state,
         rejectedLoading: false,
         error: action.payload.error,
       };
-    case FETCH_REJECTED_SHORTLIST_BEGIN:
+    case REJECTED_SHORTLISTBEGIN:
       return {
         ...state,
       };
-    case FETCH_REJECTED_SHORTLIST_SUCCESS:
+    case REJECTED_SHORTLISTSUCCESS:
       return {
+        ...state,
         shortlistLoading: false,
         shortlist: action.payload.shortlist
       };
-    case FETCH_REJECTED_SHORTLIST_FAILURE:
+    case REJECTED_SHORTLISTFAILURE:
       return {
+        ...state,
         shortlistLoading: false
       };
     default:

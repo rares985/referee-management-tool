@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import store from './store/index';
 import * as serviceWorker from './serviceWorker';
 import App from './App/App';
+import 'fontsource-roboto';
 
 /* eslint-disable no-console */
 console.log(process.env.API_ENDPOINT);

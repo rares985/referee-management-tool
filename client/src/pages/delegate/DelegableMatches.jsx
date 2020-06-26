@@ -8,13 +8,16 @@ import { FetchDelegableMatches, FetchEligibleRefs } from '../../actions/delegate
 import ChooseRefereeModal from '../../components/ChooseRefereeModal';
 
 import { ArrowUpDown } from '../../components/Icons';
+import TableHeaderSelector from '../../components/TableHeaderSelector';
 import addUpdateArray from '../../utils/arraymanip';
-
-
 
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
+  matches: state.delegate.delegable.matches,
+  matchesLoading: state.delegate.delegable.matchesLoading,
+  shortlist: state.delegate.delegable.shortlist,
+  shortlistLoading: state.delegate.delegable.shortlistLoading
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -50,7 +53,7 @@ const DelegableMatches = (props) => {
       });
     }
 
-  });
+  }, [matchesLoading, shortlistLoading]);
 
   const OnRefSelectedA1 = (matchid, ref) => {
     setDelegations(addUpdateArray(delegations, matchid, "a1", ref));
@@ -99,12 +102,13 @@ const DelegableMatches = (props) => {
   }
 
 
-  const shortlistById = groupBy(shortlist, elem => elem.id);
+  const shortlistById = groupBy(shortlist, elem => elem.match_id);
   return (
     <>
       {matchesLoading && <Spinner animation="border" />}
       {!matchesLoading &&
         <>
+          <TableHeaderSelector />
           <Table striped bordered>
             <thead>
               <tr>
@@ -138,24 +142,24 @@ const DelegableMatches = (props) => {
                       {match.team_b_name}
                     </td>
                     <td>
-                      {match.competition}
+                      {match.full_name_competition}
                     </td>
                     <td>
                       {GetRefereeName(match.id, "a1")}
                       {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.id} onSaveCloseCB={OnRefSelectedA1} />
+                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedA1} />
                       }
                     </td>
                     <td>
                       {GetRefereeName(match.id, "a2")}
                       {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.id} onSaveCloseCB={OnRefSelectedA2} />
+                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedA2} />
                       }
                     </td>
                     <td>
                       {GetRefereeName(match.id, "Obs")}
                       {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.id} onSaveCloseCB={OnRefSelectedObs} />
+                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedObs} />
                       }
                     </td>
                     <td>

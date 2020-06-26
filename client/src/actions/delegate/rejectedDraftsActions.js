@@ -1,10 +1,10 @@
 import {
-  FETCH_REJECTED_DRAFTS_BEGIN,
-  FETCH_REJECTED_DRAFTS_SUCCESS,
-  FETCH_REJECTED_DRAFTS_FAILURE,
-  FETCH_REJECTED_SHORTLIST_BEGIN,
-  FETCH_REJECTED_SHORTLIST_SUCCESS,
-  FETCH_REJECTED_SHORTLIST_FAILURE
+  REJECTED_DRAFTS_BEGIN,
+  REJECTED_DRAFTS_SUCCESS,
+  REJECTED_DRAFTS_FAILURE,
+  REJECTED_SHORTLISTBEGIN,
+  REJECTED_SHORTLISTSUCCESS,
+  REJECTED_SHORTLISTFAILURE
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -12,18 +12,18 @@ const axios = require('axios').create({
 });
 
 const FetchRejectedDraftsBegin = () => ({
-  type: FETCH_REJECTED_DRAFTS_BEGIN,
+  type: REJECTED_DRAFTS_BEGIN,
 });
 
 const FetchRejectedDraftsSuccess = (rejected) => ({
-  type: FETCH_REJECTED_DRAFTS_SUCCESS,
+  type: REJECTED_DRAFTS_SUCCESS,
   payload: {
     rejected
   }
 });
 
 const FetchRejectedDraftsFailure = (error) => ({
-  type: FETCH_REJECTED_DRAFTS_FAILURE,
+  type: REJECTED_DRAFTS_FAILURE,
   payload: {
     error
   }
@@ -35,7 +35,7 @@ export const FetchRejectedDrafts = (request) => {
     dispatch(FetchRejectedDraftsBegin());
 
     axios
-      .get('/api/rejected/drafts', GetRequest)
+      .get('/api/delegate/rejected/matches', GetRequest)
       .then(res => {
         dispatch(FetchRejectedDraftsSuccess(res.data));
       })
@@ -46,18 +46,18 @@ export const FetchRejectedDrafts = (request) => {
 }
 
 const FetchRejectedShortlistBegin = () => ({
-  type: FETCH_REJECTED_SHORTLIST_BEGIN,
+  type: REJECTED_SHORTLISTBEGIN,
 });
 
 const FetchRejectedShortlistSuccess = (shortlist) => ({
-  type: FETCH_REJECTED_SHORTLIST_SUCCESS,
+  type: REJECTED_SHORTLISTSUCCESS,
   payload: {
     shortlist
   }
 });
 
 const FetchRejectedShortlistFailure = (error) => ({
-  type: FETCH_REJECTED_SHORTLIST_FAILURE,
+  type: REJECTED_SHORTLISTFAILURE,
   payload: {
     error
   }
@@ -69,7 +69,7 @@ export const FetchRejectedShortlist = (request) => {
     dispatch(FetchRejectedShortlistBegin());
 
     axios
-      .get('/api/rejected/shortlist', GetRequest)
+      .get('/api/delegate/rejected/shortlist', GetRequest)
       .then(res => {
         dispatch(FetchRejectedShortlistSuccess(res.data));
       })

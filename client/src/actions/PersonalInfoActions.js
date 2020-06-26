@@ -35,7 +35,7 @@ export const FetchPersonalInfo = (request) => {
   return (dispatch) => {
     dispatch(PersonalInfoBegin());
     axios
-      .get('/api/personalInfo', GetRequest)
+      .get('/api/personal', GetRequest)
       .then((res) => {
         dispatch(PersonalInfoSuccess(res.data));
       })
@@ -67,7 +67,7 @@ export const UpdatePersonalInfo = (request) => {
   return (dispatch) => {
     dispatch(UpdatePersonalInfoBegin());
     axios
-      .post('/api/personalInfo', request)
+      .post('/api/personal', request)
       .then(res => {
         dispatch(UpdatePersonalInfoSuccess(res));
       })

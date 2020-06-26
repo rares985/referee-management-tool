@@ -3,51 +3,40 @@ import { connect } from 'react-redux';
 import { Spinner, Table } from 'react-bootstrap';
 
 /* eslint-disable react/prop-types */
-import { FetchRejectedDrafts, FetchRejectedShortlist } from '../../actions/delegate/rejectedDraftsActions';
+import { FetchPersonalDrafts } from '../../actions/delegate/personalDraftsActions';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
+
 import dateFormatter from '../../utils/datemanip';
 
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
-  drafts: state.delegate.rejected.rejected,
-  draftsLoading: state.delegate.rejected.rejectedLoading,
-  shortlist: state.delegate.rejected.shortlist,
-  shortlistLoading: state.delegate.rejected.shortlistLoading,
-  error: state.delegate.rejected.error
+  drafts: state.delegate.personal.drafts,
+  draftsLoading: state.delegate.personal.draftsLoading,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   DoFetchDrafts: (request) => {
-    dispatch(FetchRejectedDrafts(request));
+    dispatch(FetchPersonalDrafts(request));
   },
-  DoFetchShortlist: (request) => {
-    dispatch(FetchRejectedShortlist(request));
-  }
 });
 
+/* eslint-disable no-unused-vars */
 
-const RejectedDrafts = (props) => {
+const ProposedDrafts = (props) => {
 
   // eslint-disable-next-line no-unused-vars
-  const { user, drafts, shortlist, draftsLoading, shortlistLoading, error } = props;
+  const { user, drafts, draftsLoading, error } = props;
 
   useEffect(() => {
-    const { DoFetchDrafts, DoFetchShortlist } = props;
+    const { DoFetchDrafts } = props;
 
     if (draftsLoading) {
       DoFetchDrafts({
         username: user,
       });
     }
-
-    if (shortlistLoading) {
-      DoFetchShortlist({
-        username: user,
-      });
-    }
-
-  });
+  }, [draftsLoading]);
 
   return (
     <>
@@ -93,6 +82,6 @@ const RejectedDrafts = (props) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RejectedDrafts);
+export default connect(mapStateToProps, mapDispatchToProps)(ProposedDrafts);
 
 /* eslint-enable react/prop-types */

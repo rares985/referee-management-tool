@@ -1,10 +1,10 @@
 import {
-  FETCH_DELEGABLE_MATCHES_BEGIN,
-  FETCH_DELEGABLE_MATCHES_SUCCESS,
-  FETCH_DELEGABLE_MATCHES_FAILURE,
-  FETCH_ELIGIBLE_REFS_BEGIN,
-  FETCH_ELIGIBLE_REFS_SUCCESS,
-  FETCH_ELIGIBLE_REFS_FAILURE,
+  DELEGABLE_MATCHES_BEGIN,
+  DELEGABLE_MATCHES_SUCCESS,
+  DELEGABLE_MATCHES_FAILURE,
+  ELIGIBLE_REFS_BEGIN,
+  ELIGIBLE_REFS_SUCCESS,
+  ELIGIBLE_REFS_FAILURE,
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -12,18 +12,18 @@ const axios = require('axios').create({
 });
 
 const FetchDelegableMatchesBegin = () => ({
-  type: FETCH_DELEGABLE_MATCHES_BEGIN
+  type: DELEGABLE_MATCHES_BEGIN
 });
 
-const FetchDelegableMatchesSuccess = (delegableMatches) => ({
-  type: FETCH_DELEGABLE_MATCHES_SUCCESS,
+const FetchDelegableMatchesSuccess = (matches) => ({
+  type: DELEGABLE_MATCHES_SUCCESS,
   payload: {
-    delegableMatches,
+    matches,
   }
 });
 
 const FetchDelegableMatchesFailure = (error) => ({
-  type: FETCH_DELEGABLE_MATCHES_FAILURE,
+  type: DELEGABLE_MATCHES_FAILURE,
   payload: {
     error
   }
@@ -35,7 +35,7 @@ export const FetchDelegableMatches = (request) => {
   return (dispatch) => {
     dispatch(FetchDelegableMatchesBegin());
 
-    axios.get('/api/delegablematches', GetRequest)
+    axios.get('/api/delegate/delegable/matches', GetRequest)
       .then(res => {
         dispatch(FetchDelegableMatchesSuccess(res.data));
       })
@@ -48,18 +48,18 @@ export const FetchDelegableMatches = (request) => {
 
 /* Fetch eligible Referees */
 const FetchEligibleRefsBegin = () => ({
-  type: FETCH_ELIGIBLE_REFS_BEGIN
+  type: ELIGIBLE_REFS_BEGIN
 });
 
 const FetchEligibleRefsSuccess = (shortlist) => ({
-  type: FETCH_ELIGIBLE_REFS_SUCCESS,
+  type: ELIGIBLE_REFS_SUCCESS,
   payload: {
     shortlist,
   }
 });
 
 const FetchEligibleRefsFailure = (error) => ({
-  type: FETCH_ELIGIBLE_REFS_FAILURE,
+  type: ELIGIBLE_REFS_FAILURE,
   payload: {
     error
   }
@@ -70,7 +70,7 @@ export const FetchEligibleRefs = (request) => {
   return (dispatch) => {
     dispatch(FetchEligibleRefsBegin());
 
-    axios.get('/api/eligiblefordelegable', GetRequest)
+    axios.get('/api/delegate/delegable/shortlist', GetRequest)
       .then(res => {
         dispatch(FetchEligibleRefsSuccess(res.data));
       })

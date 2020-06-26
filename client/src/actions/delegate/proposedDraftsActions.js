@@ -1,10 +1,10 @@
 import {
-  FETCH_PROPOSED_DRAFTS_BEGIN,
-  FETCH_PROPOSED_DRAFTS_SUCCESS,
-  FETCH_PROPOSED_DRAFTS_FAILURE,
-  FETCH_PROPOSED_SHORTLIST_BEGIN,
-  FETCH_PROPOSED_SHORTLIST_SUCCESS,
-  FETCH_PROPOSED_SHORTLIST_FAILURE,
+  PROPOSED_DRAFTS_BEGIN,
+  PROPOSED_DRAFTS_SUCCESS,
+  PROPOSED_DRAFTS_FAILURE,
+  PROPOSED_SHORTLIST__BEGIN,
+  PROPOSED_SHORTLIST__SUCCESS,
+  PROPOSED_SHORTLIST__FAILURE,
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -12,18 +12,18 @@ const axios = require('axios').create({
 });
 
 const FetchProposedDraftsBegin = () => ({
-  type: FETCH_PROPOSED_DRAFTS_BEGIN,
+  type: PROPOSED_DRAFTS_BEGIN,
 });
 
-const FetchProposedDraftsSuccess = (proposedDrafts) => ({
-  type: FETCH_PROPOSED_DRAFTS_SUCCESS,
+const FetchProposedDraftsSuccess = (proposed) => ({
+  type: PROPOSED_DRAFTS_SUCCESS,
   payload: {
-    proposedDrafts
+    proposed
   }
 });
 
 const FetchProposedDraftsFailure = (error) => ({
-  type: FETCH_PROPOSED_DRAFTS_FAILURE,
+  type: PROPOSED_DRAFTS_FAILURE,
   payload: {
     error
   }
@@ -31,11 +31,12 @@ const FetchProposedDraftsFailure = (error) => ({
 
 export const FetchProposedDrafts = (request) => {
   const GetRequest = { params: request };
+  console.log(`Dispatching ${GetRequest}`);
   return (dispatch) => {
     dispatch(FetchProposedDraftsBegin());
 
     axios
-      .get('/api/proposed/drafts', GetRequest)
+      .get('/api/delegate/proposed/matches', GetRequest)
       .then(res => {
         dispatch(FetchProposedDraftsSuccess(res.data));
       })
@@ -48,18 +49,18 @@ export const FetchProposedDrafts = (request) => {
 
 
 const FetchProposedShortlistBegin = () => ({
-  type: FETCH_PROPOSED_SHORTLIST_BEGIN,
+  type: PROPOSED_SHORTLIST__BEGIN,
 });
 
 const FetchProposedShortlistSuccess = (proposedDrafts) => ({
-  type: FETCH_PROPOSED_SHORTLIST_SUCCESS,
+  type: PROPOSED_SHORTLIST__SUCCESS,
   payload: {
     proposedDrafts
   }
 });
 
 const FetchProposedShortlistFailure = (error) => ({
-  type: FETCH_PROPOSED_SHORTLIST_FAILURE,
+  type: PROPOSED_SHORTLIST__FAILURE,
   payload: {
     error
   }
@@ -71,7 +72,7 @@ export const FetchProposedShortlist = (request) => {
     dispatch(FetchProposedShortlistBegin());
 
     axios
-      .get('/api/proposed/shortlist', GetRequest)
+      .get('/api/delegate/proposed/shortlist', GetRequest)
       .then(res => {
         dispatch(FetchProposedShortlistSuccess(res.data));
       })

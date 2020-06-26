@@ -1,10 +1,10 @@
 import {
-  FETCH_DELEGABLE_MATCHES_BEGIN,
-  FETCH_DELEGABLE_MATCHES_SUCCESS,
-  FETCH_DELEGABLE_MATCHES_FAILURE,
-  FETCH_ELIGIBLE_REFS_BEGIN,
-  FETCH_ELIGIBLE_REFS_SUCCESS,
-  FETCH_ELIGIBLE_REFS_FAILURE,
+  DELEGABLE_MATCHES_BEGIN,
+  DELEGABLE_MATCHES_SUCCESS,
+  DELEGABLE_MATCHES_FAILURE,
+  ELIGIBLE_REFS_BEGIN,
+  ELIGIBLE_REFS_SUCCESS,
+  ELIGIBLE_REFS_FAILURE,
 } from '../../constants/action-types';
 
 const initialState = {
@@ -16,32 +16,36 @@ const initialState = {
 
 const delegableMatchesReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_DELEGABLE_MATCHES_BEGIN:
+    case DELEGABLE_MATCHES_BEGIN:
       return {
         ...state,
       };
-    case FETCH_DELEGABLE_MATCHES_SUCCESS:
+    case DELEGABLE_MATCHES_SUCCESS:
       return {
+        ...state,
         matchesLoading: false,
         shortlistLoading: true,
         matches: action.payload.matches
       };
-    case FETCH_DELEGABLE_MATCHES_FAILURE:
+    case DELEGABLE_MATCHES_FAILURE:
       return {
+        ...state,
         matchesLoading: false,
         error: action.payload.error,
       };
-    case FETCH_ELIGIBLE_REFS_BEGIN:
+    case ELIGIBLE_REFS_BEGIN:
       return {
         ...state,
       };
-    case FETCH_ELIGIBLE_REFS_SUCCESS:
+    case ELIGIBLE_REFS_SUCCESS:
       return {
+        ...state,
         shortlistLoading: false,
         shortlist: action.payload.shortlist
       };
-    case FETCH_ELIGIBLE_REFS_FAILURE:
+    case ELIGIBLE_REFS_FAILURE:
       return {
+        ...state,
         shortlistLoading: false
       };
     default:

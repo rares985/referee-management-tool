@@ -9,9 +9,23 @@ div.page-container {
   }
 }
 
+div.page-container > section {
+  margin-bottom: 5em;
+}
+
+.page-title {
+  font-size: 100;
+}
+
+h4.table-selector-header {
+  margin-bottom: 0;
+  padding: 12px;
+}
+
 div.personalized-card {
   margin-bottom: 10px;
 }
+
 
 @media screen and (max-width: 440px) {
   div.page-container {
