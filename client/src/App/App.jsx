@@ -1,7 +1,10 @@
+/* eslint-disable */
 import React, { useEffect } from 'react';
 import { Router, navigate } from '@reach/router';
 import { connect } from 'react-redux';
-import ResponsiveNavigation from '../components/ResponsiveNavigation';
+
+
+import ResponsiveDrawer from '../components/ResponsiveDrawer';
 import logo from '../assets/frv_logo_no_bg.png';
 import Home from '../pages/Home';
 import Matches from '../pages/Matches';
@@ -14,41 +17,39 @@ import Team from '../pages/Team';
 import Delegate from '../pages/Delegate';
 import ApproveDrafts from '../pages/ApproveDrafts';
 import WithAuth from '../components/withAuth';
-
-/* eslint-disable */
+import HomeIcon from '@material-ui/icons/Home';
+import LockIcon from '@material-ui/icons/Lock';
+import EventIcon from '@material-ui/icons/Event';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
   finished: state.login.finished,
 });
 
-
 const App = (props) => {
-  const guestLinks = [
+  const links = [
     {
-      text: 'Home',
+      text: 'Acasă',
       path: '/',
-      icon: 'ion-ios-home',
+      icon: <HomeIcon />
     },
     {
-      text: 'Matches',
+      text: 'Meciuri',
       path: '/matches',
-      icon: 'ion-ios-home',
+      icon: <EventIcon />
     },
     {
-      text: 'Login',
+      text: 'Autentificare',
       path: '/login',
-      icon: 'ion-ios-lock',
+      icon: <LockIcon />
     },
-  ];
-
-  const userLinks = [
-    ...guestLinks.slice(0, guestLinks.length - 1),
-    {
+    user !== '' ? {
+      exclusive: true,
       text: 'Dashboard',
-      path: '/account',
-      icon: 'ion-ios-person',
-    },
+      path: '/dashboard',
+      icon: <DashboardIcon />
+    } : false,
   ];
 
   /* Declare routes as protected */
@@ -62,37 +63,31 @@ const App = (props) => {
 
   useEffect(() => {
     if (finished) {
-      navigate("/account");
+      navigate("/dashboard");
     }
   }, [finished]);
 
   return (
     <div className="app">
-      <ResponsiveNavigation
-        navLinks={(user !== '') ? userLinks : guestLinks}
-        background="#000000"
-        hoverBackground="#ddd"
-        linkColor="#777"
-        logo={logo}
-      />
-      <h4>Logat ca {user}</h4>
-      <Router>
-        <Home path="/" />
-        <Matches path="/matches" />
-        {(user === '') && <Login path="/login" navigate={navigate} />}
-        {(user !== '') && <Dashboard path="/account" navigate={navigate} />}
-        {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <PersonalInformationForm path="/updateinfo" navigate={navigate} />
-        {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <PersonalMatchHistory path="/viewhistory" authenticatedUser={user} navigate={navigate} />
-        {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <UnavailabilityPeriods path="/addunavailable" navigate={navigate} />
-        {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <ApproveDrafts path="/approvedrafts" navigate={navigate} />
-        {/* <PrpsDrafts path="/delegate" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-        <Delegate path="/delegate" navigate={navigate} />
-        <Team path="/team" navigate={navigate} />
-      </Router>
+      <ResponsiveDrawer links={links.filter(elem => elem)}>
+        <Router>
+          <Home path="/" />
+          <Matches path="/matches" />
+          {(user === '') && <Login path="/login" navigate={navigate} />}
+          {(user !== '') && <Dashboard path="/dashboard" navigate={navigate} />}
+          {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+          <PersonalInformationForm path="/updateinfo" />
+          {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+          <PersonalMatchHistory path="/viewhistory" authenticatedUser={user} />
+          {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+          <UnavailabilityPeriods path="/addunavailable" navigate={navigate} />
+          {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+          <ApproveDrafts path="/approvedrafts" navigate={navigate} />
+          {/* <PrpsDrafts path="/delegate" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+          <Delegate path="/delegate" navigate={navigate} />
+          <Team path="/team" navigate={navigate} />
+        </Router>
+      </ResponsiveDrawer>
     </div>
   );
 };

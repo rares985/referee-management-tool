@@ -52,4 +52,6 @@ const personalInfoReducer = (state = initialState, action) => {
   }
 };
 
+
+
 export default personalInfoReducer;

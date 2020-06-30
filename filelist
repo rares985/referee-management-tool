@@ -34,8 +34,10 @@ client/src/assets/scss/login.scss
 client/src/assets/scss/page-container.scss
 client/src/assets/scss/toolbar.scss
 client/src/components/ChooseRefereeModal.jsx
+client/src/components/DismissibleHelper.jsx
 client/src/components/Icons.jsx
 client/src/components/ResponsiveNavigation.jsx
+client/src/components/TableHeaderSelector.jsx
 client/src/components/withAuth.jsx
 client/src/constants/action-types.js
 client/src/index.css
@@ -75,7 +77,6 @@ client/src/utils/datemanip.js
 client/src/utils/strmanip.js
 client/webpack.config.dev.js
 client/webpack.config.prod.js
-
 package.json
 server.js
 server/auth_middleware.js

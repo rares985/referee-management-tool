@@ -6,6 +6,7 @@ import personalInfoReducer from './personalInfoReducer';
 import dashboardReducer from './dashboardReducer';
 import unavailabilityPeriodsReducer from './unavailabilityPeriodsReducer';
 import approvableDraftsReducer from './approve/approveDraftsReducer';
+import personalMatchHistoryReducer from './personalMatchHistory';
 
 
 export default combineReducers({
@@ -14,6 +15,7 @@ export default combineReducers({
   approvable: approvableDraftsReducer,
   login: loginReducer,
   personal: personalInfoReducer,
+  matchhistory: personalMatchHistoryReducer,
   user: dashboardReducer,
   unavailabilityPeriods: unavailabilityPeriodsReducer,
 });

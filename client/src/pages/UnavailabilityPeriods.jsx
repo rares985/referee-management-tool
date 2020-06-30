@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { CircularProgress } from '@material-ui/core';
 // eslint-disable-next-line no-unused-vars
-import { Button, Alert, Form, FormControl, Col, Table, Spinner } from 'react-bootstrap';
+import { Button, Form, FormControl, Col, Table } from 'react-bootstrap';
 // eslint-disable-next-line no-unused-vars
-import { XIcon, QuestionMarkSquareFill } from '../components/Icons';
-import { FetchUpcomingUnavailabilities, FetchOldUnavailabilities, AddNewUnavailability } from '../actions/UnavailabilityPeriodActions';
+import { XIcon } from '../components/Icons';
+import {
+  FetchUpcomingUnavailabilities,
+  FetchOldUnavailabilities,
+  AddNewUnavailability
+} from '../actions/UnavailabilityPeriodActions';
 
 import dateFormatter from '../utils/datemanip';
 
@@ -34,7 +39,9 @@ const mapDispatchToProps = (dispatch) => ({
 const UnavailableDatesTable = (props) => {
 
   const handleDelete = (idx) => {
+    /* eslint-disable no-console */
     console.log(`Deleted ${idx}`);
+    /* eslint-enable no-console */
   }
 
   const { deletable, dates } = props;
@@ -114,19 +121,16 @@ const UnavailabilityPeriods = (props) => {
 
     // addNewPeriod({ StartDate: startDate, EndDate: endDate });
   }
-
-  console.log(newUnavailabilityDates);
-
   return (
-    <div className="page-container">
+    <>
       <section>
-        {oldLoading && <Spinner animation="border" />}
+        {oldLoading && <CircularProgress />}
         <h2>Perioade de indisponibilitate trecute</h2>
         {!oldLoading && <UnavailableDatesTable dates={oldDates} />}
       </section>
 
       <section>
-        {upcomingLoading && <Spinner animation="border" />}
+        {upcomingLoading && <CircularProgress />}
         <h2>Perioade de indisponibilitate in perioada urmatoare</h2>
         {!upcomingLoading && <UnavailableDatesTable dates={upcomingDates} />}
       </section>
@@ -167,7 +171,7 @@ const UnavailabilityPeriods = (props) => {
           </Form.Row>
         </Form>
       </section>
-    </div>
+    </>
   );
 };
 /* eslint-enable */

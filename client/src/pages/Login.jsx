@@ -52,60 +52,55 @@ const Login = (props) => {
 
 
   return (
-
-    < div className="page-container" >
-
-      <div className="login">
-        <Container>
-
-          <Typography className="page-title" variant="h4" component="h4">
-            Autentificare
+    <div className="login">
+      <Container>
+        <Typography className="page-title" variant="h4" component="h4">
+          Autentificare
         </Typography>
-          <Card>
-            <form onSubmit={handleSubmit}>
-              <div className="avatar">
-                <LockTwoTone style={{ fontSize: 60 }} />
-              </div>
-              <FormGroup controlId="username">
-                <FormLabel>username</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </FormGroup>
-              <FormLabel>Password</FormLabel>
-              <InputGroup className="mb-3">
-                <FormControl
-                  type={isMasked ? 'password' : 'text'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <InputGroup.Append>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => {
-                      /* Invert password mask */
-                      setMasked(!isMasked);
-                      setTimeout(() => {
-                        /* At timeout, forcefully hide password */
-                        setMasked(true);
-                      }, HIDE_PASSWORD_DELAY_MS);
-                    }}
-                  >
-                    <EyeIcon isMasked={isMasked} />
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-              <Button variant="info" block disabled={!validateForm()} type="submit">
-                Autentificare
+        <Card>
+          <form onSubmit={handleSubmit}>
+            <div className="avatar">
+              <LockTwoTone style={{ fontSize: 60 }} />
+            </div>
+            <FormGroup controlId="username">
+              <FormLabel>username</FormLabel>
+              <FormControl
+                autoFocus
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </FormGroup>
+            <FormLabel>Password</FormLabel>
+            <InputGroup className="mb-3">
+              <FormControl
+                type={isMasked ? 'password' : 'text'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <InputGroup.Append>
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => {
+                    /* Invert password mask */
+                    setMasked(!isMasked);
+                    setTimeout(() => {
+                      /* At timeout, forcefully hide password */
+                      setMasked(true);
+                    }, HIDE_PASSWORD_DELAY_MS);
+                  }}
+                >
+                  <EyeIcon isMasked={isMasked} />
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
+            <Button variant="info" block disabled={!validateForm()} type="submit">
+              Autentificare
             </Button>
-            </form>
-          </Card>
-        </Container>
-      </div>
-    </div >
+          </form>
+        </Card>
+      </Container>
+    </div>
   );
 };
 /* eslint-enable */

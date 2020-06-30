@@ -31,7 +31,6 @@ const FetchProposedDraftsFailure = (error) => ({
 
 export const FetchProposedDrafts = (request) => {
   const GetRequest = { params: request };
-  console.log(`Dispatching ${GetRequest}`);
   return (dispatch) => {
     dispatch(FetchProposedDraftsBegin());
 

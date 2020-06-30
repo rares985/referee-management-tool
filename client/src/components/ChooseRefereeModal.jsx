@@ -24,7 +24,10 @@ const ChooseRefereeModal = (props) => {
 
   const shortlistMatch = shortlist[matchid];
   const refs = shortlistMatch.map(elem => ({ "referee_name": elem.referee_name, "referee_id": elem.referee_id }));
-  const matching = filter(refs, elem => query === "" ? true : removeAccents(elem.referee_name.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1);
+  const matching = filter(refs,
+    elem => query === "" ?
+      true :
+      removeAccents(elem.referee_name.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1);
 
   return (
     <>

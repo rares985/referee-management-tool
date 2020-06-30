@@ -14,19 +14,19 @@ const initialState = {
 
 const checkTokenReducer = (state = initialState, action) => {
   switch (action.type) {
-    case FETCH_USER_RIGHTS_BEGIN:
+    case CHECK_TOKEN_BEGIN:
       return {
         ...state,
         loading: true,
         error: null
       };
-    case FETCH_USER_RIGHTS_SUCCESS:
+    case CHECK_TOKEN_SUCCESS:
       return {
         ...state,
         loading: false,
         error: null
       };
-    case FETCH_USER_RIGHTS_FAILURE:
+    case CHECK_TOKEN_FAILURE:
       return {
         ...state,
         loading: false,

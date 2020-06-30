@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { Button, FormGroup, FormControl, FormLabel, Card, Spinner } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
@@ -81,13 +81,12 @@ const PersonalInformationForm = (props) => {
       mobilePhone,
       email,
     };
-    console.log(request);
     doUpdatePersonalInfo(request);
   };
 
   return (
-    <div className="page-container">
-      {loading && <Spinner animation="border" />}
+    <>
+      {loading && <CircularProgress />}
       {!loading &&
         <div className="login">
           <Card border="dark">
@@ -184,7 +183,7 @@ const PersonalInformationForm = (props) => {
           </Card>
         </div>
       }
-    </div>
+    </>
   );
 };
 
