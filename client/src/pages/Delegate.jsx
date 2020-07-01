@@ -1,10 +1,8 @@
 import React from 'react';
+import Container from '@material-ui/core/Container';
 
-// eslint-disable-next-line no-unused-vars
 import DelegableMatches from './delegate/DelegableMatches';
-// eslint-disable-next-line no-unused-vars
 import ProposedDrafts from './delegate/ProposedDrafts';
-// eslint-disable-next-line no-unused-vars
 import RejectedDrafts from './delegate/RejectedDrafts';
 import PersonalDrafts from './delegate/PersonalDrafts';
 
@@ -12,7 +10,7 @@ import PersonalDrafts from './delegate/PersonalDrafts';
 // eslint-disable-next-line no-unused-vars
 const Delegate = (props) => {
     return (
-        <>
+        <Container fluid>
             <section>
                 <DelegableMatches />
             </section>
@@ -25,7 +23,7 @@ const Delegate = (props) => {
             <section>
                 <RejectedDrafts />
             </section>
-        </>
+        </Container>
     );
 }
 /* eslint-enable react/prop-types */

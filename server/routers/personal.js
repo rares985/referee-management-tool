@@ -74,9 +74,34 @@ const UpdatePersonalInfo = (req, res) => {
   }
 }
 
+const GetPersonalHistory = (req, res) => {
+  console.log(req.query);
+  const { username } = req.query;
+
+  poolConnect
+    .then((pool) => {
+      pool.request()
+        .input('Username', sql.VarChar(50), username)
+        .execute('GetPersonalHistory', (err, proc_res) => {
+          if (err) {
+            console.log(err);
+            res.status(501).send("Internal database error");
+            return;
+          }
+          res.status(200).send(proc_res.recordset);
+          console.dir(proc_res);
+        });
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(501).send("Internal database error");
+    });
+}
+
 /* Matches to which I can delegate */
 router.get('/', GetPersonalInfo);
 router.post('/', UpdatePersonalInfo);
+router.get('/history', GetPersonalHistory);
 
 
 module.exports = router;

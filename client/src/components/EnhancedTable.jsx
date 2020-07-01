@@ -10,8 +10,6 @@ import CreateIcon from '@material-ui/icons/Create';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import EnhancedTableHead from './EnhancedTableHead'
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 
@@ -56,7 +54,8 @@ const EnhancedTable = (props) => {
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [dense, setDense] = React.useState(true);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   const handleRequestSort = (event, property) => {
@@ -110,9 +109,6 @@ const EnhancedTable = (props) => {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
-  };
 
   const isSelected = (matchNo) => {
     return selected.indexOf(matchNo) !== -1;
@@ -170,7 +166,7 @@ const EnhancedTable = (props) => {
                           />
                         </TableCell>) : (<></>)
                       }
-                      <TableCell component="th" id={labelId} scope="row" padding="none">
+                      <TableCell component="th" id={labelId} scope="row" padding="default">
                         {row.match_no}
                       </TableCell>
                       <TableCell align="right">{row.match_date}</TableCell>
@@ -214,10 +210,6 @@ const EnhancedTable = (props) => {
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
-        control={<Switch checked={dense} onChange={handleChangeDense} />}
-        label="Dense padding"
-      />
     </div >
 
   );

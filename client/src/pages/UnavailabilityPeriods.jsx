@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-// eslint-disable-next-line no-unused-vars
 import { Button, Form, FormControl, Col, Table } from 'react-bootstrap';
-// eslint-disable-next-line no-unused-vars
 import { XIcon } from '../components/Icons';
 import {
   FetchUpcomingUnavailabilities,

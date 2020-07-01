@@ -7,8 +7,7 @@ import Grid from '@material-ui/core/Grid';
 
 
 /* eslint-disable react/prop-types */
-// eslint-disable-next-line no-unused-vars 
-import { Card, Button, Container, Row, Col } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { Clock, PersonBoundingBox, Calendar, BoxArrowLeft } from '../components/Icons';
 
 import { FetchUserRights, LogoutUser } from '../actions/DashboardActions';

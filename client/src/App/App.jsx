@@ -3,9 +3,7 @@ import React, { useEffect } from 'react';
 import { Router, navigate } from '@reach/router';
 import { connect } from 'react-redux';
 
-
 import ResponsiveDrawer from '../components/ResponsiveDrawer';
-import logo from '../assets/frv_logo_no_bg.png';
 import Home from '../pages/Home';
 import Matches from '../pages/Matches';
 import Login from '../pages/Login';

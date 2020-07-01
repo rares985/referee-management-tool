@@ -4,10 +4,6 @@ div.avatar {
   margin-top: 10px;
 }
 
-div.page-container > section {
-  margin-bottom: 5em;
-}
-
 .page-title {
   font-size: 100;
 }
@@ -23,10 +19,6 @@ div.personalized-card {
 
 
 @media screen and (max-width: 440px) {
-  div.page-container {
-    margin-left: 90px;
-    margin-right: 30px;
-  }
 
   div.personalized-card {
     margin-bottom: 5px;
@@ -34,11 +26,5 @@ div.personalized-card {
 
   personalized-card-width {
     width: 10rem;
-  }
-}
-
-@media screen and (max-width: 760px) {
-  div.page-container {
-    margin-left: 90px;
   }
 }

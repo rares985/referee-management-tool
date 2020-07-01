@@ -37,11 +37,8 @@ const PersonalInformationForm = (props) => {
   const [email, setEmail] = useState('');
 
   /* Read-only, should not be modified by user */
-  // eslint-disable-next-line no-unused-vars
   const [county, setCounty] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [category, setCategory] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [lot, setLot] = useState('');
 
   // eslint-disable-next-line no-unused-vars
@@ -49,7 +46,6 @@ const PersonalInformationForm = (props) => {
   const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
 
   useEffect(() => {
-    // eslint-disable-next-line react/prop-types
     if (loading) {
       doFetchPersonalInfo({
         username: user

@@ -37,8 +37,10 @@ const LoginAction = (request) => {
         dispatch(LoginSuccess(request.username));
       })
       .catch((err) => {
-        dispatch(LoginFailure(err.error));
-      });
+        if (err.response.status === 401) {
+          dispatch(LoginFailure("Bad password/username"));
+        }
+      })
   };
 };
 

@@ -44,7 +44,6 @@ router.post("/", (req, res) => {
             if (err) {
               throw err;
             } else {
-              console.log(result);
               if (result) {
                 console.log("Password Check OK. Issuing Token");
                 const payload = { username };

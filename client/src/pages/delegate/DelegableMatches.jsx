@@ -117,7 +117,7 @@ const DelegableMatches = (props) => {
   }
   const shortlistById = groupBy(shortlist, elem => elem.match_id);
   const headCells = [
-    { id: 'match_no', numeric: false, disablePadding: true, label: 'Număr meci' },
+    { id: 'match_no', numeric: false, disablePadding: false, label: 'Număr meci' },
     { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
