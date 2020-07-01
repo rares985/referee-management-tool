@@ -34,8 +34,6 @@ const FetchApprovableDrafts = (request) => {
 
     axios.get('/api/approve/drafts/proposed', GetRequest)
       .then(res => {
-        console.log(res);
-        console.log(res.data);
         dispatch(FetchApprovableDraftsSuccess(res.data));
       })
       .catch(err => {

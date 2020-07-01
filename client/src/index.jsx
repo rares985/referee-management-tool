@@ -9,9 +9,6 @@ import * as serviceWorker from './serviceWorker';
 import App from './App/App';
 import 'fontsource-roboto';
 
-/* eslint-disable no-console */
-console.log(process.env.API_ENDPOINT);
-/* eslint-enable no-console */
 
 ReactDOM.render(
   <Provider store={store}>

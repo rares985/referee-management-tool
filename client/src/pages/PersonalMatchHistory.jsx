@@ -1,13 +1,26 @@
-import React, { useEffect, useState } from 'react';
+import { CircularProgress } from '@material-ui/core';
+import React, { useEffect } from 'react';
 import { Table } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import FetchPersonalMatchHistory from '../actions/PersonalMatchHistoryActions';
+import dateConverter from '../utils/datemanip';
 
+/* eslint-disable react/prop-types */
+const mapStateToProps = (state) => ({
+  user: state.login.user,
+  info: state.personal.matchhistory.matches,
+  loading: state.personal.matchhistory.loading,
+  error: state.personal.matchhistory.error
+});
 
-/* eslint-disable */
-const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
+const mapDispatchToProps = (dispatch) => ({
+  doFetchPersonalMatchHistory: (request) => {
+    dispatch(FetchPersonalMatchHistory(request));
+  },
 });
 
 const MatchTable = (props) => {
+  const { matches } = props;
   return (
     <Table striped bordered size="sm">
       <thead>
@@ -21,29 +34,35 @@ const MatchTable = (props) => {
         </tr>
       </thead>
       <tbody>
-        {props.matches.map((match, idx) => {
-          const matchJson = JSON.parse(match);
-          const d = new Date(matchJson.MatchDay);
-          const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+        {matches.map((match) => {
           return (
-            <tr>
+            <tr key={match.match_no}>
               <td>
-                {matchJson.MatchNumber}
+                {match.match_no}
               </td>
               <td>
-                {dstr}
+                {dateConverter(match.match_date)}
               </td>
               <td>
-                {matchJson.TeamAName}
+                {match.team_a_name}
               </td>
               <td>
-                {matchJson.TeamBName}
+                {match.team_b_name}
               </td>
               <td>
-                {matchJson.FirstRefName}
+                {match.first_referee_name}
               </td>
               <td>
-                {matchJson.SecondRefName}
+                {match.second_referee_name}
+              </td>
+              <td>
+                {match.observer}
+              </td>
+              <td>
+                {match.competition}
+              </td>
+              <td>
+                {match.location}
               </td>
             </tr>
           )
@@ -54,38 +73,30 @@ const MatchTable = (props) => {
 };
 
 const PersonalMatchHistory = (props) => {
-  const [matches, setMatches] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // eslint-disable-next-line no-unused-vars
+  const { user, loading, error, matches } = props;
 
   useEffect(() => {
-    if (isLoading) {
-      axios
-        .get('/api/matchHistory', {
-          params: {
-            username: props.authenticatedUser,
-          }
-        })
-        .then(
-          (response) => {
-            if (response.status === 200) {
-              setIsLoading(false);
-              setMatches(response.data);
-            }
-          },
-          (error) => {
-            console.error(error);
-          }
-        );
+    const { doFetchPersonalMatchHistory } = props;
+
+    if (loading) {
+      doFetchPersonalMatchHistory({
+        username: user,
+      });
     }
-  });
+  }, [loading]);
 
   return (
-    <div className="page-container">
-      <MatchTable matches={matches} />
-    </div>
+    <>
+      {loading && <CircularProgress />}
+      {!loading &&
+        <MatchTable matches={matches} />
+      }
+    </>
   );
 };
 
-/* eslint-enable */
-
-export default PersonalMatchHistory;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PersonalMatchHistory);

@@ -1,15 +1,25 @@
 import { connect } from 'react-redux';
 import React, { useState, useEffect } from 'react';
 /* eslint-disable react/prop-types */
-import { Table, Spinner, Button } from 'react-bootstrap';
+/* eslint-disable no-unused-vars */
+import { Button } from 'react-bootstrap';
+import { CircularProgress, Checkbox } from '@material-ui/core';
 import { groupBy } from 'lodash';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
+import EnhancedTable from '../../components/EnhancedTable';
 
 import { FetchDelegableMatches, FetchEligibleRefs } from '../../actions/delegate/delegableMatchesActions';
 import ChooseRefereeModal from '../../components/ChooseRefereeModal';
 
-import { ArrowUpDown } from '../../components/Icons';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
 import addUpdateArray from '../../utils/arraymanip';
+import dateConverter from '../../utils/datemanip';
 
 
 const mapStateToProps = (state) => ({
@@ -34,6 +44,8 @@ const DelegableMatches = (props) => {
   const [delegated, setDelegated] = useState([]);
   // eslint-disable-next-line no-unused-vars
   const [delegations, setDelegations] = useState([]);
+
+  const [selected, setSelected] = useState([]);
 
   // eslint-disable-next-line no-unused-vars
   const { user, matches, shortlist, matchesLoading, shortlistLoading, error } = props;
@@ -98,82 +110,35 @@ const DelegableMatches = (props) => {
     //         console.error(err);
     //     });
 
-    console.log(formatted);
   }
 
+  const onSelectAllClick = () => {
 
+  }
   const shortlistById = groupBy(shortlist, elem => elem.match_id);
+  const headCells = [
+    { id: 'match_no', numeric: false, disablePadding: false, label: 'Număr meci' },
+    { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
+    { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
+    { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
+    { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
+    { id: 'a1', numeric: false, disablePadding: false, label: 'A1' },
+    { id: 'a2', numeric: false, disablePadding: false, label: 'A2' },
+    { id: 'obs', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
+  ];
+
   return (
     <>
-      {matchesLoading && <Spinner animation="border" />}
+      {matchesLoading && <CircularProgress />}
       {!matchesLoading &&
-        <>
-          <TableHeaderSelector />
-          <Table striped bordered>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Data</th>
-                <th>Echipa A <ArrowUpDown /> </th>
-                <th>Echipa B <ArrowUpDown /></th>
-                <th>Competitie <ArrowUpDown /></th>
-                <th>A1</th>
-                <th>A2</th>
-                <th>Obs</th>
-                <th>Locație </th>
-              </tr>
-            </thead>
-            <tbody>
-              {matches.map((match) => {
-                const d = new Date(match.match_date);
-                const dstr = `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
-                return (
-                  <tr key={match.id}>
-                    <td>
-                      {match.match_no}
-                    </td>
-                    <td>
-                      {dstr}
-                    </td>
-                    <td>
-                      {match.team_a_name}
-                    </td>
-                    <td>
-                      {match.team_b_name}
-                    </td>
-                    <td>
-                      {match.full_name_competition}
-                    </td>
-                    <td>
-                      {GetRefereeName(match.id, "a1")}
-                      {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedA1} />
-                      }
-                    </td>
-                    <td>
-                      {GetRefereeName(match.id, "a2")}
-                      {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedA2} />
-                      }
-                    </td>
-                    <td>
-                      {GetRefereeName(match.id, "Obs")}
-                      {!shortlistLoading &&
-                        <ChooseRefereeModal shortlist={shortlistById} matchid={match.match_id} onSaveCloseCB={OnRefSelectedObs} />
-                      }
-                    </td>
-                    <td>
-                      {match.location}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </Table>
-          <Button onClick={handleDelegationSubmit}>
-            Propune pentru aprobare
-        </Button>
-        </>
+        <EnhancedTable
+          tableName="Meciuri delegabile"
+          rows={matches.map(elem => ({
+            ...elem, match_date: dateConverter(elem.match_date), a1: '-', a2: '-', obs: '-'
+          }))}
+          headCells={headCells}
+        />
       }
     </>
   );

@@ -1,20 +1,46 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Button, FormGroup, InputGroup, FormControl, FormLabel, Card, Container } from 'react-bootstrap';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import TextField from '@material-ui/core/TextField';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import LockTwoTone from '@material-ui/icons/LockTwoTone';
-import { EyeOpenIcon, EyeClosedIcon, LockIcon } from '../components/Icons';
+import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 
 import LoginAction from '../actions/LoginAction';
 
-const HIDE_PASSWORD_DELAY_MS = 500;
+import MaskableTextField from './login/MaskableTextField';
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
+
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
-  finished: state.login.finished,
-  loading: state.login.loading,
   error: state.login.error
 });
 
@@ -25,15 +51,17 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const Login = (props) => {
+
+  const classes = useStyles();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isMasked, setMasked] = useState(true);
+
+  const { error, onSubmitLoginRequest } = props;
 
   function validateForm() {
     return username.length > 0 && password.length > 0;
   }
-
-  const { navigate, user, finished, loading, error, onSubmitLoginRequest } = props;
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -44,71 +72,71 @@ const Login = (props) => {
     });
   }
 
-  const EyeIcon = (prps) => {
-    const { masked } = prps;
-    if (masked) return <EyeClosedIcon />;
-    return <EyeOpenIcon />;
-  };
-
-
   return (
-
-    < div className="page-container" >
-
-      <div className="login">
-        <Container>
-
-          <Typography className="page-title" variant="h4" component="h4">
-            Autentificare
+    <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Autentificare
         </Typography>
-          <Card>
-            <form onSubmit={handleSubmit}>
-              <div className="avatar">
-                <LockTwoTone style={{ fontSize: 60 }} />
-              </div>
-              <FormGroup controlId="username">
-                <FormLabel>username</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </FormGroup>
-              <FormLabel>Password</FormLabel>
-              <InputGroup className="mb-3">
-                <FormControl
-                  type={isMasked ? 'password' : 'text'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <InputGroup.Append>
-                  <Button
-                    variant="outline-secondary"
-                    onClick={() => {
-                      /* Invert password mask */
-                      setMasked(!isMasked);
-                      setTimeout(() => {
-                        /* At timeout, forcefully hide password */
-                        setMasked(true);
-                      }, HIDE_PASSWORD_DELAY_MS);
-                    }}
-                  >
-                    <EyeIcon isMasked={isMasked} />
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-              <Button variant="info" block disabled={!validateForm()} type="submit">
-                Autentificare
-            </Button>
-            </form>
-          </Card>
-        </Container>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Username"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            value={username}
+            error={error}
+            helperText={error ? "Username/parola incorecta" : ''}
+            onChange={(event) => setUsername(event.target.value)}
+          />
+          <MaskableTextField
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Parola"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            error={error}
+            helperText={error ? "Username/parola incorecta" : ''}
+            onChange={(event) => setPassword(event.target.value)}
+          />
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            disabled={!validateForm()}
+          >
+            Autentificare
+          </Button>
+          <Grid container>
+            <Grid item xs>
+              <Link href="http://google.com" variant="body2">
+                Am uitat parola
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
       </div>
-    </div >
+    </Container>
   );
-};
-/* eslint-enable */
+}
 
 export default connect(
   mapStateToProps,

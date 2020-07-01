@@ -1,4 +1,4 @@
-import { Table, Spinner } from 'react-bootstrap';
+import { Table, Spinner, Container } from 'react-bootstrap';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
@@ -69,10 +69,10 @@ const Matches = (props) => {
         if (loading) {
             doFetchMatches();
         }
-    });
+    }, [loading]);
 
     return (
-        <div className="page-container">
+        <Container fluid>
             {loading && <Spinner animation="border" />}
             {!loading &&
                 <>
@@ -128,7 +128,7 @@ const Matches = (props) => {
                 </>
             }
             <DummyTable />
-        </div >
+        </Container>
     );
 };
 

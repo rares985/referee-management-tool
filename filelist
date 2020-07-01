@@ -11,7 +11,6 @@ client/.eslintignore
 client/.eslintrc
 client/.gitignore
 client/.prettierrc
-client/package.json
 client/public/index.html
 client/src/App/App.css
 client/src/App/App.jsx
@@ -21,6 +20,7 @@ client/src/actions/DashboardActions.js
 client/src/actions/LoginAction.js
 client/src/actions/MatchesActions.js
 client/src/actions/PersonalInfoActions.js
+client/src/actions/PersonalMatchHistoryActions.js
 client/src/actions/UnavailabilityPeriodActions.js
 client/src/actions/WithAuthActions.js
 client/src/actions/approve/approveDraftsActions.js
@@ -34,8 +34,13 @@ client/src/assets/scss/login.scss
 client/src/assets/scss/page-container.scss
 client/src/assets/scss/toolbar.scss
 client/src/components/ChooseRefereeModal.jsx
+client/src/components/DismissibleHelper.jsx
+client/src/components/EnhancedTable.jsx
+client/src/components/EnhancedTableHead.jsx
+client/src/components/EnhancedTableToolbar.jsx
 client/src/components/Icons.jsx
-client/src/components/ResponsiveNavigation.jsx
+client/src/components/ResponsiveDrawer.jsx
+client/src/components/TableHeaderSelector.jsx
 client/src/components/withAuth.jsx
 client/src/constants/action-types.js
 client/src/index.css
@@ -66,6 +71,7 @@ client/src/reducers/index.js
 client/src/reducers/loginReducer.js
 client/src/reducers/matchesReducer.js
 client/src/reducers/personalInfoReducer.js
+client/src/reducers/personalMatchHistory.js
 client/src/reducers/unavailabilityPeriodsReducer.js
 client/src/serviceWorker.js
 client/src/setupTests.js
@@ -75,8 +81,6 @@ client/src/utils/datemanip.js
 client/src/utils/strmanip.js
 client/webpack.config.dev.js
 client/webpack.config.prod.js
-
-package.json
 server.js
 server/auth_middleware.js
 server/data/add_static_data.sql

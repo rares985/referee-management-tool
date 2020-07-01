@@ -29,7 +29,6 @@ const FetchPersonalDraftsFailure = (error) => ({
 // eslint-disable-next-line import/prefer-default-export
 export const FetchPersonalDrafts = (request) => {
   const GetRequest = { params: request };
-  console.log(GetRequest);
   return (dispatch) => {
     dispatch(FetchPersonalDraftsBegin());
 

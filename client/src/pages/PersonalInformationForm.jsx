@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 
-import { Button, FormGroup, FormControl, FormLabel, Card, Spinner } from 'react-bootstrap';
+import { Button, FormGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
@@ -37,11 +37,8 @@ const PersonalInformationForm = (props) => {
   const [email, setEmail] = useState('');
 
   /* Read-only, should not be modified by user */
-  // eslint-disable-next-line no-unused-vars
   const [county, setCounty] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [category, setCategory] = useState('');
-  // eslint-disable-next-line no-unused-vars
   const [lot, setLot] = useState('');
 
   // eslint-disable-next-line no-unused-vars
@@ -49,7 +46,6 @@ const PersonalInformationForm = (props) => {
   const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
 
   useEffect(() => {
-    // eslint-disable-next-line react/prop-types
     if (loading) {
       doFetchPersonalInfo({
         username: user
@@ -81,13 +77,12 @@ const PersonalInformationForm = (props) => {
       mobilePhone,
       email,
     };
-    console.log(request);
     doUpdatePersonalInfo(request);
   };
 
   return (
-    <div className="page-container">
-      {loading && <Spinner animation="border" />}
+    <>
+      {loading && <CircularProgress />}
       {!loading &&
         <div className="login">
           <Card border="dark">
@@ -184,7 +179,7 @@ const PersonalInformationForm = (props) => {
           </Card>
         </div>
       }
-    </div>
+    </>
   );
 };
 
