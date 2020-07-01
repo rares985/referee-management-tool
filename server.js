@@ -35,7 +35,7 @@ app.use("/api/authenticate", authRouter);
 
 app.use(
   "/",
-  expressStaticGzip("client/dist", {
+  expressStaticGzip("client/build", {
     enableBrotli: true,
     orderPreference: ["br", "gz"],
     setHeaders: function (res, path) {
