@@ -68,8 +68,8 @@ module.exports = (env) => {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
-          }
-        }
+          },
+        },
       },
       minimizer: [
         new UglifyJsPlugin({
@@ -91,16 +91,16 @@ module.exports = (env) => {
 
     plugins: [
       /**
-        * All files inside webpack's output.path directory will be removed once, but the
-        * directory itself will not be. If using webpack 4+'s default configuration,
-        * everything under <PROJECT_DIR>/build/ will be removed.
-        * Use cleanOnceBeforeBuildPatterns to override this behavior.
-        *
-        * During rebuilds, all webpack assets that are not used anymore
-        * will be removed automatically.
-        *
-        * See `Options and Defaults` for information
-        */
+       * All files inside webpack's output.path directory will be removed once, but the
+       * directory itself will not be. If using webpack 4+'s default configuration,
+       * everything under <PROJECT_DIR>/build/ will be removed.
+       * Use cleanOnceBeforeBuildPatterns to override this behavior.
+       *
+       * During rebuilds, all webpack assets that are not used anymore
+       * will be removed automatically.
+       *
+       * See `Options and Defaults` for information
+       */
       new CleanWebpackPlugin(),
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin(envKeys),
@@ -114,15 +114,15 @@ module.exports = (env) => {
         algorithm: 'gzip',
         test: /\.(js|css|html)$/,
         threshold: 10240,
-        minRatio: 0.7
+        minRatio: 0.7,
       }),
       new BrotliPlugin({
         asset: '[path].br[query]',
         test: /\.(js|html|svg|css)$/,
         threshold: 10240,
-        minRatio: 0.7
-      })
+        minRatio: 0.7,
+      }),
       // new BundleAnalyzerPlugin(),
     ],
-  }
+  };
 };
