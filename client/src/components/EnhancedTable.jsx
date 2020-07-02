@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -8,14 +9,13 @@ import TablePagination from '@material-ui/core/TablePagination';
 import IconButton from '@material-ui/core/IconButton';
 import CreateIcon from '@material-ui/icons/Create';
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import EnhancedTableHead from './EnhancedTableHead'
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 
 
 
-/* eslint-disable react/prop-types */
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -117,102 +117,126 @@ const EnhancedTable = (props) => {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <EnhancedTableToolbar
-          numSelected={selected.length}
-          tableName={tableName}
-        />
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={dense ? 'small' : 'medium'}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              numSelected={selected.length}
-              headCells={handleHeadCellsPadding()}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-              selectable={selectable}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.match_no);
-                  const labelId = `enhanced - table - checkbox - ${index} `;
+    <>
+      <EnhancedTableToolbar
+        numSelected={selected.length}
+        tableName={tableName}
+      />
+      <TableContainer>
+        <Table
+          className={classes.table}
+          aria-labelledby="tableTitle"
+          size={dense ? 'small' : 'medium'}
+          aria-label="enhanced table"
+        >
+          <EnhancedTableHead
+            classes={classes}
+            numSelected={selected.length}
+            headCells={handleHeadCellsPadding()}
+            order={order}
+            orderBy={orderBy}
+            onSelectAllClick={handleSelectAllClick}
+            onRequestSort={handleRequestSort}
+            rowCount={rows.length}
+            selectable={selectable}
+          />
+          <TableBody>
+            {stableSort(rows, getComparator(order, orderBy))
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((row, index) => {
+                const isItemSelected = isSelected(row.match_no);
+                const labelId = `enhanced - table - checkbox - ${index} `;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={selectable ? (event) => handleClick(event, row) : null}
-                      role={selectable ? "checkbox" : null}
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.match_no}
-                      selected={isItemSelected}>
+                return (
+                  <TableRow
+                    hover
+                    onClick={selectable ? (event) => handleClick(event, row) : null}
+                    role={selectable ? "checkbox" : null}
+                    aria-checked={isItemSelected}
+                    tabIndex={-1}
+                    key={row.match_no}
+                    selected={isItemSelected}>
 
-                      {selectable ? (
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            checked={isItemSelected}
-                            inputProps={{ 'aria-labelledby': labelId }}
-                          />
-                        </TableCell>) : (<></>)
-                      }
-                      <TableCell component="th" id={labelId} scope="row" padding="default">
-                        {row.match_no}
-                      </TableCell>
-                      <TableCell align="right">{row.match_date}</TableCell>
-                      <TableCell align="right">{row.team_a_name}</TableCell>
-                      <TableCell align="right">{row.team_b_name}</TableCell>
-                      <TableCell align="right">{row.full_name_competition}</TableCell>
-                      <TableCell align="right">
-                        <IconButton>
-                          <CreateIcon fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell align="right">
-                        <IconButton>
-                          <CreateIcon fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell align="right">
-                        <IconButton>
-                          <CreateIcon fontSize="small" />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell align="right">{row.location}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div >
-
+                    {selectable ? (
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          checked={isItemSelected}
+                          inputProps={{ 'aria-labelledby': labelId }}
+                        />
+                      </TableCell>) : (<></>)
+                    }
+                    <TableCell component="th" id={labelId} scope="row" padding="default">
+                      {row.match_no}
+                    </TableCell>
+                    <TableCell align="right">{row.match_date}</TableCell>
+                    <TableCell align="right">{row.team_a_name}</TableCell>
+                    <TableCell align="right">{row.team_b_name}</TableCell>
+                    <TableCell align="right">{row.full_name_competition}</TableCell>
+                    <TableCell align="right">
+                      <IconButton>
+                        <CreateIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton>
+                        <CreateIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton>
+                        <CreateIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="right">{row.location}</TableCell>
+                  </TableRow>
+                );
+              })}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
+    </>
   );
+}
+
+EnhancedTable.propTypes = {
+  rows: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.number.isRequired,
+    match_no: PropTypes.number.isRequired,
+    match_date: PropTypes.string.isRequired,
+    team_a_name: PropTypes.string.isRequired,
+    team_b_name: PropTypes.string.isRequired,
+    competition_name: PropTypes.string.isRequired,
+    a1: PropTypes.string.isRequired,
+    a2: PropTypes.string.isRequired,
+    obs: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  })).isRequired,
+  headCells: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    numeric: PropTypes.bool.isRequired,
+    disablePadding: PropTypes.bool.isRequired,
+    label: PropTypes.string.isRequired,
+  })).isRequired,
+  tableName: PropTypes.string.isRequired,
+  selectable: PropTypes.bool,
+};
+
+EnhancedTable.defaultProps = {
+  selectable: false
 }
 
 export default EnhancedTable;

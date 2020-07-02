@@ -1,28 +1,32 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { CircularProgress } from '@material-ui/core';
 import { connect } from 'react-redux';
 import { navigate } from '@reach/router';
 import { makeStyles } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import Grid from '@material-ui/core/Grid';
 
+import DashboardItem from './dashboard/DashboardItem';
 
-/* eslint-disable react/prop-types */
-import { Card, Button } from 'react-bootstrap';
-import { Clock, PersonBoundingBox, Calendar, BoxArrowLeft } from '../components/Icons';
+
+import {
+  Clock,
+  PersonBoundingBox,
+  Calendar,
+  BoxArrowLeft,
+  ListCheck,
+  List
+} from '../components/Icons';
 
 import { FetchUserRights, LogoutUser } from '../actions/DashboardActions';
 
 // eslint-disable-next-line no-unused-vars 
 import DismissibleHelper from '../components/DismissibleHelper';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
   },
 }));
 
@@ -33,6 +37,7 @@ const mapStateToProps = (state) => ({
   error: state.user.error
 });
 
+
 const mapDispatchToProps = (dispatch) => ({
   doFetchUserRights: (request) => {
     dispatch(FetchUserRights(request));
@@ -41,6 +46,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(LogoutUser(request));
   }
 });
+
 
 
 
@@ -56,7 +62,7 @@ const Dashboard = (props) => {
         username: user
       });
     }
-  });
+  }, [loading]);
 
   const handleLogout = () => {
 
@@ -72,53 +78,46 @@ const Dashboard = (props) => {
   const baseCards = [
     {
       title: "Istoric meciuri",
-      text: "Vizualizează meciurile la care ai fost delegat",
+      text: "Vizualizează un istoric al meciurilor la care ai fost delegat",
       buttonLabel: "Vizualizează",
       path: "/viewhistory",
       icon: <Clock />,
     },
     {
-      title: "Actualizează date",
-      text: "Acualizează datele tale cu caracter personal",
-      buttonLabel: "Acualizează",
+      title: "Date personale",
+      text: "Actualizează datele tale cu caracter personal",
+      buttonLabel: "Actualizează",
       path: "/updateinfo",
       icon: <PersonBoundingBox />,
     },
     {
-      title: "Adaugă perioade",
-      text: "Adaugă perioade de indisponbilitate",
+      title: "Perioade de indisponibilitate",
+      text: "Vezi perioadele tale de indisponibilitate și modifică-le",
       buttonLabel: "Adaugă",
       path: "/addunavailable",
       icon: <Calendar />,
     },
-    {
-      title: "Actualizează date",
-      text: "Acualizează datele tale cu caracter personal",
-      buttonLabel: "Acualizează",
-      path: "/addunavailable",
-      icon: <PersonBoundingBox />,
-    },
 
     rights.delegation && {
-      title: "Vizualizare delegari",
-      text: "Vizualizeaza si propune noi delegari",
-      buttonLabel: "Creeaza",
+      title: "Vizualizare delegări",
+      text: "Vizualizează și propune noi delegări",
+      buttonLabel: "Creează",
       path: "/delegate",
-      icon: <Calendar />
+      icon: <List />
     },
 
     rights.approval && {
-      title: "Vizualizare propuneri",
+      title: "Aprobă/Respinge propuneri",
       text: "Aproba sau respinge propuneri de delegare",
       buttonLabel: "Aproba",
       path: "/approvedrafts",
-      icon: <Calendar />
+      icon: <ListCheck />
     },
 
     rights.team && {
-      title: "Vizualizare echipa",
-      text: "Vizualizeaza informatii despre echipa mea",
-      buttonLabel: "Vizualizeaza",
+      title: "Vizualizare echipă",
+      text: "Vizualizeaza informații despre echipa mea",
+      buttonLabel: "Vizualizează",
       path: "/team",
       icon: <Calendar />
     },
@@ -137,35 +136,46 @@ const Dashboard = (props) => {
   const classes = useStyles();
 
   return (
-    <>
+    <CssBaseline>
       {loading && <CircularProgress />}
       {!loading &&
         <div className={classes.root}>
           <Grid container spacing={3}>
             {allCards.map((card) => (
-              <Grid item xs={12} sm={8} md={6} lg={4}>
-                <div className="personalized-card">
-                  <Card border="dark" style={{ width: '18rem' }}>
-                    <div className="avatar">
-                      {card.icon}
-                    </div>
-                    <Card.Body>
-                      <Card.Title>{card.title}</Card.Title>
-                      <Card.Text>{card.text}</Card.Text>
-                      <Button variant="primary" onClick={() => (card.onClick ? card.onClick() : navigate(card.path))}>
-                        {card.buttonLabel}
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </div>
+              <Grid item key={card.title} xs={12} sm={9} md={8} lg={4}>
+                <DashboardItem
+                  icon={card.icon}
+                  title={card.title}
+                  text={card.text}
+                  path={card.path}
+                  buttonLabel={card.buttonLabel}
+                  onClick={() => card.onClick ? card.onClick() : navigate(card.path)}
+                />
               </Grid>
             ))}
           </Grid>
         </div>
       }
-    </>
+    </CssBaseline>
   );
 };
+
+Dashboard.propTypes = {
+  user: PropTypes.string.isRequired,
+  rights: PropTypes.shape({
+    delegation: PropTypes.bool.isRequired,
+    approval: PropTypes.bool.isRequired,
+    team: PropTypes.bool.isRequired
+  }).isRequired,
+  loading: PropTypes.bool.isRequired,
+  doFetchUserRights: PropTypes.func.isRequired,
+  doLogoutUser: PropTypes.func.isRequired,
+  error: PropTypes.string,
+};
+
+Dashboard.defaultProps = {
+  error: ''
+}
 
 export default connect(
   mapStateToProps,

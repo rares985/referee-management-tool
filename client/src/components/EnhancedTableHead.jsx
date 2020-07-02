@@ -1,15 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-/* eslint-disable react/prop-types */
 const EnhancedTableHead = (props) => {
-  /* eslint-disable no-unused-vars */
   const {
-    classes,
     headCells,
     onSelectAllClick,
     order,
@@ -19,7 +17,6 @@ const EnhancedTableHead = (props) => {
     onRequestSort,
     selectable
   } = props;
-  /* eslint-enable no-unused-vars */
 
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -57,6 +54,21 @@ const EnhancedTableHead = (props) => {
     </TableHead>
   );
 }
-/* eslint-enable react/prop-types */
+
+EnhancedTableHead.propTypes = {
+  selectable: PropTypes.bool.isRequired,
+  rowCount: PropTypes.number.isRequired,
+  orderBy: PropTypes.string.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  headCells: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    numeric: PropTypes.bool.isRequired,
+    disablePadding: PropTypes.bool.isRequired,
+    label: PropTypes.string.isRequired,
+  })).isRequired,
+  numSelected: PropTypes.number.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  onRequestSort: PropTypes.func.isRequired
+}
 
 export default EnhancedTableHead;

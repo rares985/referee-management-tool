@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import { Table, Button, Container } from 'react-bootstrap';
@@ -6,7 +7,6 @@ import { Table, Button, Container } from 'react-bootstrap';
 import { XIcon } from '../components/Icons';
 import TableHeaderSelector from '../components/TableHeaderSelector';
 
-/* eslint-disable react/prop-types */
 import FetchApprovableDrafts from '../actions/approve/approveDraftsActions';
 
 import dateFormatter from '../utils/datemanip';
@@ -28,7 +28,9 @@ const mapDispatchToProps = (dispatch) => ({
 
 
 const ApproveDrafts = (props) => {
-    const { user, drafts, draftsLoading } = props;
+    /* eslint-disable no-unused-vars */
+    const { user, drafts, draftsLoading, error } = props;
+    /* eslint-enable no-unused-vars */
 
     useEffect(() => {
         const { DoFetchDrafts } = props;
@@ -84,7 +86,28 @@ const ApproveDrafts = (props) => {
         </Container>
     );
 }
-/* eslint-enable */
+
+ApproveDrafts.propTypes = {
+    user: PropTypes.string.isRequired,
+    draftsLoading: PropTypes.bool.isRequired,
+    error: PropTypes.string,
+    drafts: PropTypes.arrayOf(PropTypes.exact({
+        match_no: PropTypes.string.isRequired,
+        match_date: PropTypes.string.isRequired,
+        team_a_name: PropTypes.string.isRequired,
+        team_b_name: PropTypes.string.isRequired,
+        first_referee_name: PropTypes.string.isRequired,
+        second_referee_name: PropTypes.string.isRequired,
+        observer: PropTypes.string.isRequired,
+        competition: PropTypes.string.isRequired,
+        location: PropTypes.string.isRequired,
+    })).isRequired,
+    DoFetchDrafts: PropTypes.func.isRequired,
+}
+
+ApproveDrafts.defaultProps = {
+    error: '',
+}
 export default connect(
     mapStateToProps,
     mapDispatchToProps

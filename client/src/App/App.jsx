@@ -71,12 +71,13 @@ const App = (props) => {
         <Router>
           <Home path="/" />
           <Matches path="/matches" />
-          {(user === '') && <Login path="/login" navigate={navigate} />}
-          {(user !== '') && <Dashboard path="/dashboard" navigate={navigate} />}
+          {(user === '') && <Login path="/login" />}
+          {(user !== '') && <Dashboard path="/dashboard" />}
+          {<Dashboard path="/dashboard" />}
           {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
           <PersonalInformationForm path="/updateinfo" />
           {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-          <PersonalMatchHistory path="/viewhistory" authenticatedUser={user} />
+          <PersonalMatchHistory path="/viewhistory" />
           {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
           <UnavailabilityPeriods path="/addunavailable" navigate={navigate} />
           {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}

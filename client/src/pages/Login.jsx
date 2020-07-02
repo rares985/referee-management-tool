@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -99,7 +99,7 @@ const Login = (props) => {
             onChange={(event) => setUsername(event.target.value)}
           />
           <MaskableTextField
-            margin="normal"
+            margin="none"
             required
             fullWidth
             name="password"
@@ -136,6 +136,15 @@ const Login = (props) => {
       </div>
     </Container>
   );
+}
+
+Login.propTypes = {
+  error: PropTypes.string,
+  onSubmitLoginRequest: PropTypes.func.isRequired,
+}
+
+Login.defaultProps = {
+  error: '',
 }
 
 export default connect(

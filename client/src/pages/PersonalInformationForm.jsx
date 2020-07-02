@@ -1,16 +1,24 @@
-/* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 
-import { Button, FormGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
+import { FormGroup, FormControl, FormLabel } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
 
-// eslint-disable-next-line no-unused-vars
-const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
-});
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(3),
+  }
+}));
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -44,6 +52,8 @@ const PersonalInformationForm = (props) => {
   // eslint-disable-next-line no-unused-vars
   const { user, info, loading, error } = props;
   const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
+
+  const classes = useStyles();
 
   useEffect(() => {
     if (loading) {
@@ -81,11 +91,11 @@ const PersonalInformationForm = (props) => {
   };
 
   return (
-    <>
-      {loading && <CircularProgress />}
-      {!loading &&
-        <div className="login">
-          <Card border="dark">
+    <Container component="main" maxWidth="sm">
+      <CssBaseline>
+        {loading && <CircularProgress />}
+        {!loading &&
+          <Paper elevation={4} className={classes.root}>
             <form onSubmit={handleSubmit}>
               <div className="avatar">
                 <PersonBoundingBox />
@@ -172,16 +182,50 @@ const PersonalInformationForm = (props) => {
                   readOnly
                 />
               </FormGroup>
-              <Button block disabled={!validateForm()} type="submit">
+              <Button variant="contained" color="primary" block="true" disabled={!validateForm()} type="submit">
                 Actualizare
               </Button>
             </form>
-          </Card>
-        </div>
-      }
-    </>
+          </Paper>
+        }
+      </CssBaseline >
+    </Container>
   );
 };
+
+PersonalInformationForm.propTypes = {
+  user: PropTypes.string.isRequired,
+  info: PropTypes.exact({
+    id: PropTypes.number,
+    first_name: PropTypes.string,
+    last_name: PropTypes.string,
+    address: PropTypes.string,
+    phone_number: PropTypes.string,
+    email: PropTypes.string,
+    jud: PropTypes.string,
+    cat: PropTypes.string,
+    lot: PropTypes.string,
+  }),
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  doFetchPersonalInfo: PropTypes.func.isRequired,
+  doUpdatePersonalInfo: PropTypes.func.isRequired,
+}
+
+PersonalInformationForm.defaultProps = {
+  error: '',
+  info: {
+    id: '',
+    first_name: '',
+    last_name: '',
+    address: '',
+    phone_number: '',
+    email: '',
+    jud: '',
+    cat: '',
+    lot: '',
+  }
+}
 
 export default connect(
   mapStateToProps,

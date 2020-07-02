@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Alert } from 'react-bootstrap';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import WbIncandescentIcon from '@material-ui/icons/WbIncandescent';
 import IconButton from '@material-ui/core/IconButton';
 
-/* eslint-disable react/prop-types */
 
 const DismissibleHelper = (props) => {
   const [show, setShow] = useState(true);
@@ -26,6 +26,11 @@ const DismissibleHelper = (props) => {
       <HelpOutlineIcon fontSize="large" />
     </IconButton>
   );
+}
+
+DismissibleHelper.propTypes = {
+  text: PropTypes.string.isRequired,
+  heading: PropTypes.string.isRequired,
 }
 
 export default DismissibleHelper;

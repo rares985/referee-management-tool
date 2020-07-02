@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -112,7 +112,7 @@ const ResponsiveDrawer = (props) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <nav className={classes.drawer} aria-label="mailbox folders">
+      <nav className={classes.drawer} aria-label="pages of site">
         {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
         <Hidden smUp implementation="css">
           <Drawer
@@ -145,12 +145,31 @@ const ResponsiveDrawer = (props) => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Container fluid>
+        <Container fluid="true">
           {children}
         </Container>
       </main>
     </div>
   );
 }
+
+ResponsiveDrawer.propTypes = {
+  window: PropTypes.element,
+  links: PropTypes.arrayOf(PropTypes.exact({
+    exclusive: PropTypes.bool,
+    text: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+    icon: PropTypes.element.isRequired
+  })).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired,
+}
+
+ResponsiveDrawer.defaultProps = {
+  window: undefined,
+}
+
 
 export default ResponsiveDrawer;

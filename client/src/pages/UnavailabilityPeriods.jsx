@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { Button, Form, FormControl, Col, Table } from 'react-bootstrap';
-import { XIcon } from '../components/Icons';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import { Form, FormControl, Col } from 'react-bootstrap';
+import UnavailableDatesTable from './unavailable/UnavailableDatesTable';
+
 import {
   FetchUpcomingUnavailabilities,
   FetchOldUnavailabilities,
   AddNewUnavailability
 } from '../actions/UnavailabilityPeriodActions';
 
-import dateFormatter from '../utils/datemanip';
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -33,46 +40,25 @@ const mapDispatchToProps = (dispatch) => ({
   }
 });
 
-/* eslint-disable react/prop-types */
-const UnavailableDatesTable = (props) => {
 
-  const handleDelete = (idx) => {
-    /* eslint-disable no-console */
-    console.log(`Deleted ${idx}`);
-    /* eslint-enable no-console */
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+    marginTop: theme.spacing(3),
+  },
+  title: {
+    marginBottom: theme.spacing(2),
+  },
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
   }
-
-  const { deletable, dates } = props;
-
-  return (
-    <Table striped bordered size="sm">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Data începerii</th>
-          <th>Data încheierii</th>
-          <th>Motiv</th>
-          {deletable && <th>Sterge</th>}
-        </tr>
-      </thead>
-      <tbody>
-        {dates.map((item, i) => {
-          return (
-            <tr key={item.id}>
-              <td>{i + 1}</td>
-              <td>{dateFormatter(item.StartDate)}</td>
-              <td>{dateFormatter(item.EndDate)}</td>
-              <td>{item.Reason}</td>
-              {deletable && <td><Button variant="dark" onClick={() => handleDelete(i + 1)}><XIcon /></Button></td>}
-            </tr>
-          );
-        })}
-      </tbody>
-    </Table>
-  );
-};
+}));
 
 const UnavailabilityPeriods = (props) => {
+  const classes = useStyles();
+
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
@@ -113,65 +99,101 @@ const UnavailabilityPeriods = (props) => {
 
   };
 
-  const handleConfirm = (event) => {
-    // const { addNewPeriod } = props;
-    event.preventDefault();
+  const tables = [
+    {
+      loading: oldLoading,
+      title: "Perioade de indisponibilitate trecute",
+      dates: oldDates,
+    },
+    {
+      loading: upcomingLoading,
+      title: "Perioade de indisponibilitate în perioada următoare",
+      dates: upcomingDates,
+      deletable: true,
+    },
+    {
+      loading: false,
+      title: "Perioade de indisponibilitate noi",
+      dates: newUnavailabilityDates,
+    }
+  ];
 
-    // addNewPeriod({ StartDate: startDate, EndDate: endDate });
-  }
   return (
-    <>
-      <section>
-        {oldLoading && <CircularProgress />}
-        <h2>Perioade de indisponibilitate trecute</h2>
-        {!oldLoading && <UnavailableDatesTable dates={oldDates} />}
-      </section>
+    <Container component="main" maxWidth="md" className={classes.container}>
+      <CssBaseline>
+        {tables.map((table) => {
+          return (
+            <Paper elevation={4} className={classes.root} key={table.title}>
+              {table.loading && <CircularProgress />}
+              {!table.loading &&
+                <UnavailableDatesTable
+                  title={table.title}
+                  deletable={table.deletable ? table.deletable : false}
+                  dates={table.dates} />
+              }
+            </Paper>
+          );
+        })}
 
-      <section>
-        {upcomingLoading && <CircularProgress />}
-        <h2>Perioade de indisponibilitate in perioada urmatoare</h2>
-        {!upcomingLoading && <UnavailableDatesTable dates={upcomingDates} />}
-      </section>
-
-      <section>
-        <h2>Perioade de indisponibilitate noi</h2>
-        <UnavailableDatesTable deletable dates={newUnavailabilityDates} />
-        <Button block onClick={handleConfirm}>
-          Confirmă
-        </Button>
-      </section>
-
-      <section>
-        <h2> Adaugă indisponibilitate </h2>
-        <Form onSubmit={handleSubmit}>
-          <Form.Row>
-            <Col>
-              <FormControl
-                autoFocus
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-              />
-            </Col>
-            <Col>
-              <FormControl
-                autoFocus
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-              />
-            </Col>
-            <Col>
-              <Button block disabled={!validateForm()} type="submit">
-                Adaugă
+        <Paper elevation={4} className={classes.root}>
+          <Typography component="h1" variant="h5">
+            Adaugă indisponibilitate
+          </Typography>
+          <Form onSubmit={handleSubmit}>
+            <Form.Row>
+              <Col>
+                <FormControl
+                  autoFocus
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />
+              </Col>
+              <Col>
+                <FormControl
+                  autoFocus
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </Col>
+              <Col>
+                <Button variant="contained" color="primary" block disabled={!validateForm()} type="submit">
+                  Adaugă
               </Button>
-            </Col>
-          </Form.Row>
-        </Form>
-      </section>
-    </>
+              </Col>
+            </Form.Row>
+          </Form>
+        </Paper>
+      </CssBaseline>
+    </Container >
   );
 };
-/* eslint-enable */
+
+UnavailabilityPeriods.propTypes = {
+  user: PropTypes.string.isRequired,
+  upcomingDates: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.number.isRequired,
+    StartDate: PropTypes.string.isRequired,
+    EndDate: PropTypes.string.isRequired,
+    Reason: PropTypes.string.isRequired,
+  })).isRequired,
+  upcomingLoading: PropTypes.bool.isRequired,
+  oldDates: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.number.isRequired,
+    StartDate: PropTypes.string.isRequired,
+    EndDate: PropTypes.string.isRequired,
+    Reason: PropTypes.string.isRequired,
+  })).isRequired,
+  oldLoading: PropTypes.bool.isRequired,
+  updateFinished: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  doFetchUpcoming: PropTypes.func.isRequired,
+  doFetchOld: PropTypes.func.isRequired,
+};
+
+UnavailabilityPeriods.defaultProps = {
+  error: ''
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(UnavailabilityPeriods);
