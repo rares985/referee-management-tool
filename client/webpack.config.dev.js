@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   /* Entry point  */
@@ -48,6 +49,7 @@ module.exports = {
   },
 
   plugins: [
+    // new WebpackBundleAnalyzer(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'public/index.html',
@@ -57,17 +59,17 @@ module.exports = {
     inline: true,
     contentBase: 'build/',
     proxy: {
-      '/api/*': 'http://localhost:5001'
+      '/api/*': 'http://localhost:5001',
     },
     headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers": "X-Requested-With, content-type, Authorization"
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
     },
     disableHostCheck: true,
     open: 'chrome',
     historyApiFallback: true,
     hot: true,
     port: 8080,
-  }
+  },
 };

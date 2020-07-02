@@ -9,6 +9,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
+// const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 /* For cleaning before every buildd */
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -68,8 +70,8 @@ module.exports = (env) => {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
-          }
-        }
+          },
+        },
       },
       minimizer: [
         new UglifyJsPlugin({
@@ -91,19 +93,20 @@ module.exports = (env) => {
 
     plugins: [
       /**
-        * All files inside webpack's output.path directory will be removed once, but the
-        * directory itself will not be. If using webpack 4+'s default configuration,
-        * everything under <PROJECT_DIR>/build/ will be removed.
-        * Use cleanOnceBeforeBuildPatterns to override this behavior.
-        *
-        * During rebuilds, all webpack assets that are not used anymore
-        * will be removed automatically.
-        *
-        * See `Options and Defaults` for information
-        */
+       * All files inside webpack's output.path directory will be removed once, but the
+       * directory itself will not be. If using webpack 4+'s default configuration,
+       * everything under <PROJECT_DIR>/build/ will be removed.
+       * Use cleanOnceBeforeBuildPatterns to override this behavior.
+       *
+       * During rebuilds, all webpack assets that are not used anymore
+       * will be removed automatically.
+       *
+       * See `Options and Defaults` for information
+       */
       new CleanWebpackPlugin(),
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin(envKeys),
+      // new WebpackBundleAnalyzer(),
       new HtmlWebpackPlugin({
         /* Relative to output path: */
         // filename: 'index.html',
@@ -114,15 +117,15 @@ module.exports = (env) => {
         algorithm: 'gzip',
         test: /\.(js|css|html)$/,
         threshold: 10240,
-        minRatio: 0.7
+        minRatio: 0.7,
       }),
       new BrotliPlugin({
         asset: '[path].br[query]',
         test: /\.(js|html|svg|css)$/,
         threshold: 10240,
-        minRatio: 0.7
-      })
+        minRatio: 0.7,
+      }),
       // new BundleAnalyzerPlugin(),
     ],
-  }
+  };
 };
