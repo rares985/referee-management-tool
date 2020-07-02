@@ -11,14 +11,13 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    padding: theme.spacing(5),
+    padding: theme.spacing(3),
   },
-  title: {
+  elements: {
     paddingTop: theme.spacing(2),
   },
-  body: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
+  button: {
+    marginTop: theme.spacing(2),
   }
 }));
 
@@ -33,13 +32,13 @@ const DashboardItem = (props) => {
       <div className="avatar">
         {icon}
       </div>
-      <Typography className={classes.title} component="h1" variant="h5">
+      <Typography className={classes.elements} component="h1" variant="h5">
         {title}
       </Typography>
-      <Typography className={classes.body} variant="body" color="textSecondary" component="p">
+      <Typography className={classes.elements} variant="body1" color="textSecondary" component="p">
         {text}
       </Typography>
-      <Button variant="contained" color="primary" onClick={onClick}>
+      <Button className={classes.button} variant="contained" color="primary" onClick={onClick}>
         {buttonLabel}
       </Button>
     </Paper>

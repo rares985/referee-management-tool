@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 
@@ -90,109 +91,112 @@ const PersonalInformationForm = (props) => {
   };
 
   return (
-    <CssBaseline>
-      {loading && <CircularProgress />}
-      {!loading &&
-        <Paper elevation={4} className={classes.root}>
-          <form onSubmit={handleSubmit}>
-            <div className="avatar">
-              <PersonBoundingBox />
-            </div>
-            <FormGroup controlId="last_name">
-              <FormLabel>Nume</FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup controlId="first_name">
-              <FormLabel>Prenume</FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup controlId="address">
-              <FormLabel>Adresă</FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup controlId="birth_date">
-              <FormLabel>Data nașterii</FormLabel>
-              <FormControl
-                autoFocus
-                type="date"
-                value={birthDate}
-                onChange={(e) => setBirthDate(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup controlId="mobile_phone">
-              <FormLabel>Număr telefon mobil</FormLabel>
-              <FormControl
-                autoFocus
-                type="tel"
-                pattern="07[1-9][0-9][0-9]{6}"
-                value={mobilePhone}
-                onChange={(e) => setMobilePhone(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup controlId="personal_email">
-              <FormLabel>Adresă e-mail</FormLabel>
-              <FormControl
-                autoFocus
-                type="email"
-                value={email === '' ? info.email : email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </FormGroup>
-            <FormGroup controlId="category">
-              <FormLabel>Categorie</FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                value={category}
-                readOnly
-              />
-            </FormGroup>
-            <FormGroup controlId="lot">
-              <FormLabel>Lot</FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                value={lot}
-                readOnly
-              />
-            </FormGroup>
-            <FormGroup controlId="county">
-              <FormLabel>Judet</FormLabel>
-              <FormControl
-                autoFocus
-                type="text"
-                value={county}
-                readOnly
-              />
-            </FormGroup>
-            <Button variant="contained" color="primary" block disabled={!validateForm()} type="submit">
-              Actualizare
+    <Container component="main" maxWidth="sm">
+      <CssBaseline>
+        {loading && <CircularProgress />}
+        {!loading &&
+          <Paper elevation={4} className={classes.root}>
+            <form onSubmit={handleSubmit}>
+              <div className="avatar">
+                <PersonBoundingBox />
+              </div>
+              <FormGroup controlId="last_name">
+                <FormLabel>Nume</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </FormGroup>
+              <FormGroup controlId="first_name">
+                <FormLabel>Prenume</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                />
+              </FormGroup>
+              <FormGroup controlId="address">
+                <FormLabel>Adresă</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                />
+              </FormGroup>
+              <FormGroup controlId="birth_date">
+                <FormLabel>Data nașterii</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="date"
+                  value={birthDate}
+                  onChange={(e) => setBirthDate(e.target.value)}
+                />
+              </FormGroup>
+              <FormGroup controlId="mobile_phone">
+                <FormLabel>Număr telefon mobil</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="tel"
+                  pattern="07[1-9][0-9][0-9]{6}"
+                  value={mobilePhone}
+                  onChange={(e) => setMobilePhone(e.target.value)}
+                />
+              </FormGroup>
+              <FormGroup controlId="personal_email">
+                <FormLabel>Adresă e-mail</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="email"
+                  value={email === '' ? info.email : email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </FormGroup>
+              <FormGroup controlId="category">
+                <FormLabel>Categorie</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  value={category}
+                  readOnly
+                />
+              </FormGroup>
+              <FormGroup controlId="lot">
+                <FormLabel>Lot</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  value={lot}
+                  readOnly
+                />
+              </FormGroup>
+              <FormGroup controlId="county">
+                <FormLabel>Judet</FormLabel>
+                <FormControl
+                  autoFocus
+                  type="text"
+                  value={county}
+                  readOnly
+                />
+              </FormGroup>
+              <Button variant="contained" color="primary" block="true" disabled={!validateForm()} type="submit">
+                Actualizare
               </Button>
-          </form>
-        </Paper>
-      }
-    </CssBaseline >
+            </form>
+          </Paper>
+        }
+      </CssBaseline >
+    </Container>
   );
 };
 
 PersonalInformationForm.propTypes = {
   user: PropTypes.string.isRequired,
   info: PropTypes.exact({
+    id: PropTypes.number.isRequired,
     first_name: PropTypes.string.isRequired,
     last_name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,

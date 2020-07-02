@@ -90,13 +90,13 @@ MaskableTextField.propTypes = {
   label: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  error: PropTypes.string,
+  error: PropTypes.bool,
 }
 
 MaskableTextField.defaultProps = {
   fullWidth: true,
   required: true,
-  error: ''
+  error: false,
 };
 
 export default MaskableTextField;

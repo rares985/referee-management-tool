@@ -100,7 +100,7 @@ const Dashboard = (props) => {
 
     rights.delegation && {
       title: "Vizualizare delegări",
-      text: "Vizualizeaza și propune noi delegări",
+      text: "Vizualizează și propune noi delegări",
       buttonLabel: "Creează",
       path: "/delegate",
       icon: <List />
@@ -142,7 +142,7 @@ const Dashboard = (props) => {
         <div className={classes.root}>
           <Grid container spacing={3}>
             {allCards.map((card) => (
-              <Grid item xs={12} sm={9} md={8} lg={4}>
+              <Grid item key={card.title} xs={12} sm={9} md={8} lg={4}>
                 <DashboardItem
                   icon={card.icon}
                   title={card.title}
