@@ -196,16 +196,16 @@ const PersonalInformationForm = (props) => {
 PersonalInformationForm.propTypes = {
   user: PropTypes.string.isRequired,
   info: PropTypes.exact({
-    id: PropTypes.number.isRequired,
-    first_name: PropTypes.string.isRequired,
-    last_name: PropTypes.string.isRequired,
-    address: PropTypes.string.isRequired,
-    phone_number: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    jud: PropTypes.string.isRequired,
-    cat: PropTypes.string.isRequired,
-    lot: PropTypes.string.isRequired,
-  }).isRequired,
+    id: PropTypes.number,
+    first_name: PropTypes.string,
+    last_name: PropTypes.string,
+    address: PropTypes.string,
+    phone_number: PropTypes.string,
+    email: PropTypes.string,
+    jud: PropTypes.string,
+    cat: PropTypes.string,
+    lot: PropTypes.string,
+  }),
   loading: PropTypes.bool.isRequired,
   error: PropTypes.string,
   doFetchPersonalInfo: PropTypes.func.isRequired,
@@ -213,7 +213,18 @@ PersonalInformationForm.propTypes = {
 }
 
 PersonalInformationForm.defaultProps = {
-  error: ''
+  error: '',
+  info: {
+    id: '',
+    first_name: '',
+    last_name: '',
+    address: '',
+    phone_number: '',
+    email: '',
+    jud: '',
+    cat: '',
+    lot: '',
+  }
 }
 
 export default connect(

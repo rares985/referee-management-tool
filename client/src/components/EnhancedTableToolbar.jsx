@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar';
@@ -28,7 +29,6 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-/* eslint-disable react/prop-types */
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected, tableName } = props;
@@ -65,5 +65,10 @@ const EnhancedTableToolbar = (props) => {
     </Toolbar>
   );
 };
+
+EnhancedTableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  tableName: PropTypes.string.isRequired,
+}
 
 export default EnhancedTableToolbar;

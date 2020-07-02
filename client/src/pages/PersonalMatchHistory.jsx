@@ -1,11 +1,12 @@
 import { CircularProgress } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import FetchPersonalMatchHistory from '../actions/PersonalMatchHistoryActions';
 import dateConverter from '../utils/datemanip';
 
-/* eslint-disable react/prop-types */
+
 const mapStateToProps = (state) => ({
   user: state.login.user,
   info: state.personal.matchhistory.matches,
@@ -72,6 +73,20 @@ const MatchTable = (props) => {
   );
 };
 
+MatchTable.propTypes = {
+  matches: PropTypes.arrayOf(PropTypes.exact({
+    match_no: PropTypes.string.isRequired,
+    match_date: PropTypes.string.isRequired,
+    team_a_name: PropTypes.string.isRequired,
+    team_b_name: PropTypes.string.isRequired,
+    first_referee_name: PropTypes.string.isRequired,
+    second_referee_name: PropTypes.string.isRequired,
+    observer: PropTypes.string.isRequired,
+    competition: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  })).isRequired,
+}
+
 const PersonalMatchHistory = (props) => {
   // eslint-disable-next-line no-unused-vars
   const { user, loading, error, matches } = props;
@@ -95,6 +110,27 @@ const PersonalMatchHistory = (props) => {
     </>
   );
 };
+
+PersonalMatchHistory.propTypes = {
+  user: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  doFetchPersonalMatchHistory: PropTypes.func.isRequired,
+  matches: PropTypes.arrayOf(PropTypes.exact({
+    match_no: PropTypes.string.isRequired,
+    match_date: PropTypes.string.isRequired,
+    team_a_name: PropTypes.string.isRequired,
+    team_b_name: PropTypes.string.isRequired,
+    first_referee_name: PropTypes.string.isRequired,
+    second_referee_name: PropTypes.string.isRequired,
+    observer: PropTypes.string.isRequired,
+    competition: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  })).isRequired,
+  error: PropTypes.string,
+}
+PersonalMatchHistory.defaultProps = {
+  error: '',
+}
 
 export default connect(
   mapStateToProps,

@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-/* eslint-disable react/prop-types */
+
 import { CircularProgress } from '@material-ui/core';
-import { FetchProposedDrafts, FetchProposedShortlist } from '../../actions/delegate/proposedDraftsActions';
+import FetchProposedDrafts from '../../actions/delegate/proposedDraftsActions';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
 
 import EnhancedTable from '../../components/EnhancedTable';
@@ -14,8 +15,6 @@ const mapStateToProps = (state) => ({
   user: state.login.user,
   drafts: state.delegate.proposed.proposed,
   draftsLoading: state.delegate.proposed.proposedLoading,
-  shortlist: state.delegate.proposed.shortlist,
-  shortlistLoading: state.delegate.proposed.shortlistLoading,
   error: state.delegate.proposed.error
 });
 
@@ -23,33 +22,23 @@ const mapDispatchToProps = (dispatch) => ({
   DoFetchDrafts: (request) => {
     dispatch(FetchProposedDrafts(request));
   },
-  DoFetchShortlist: (request) => {
-    dispatch(FetchProposedShortlist(request));
-  }
 });
 
 
 const ProposedDrafts = (props) => {
 
   // eslint-disable-next-line no-unused-vars
-  const { user, drafts, shortlist, draftsLoading, shortlistLoading, error } = props;
+  const { user, drafts, draftsLoading, error } = props;
 
   useEffect(() => {
-    const { DoFetchDrafts, DoFetchShortlist } = props;
+    const { DoFetchDrafts } = props;
 
     if (draftsLoading) {
       DoFetchDrafts({
         username: user,
       });
     }
-
-    if (shortlistLoading) {
-      DoFetchShortlist({
-        username: user,
-      });
-    }
-
-  });
+  }, [draftsLoading]);
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
@@ -76,7 +65,32 @@ const ProposedDrafts = (props) => {
   );
 };
 
-/* eslint-enable react/prop-types */
+ProposedDrafts.propTypes = {
+  user: PropTypes.string.isRequired,
+  drafts: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      draft_id: PropTypes.number.isRequired,
+      match_no: PropTypes.number.isRequired,
+      match_date: PropTypes.string.isRequired,
+      team_a_name: PropTypes.string.isRequired,
+      team_b_name: PropTypes.string.isRequired,
+      competition_full_name: PropTypes.string.isRequired,
+      first_referee: PropTypes.string.isRequired,
+      second_referee: PropTypes.string.isRequired,
+      observer: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  draftsLoading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  DoFetchDrafts: PropTypes.func.isRequired,
+}
+
+ProposedDrafts.defaultProps = {
+  error: '',
+}
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

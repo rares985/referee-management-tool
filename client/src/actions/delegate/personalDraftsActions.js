@@ -1,7 +1,10 @@
 import {
   PERSONAL_DRAFTS_BEGIN,
   PERSONAL_DRAFTS_SUCCESS,
-  PERSONAL_DRAFTS_FAILURE
+  PERSONAL_DRAFTS_FAILURE,
+  PERSONAL_DRAFTS_SHORTLIST_BEGIN,
+  PERSONAL_DRAFTS_SHORTLIST_SUCCESS,
+  PERSONAL_DRAFTS_SHORTLIST_FAILURE
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -26,7 +29,6 @@ const FetchPersonalDraftsFailure = (error) => ({
   }
 });
 
-// eslint-disable-next-line import/prefer-default-export
 export const FetchPersonalDrafts = (request) => {
   const GetRequest = { params: request };
   return (dispatch) => {
@@ -42,3 +44,37 @@ export const FetchPersonalDrafts = (request) => {
       })
   }
 };
+
+const FetchPersonalDraftsShortlistBegin = () => ({
+  type: PERSONAL_DRAFTS_SHORTLIST_BEGIN,
+})
+
+const FetchPersonalDraftsShortlistSuccess = (shortlist) => ({
+  type: PERSONAL_DRAFTS_SHORTLIST_SUCCESS,
+  payload: {
+    shortlist
+  }
+})
+
+const FetchPersonalDraftsShortlistFailure = (error) => ({
+  type: PERSONAL_DRAFTS_SHORTLIST_FAILURE,
+  payload: {
+    error
+  }
+})
+
+export const FetchPersonalDraftsShortlist = (request) => {
+  const GetRequest = { params: request };
+  return (dispatch) => {
+    dispatch(FetchPersonalDraftsShortlistBegin());
+
+    axios
+      .get('/api/delegate/drafts/shortlist', GetRequest)
+      .then(res => {
+        dispatch(FetchPersonalDraftsShortlistSuccess(res.data));
+      })
+      .catch(err => {
+        dispatch(FetchPersonalDraftsShortlistFailure(err.error));
+      })
+  }
+}

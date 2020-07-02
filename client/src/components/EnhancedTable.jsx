@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,7 +15,7 @@ import EnhancedTableToolbar from './EnhancedTableToolbar';
 
 
 
-/* eslint-disable react/prop-types */
+
 const useStyles = makeStyles({
   table: {
     minWidth: 650,
@@ -209,6 +210,33 @@ const EnhancedTable = (props) => {
       />
     </>
   );
+}
+
+EnhancedTable.propTypes = {
+  rows: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.number.isRequired,
+    match_no: PropTypes.number.isRequired,
+    match_date: PropTypes.string.isRequired,
+    team_a_name: PropTypes.string.isRequired,
+    team_b_name: PropTypes.string.isRequired,
+    competition_name: PropTypes.string.isRequired,
+    a1: PropTypes.string.isRequired,
+    a2: PropTypes.string.isRequired,
+    obs: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+  })).isRequired,
+  headCells: PropTypes.arrayOf(PropTypes.exact({
+    id: PropTypes.string.isRequired,
+    numeric: PropTypes.bool.isRequired,
+    disablePadding: PropTypes.bool.isRequired,
+    label: PropTypes.string.isRequired,
+  })).isRequired,
+  tableName: PropTypes.string.isRequired,
+  selectable: PropTypes.bool,
+};
+
+EnhancedTable.defaultProps = {
+  selectable: false
 }
 
 export default EnhancedTable;

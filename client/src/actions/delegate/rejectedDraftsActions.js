@@ -2,9 +2,9 @@ import {
   REJECTED_DRAFTS_BEGIN,
   REJECTED_DRAFTS_SUCCESS,
   REJECTED_DRAFTS_FAILURE,
-  REJECTED_SHORTLISTBEGIN,
-  REJECTED_SHORTLISTSUCCESS,
-  REJECTED_SHORTLISTFAILURE
+  REJECTED_SHORTLIST_BEGIN,
+  REJECTED_SHORTLIST_SUCCESS,
+  REJECTED_SHORTLIST_FAILURE
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -46,18 +46,18 @@ export const FetchRejectedDrafts = (request) => {
 }
 
 const FetchRejectedShortlistBegin = () => ({
-  type: REJECTED_SHORTLISTBEGIN,
+  type: REJECTED_SHORTLIST_BEGIN,
 });
 
 const FetchRejectedShortlistSuccess = (shortlist) => ({
-  type: REJECTED_SHORTLISTSUCCESS,
+  type: REJECTED_SHORTLIST_SUCCESS,
   payload: {
     shortlist
   }
 });
 
 const FetchRejectedShortlistFailure = (error) => ({
-  type: REJECTED_SHORTLISTFAILURE,
+  type: REJECTED_SHORTLIST_FAILURE,
   payload: {
     error
   }

@@ -7,6 +7,8 @@ import {
 const initialState = {
   drafts: [],
   draftsLoading: true,
+  shortlist: [],
+  shortlistLoading: true,
 };
 
 const personalDraftsReducer = (state = initialState, action) => {
