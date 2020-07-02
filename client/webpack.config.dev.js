@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+// const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   /* Entry point  */
@@ -48,6 +49,7 @@ module.exports = {
   },
 
   plugins: [
+    // new WebpackBundleAnalyzer(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'public/index.html',

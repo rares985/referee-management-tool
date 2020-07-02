@@ -9,6 +9,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BrotliPlugin = require('brotli-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 
+// const WebpackBundleAnalyzer = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 /* For cleaning before every buildd */
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -104,6 +106,7 @@ module.exports = (env) => {
       new CleanWebpackPlugin(),
       new webpack.ProgressPlugin(),
       new webpack.DefinePlugin(envKeys),
+      // new WebpackBundleAnalyzer(),
       new HtmlWebpackPlugin({
         /* Relative to output path: */
         // filename: 'index.html',
