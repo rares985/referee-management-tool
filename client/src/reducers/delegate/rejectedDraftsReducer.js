@@ -2,9 +2,9 @@ import {
   REJECTED_DRAFTS_BEGIN,
   REJECTED_DRAFTS_SUCCESS,
   REJECTED_DRAFTS_FAILURE,
-  REJECTED_SHORTLISTBEGIN,
-  REJECTED_SHORTLISTSUCCESS,
-  REJECTED_SHORTLISTFAILURE,
+  REJECTED_SHORTLIST_BEGIN,
+  REJECTED_SHORTLIST_SUCCESS,
+  REJECTED_SHORTLIST_FAILURE,
 } from '../../constants/action-types';
 
 const initialState = {
@@ -33,17 +33,17 @@ const rejectedDraftsReducer = (state = initialState, action) => {
         rejectedLoading: false,
         error: action.payload.error,
       };
-    case REJECTED_SHORTLISTBEGIN:
+    case REJECTED_SHORTLIST_BEGIN:
       return {
         ...state,
       };
-    case REJECTED_SHORTLISTSUCCESS:
+    case REJECTED_SHORTLIST_SUCCESS:
       return {
         ...state,
         shortlistLoading: false,
         shortlist: action.payload.shortlist
       };
-    case REJECTED_SHORTLISTFAILURE:
+    case REJECTED_SHORTLIST_FAILURE:
       return {
         ...state,
         shortlistLoading: false

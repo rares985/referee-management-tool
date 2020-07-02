@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-
+import PropTypes from 'prop-types';
 import { Modal, Button, Form, ListGroup } from 'react-bootstrap';
 import { filter } from 'lodash';
 import { Pencil } from './Icons';
 
 import removeAccents from '../utils/strmanip';
 
-/* eslint-disable react/prop-types */
+
 const ChooseRefereeModal = (props) => {
   const [show, setShow] = useState(false);
   const [chosen, setChosen] = useState({});
@@ -72,5 +72,13 @@ const ChooseRefereeModal = (props) => {
   );
 
 }
-/* eslint-enable react/prop-types */
+
+ChooseRefereeModal.propTypes = {
+  shortlist: PropTypes.arrayOf(PropTypes.exact({
+    referee_name: PropTypes.string.isRequired,
+    referee_id: PropTypes.number.isRequired
+  })),
+  matchid: PropTypes.number.isRequired,
+};
+
 export default ChooseRefereeModal;

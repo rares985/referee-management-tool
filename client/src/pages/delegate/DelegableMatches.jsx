@@ -1,23 +1,13 @@
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import { Button } from 'react-bootstrap';
-import { CircularProgress, Checkbox } from '@material-ui/core';
+
+import { CircularProgress } from '@material-ui/core';
 import { groupBy } from 'lodash';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 import EnhancedTable from '../../components/EnhancedTable';
 
 import { FetchDelegableMatches, FetchEligibleRefs } from '../../actions/delegate/delegableMatchesActions';
-import ChooseRefereeModal from '../../components/ChooseRefereeModal';
 
-import TableHeaderSelector from '../../components/TableHeaderSelector';
 import addUpdateArray from '../../utils/arraymanip';
 import dateConverter from '../../utils/datemanip';
 
@@ -31,10 +21,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  doFetchMatches: (request) => {
+  DoFetchMatches: (request) => {
     dispatch(FetchDelegableMatches(request));
   },
-  doFetchShortlist: (request) => {
+  DoFetchShortlist: (request) => {
     dispatch(FetchEligibleRefs(request));
   },
 });
@@ -45,38 +35,42 @@ const DelegableMatches = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [delegations, setDelegations] = useState([]);
 
+  // eslint-disable-next-line no-unused-vars
   const [selected, setSelected] = useState([]);
 
   // eslint-disable-next-line no-unused-vars
   const { user, matches, shortlist, matchesLoading, shortlistLoading, error } = props;
 
   useEffect(() => {
-    const { doFetchMatches, doFetchShortlist } = props;
+    const { DoFetchMatches, DoFetchShortlist } = props;
 
     if (matchesLoading) {
-      doFetchMatches({
+      DoFetchMatches({
         username: user,
       });
     }
 
     if (shortlistLoading) {
-      doFetchShortlist({
+      DoFetchShortlist({
         username: user,
       });
     }
 
   }, [matchesLoading, shortlistLoading]);
-
+  // eslint-disable-next-line no-unused-vars
   const OnRefSelectedA1 = (matchid, ref) => {
     setDelegations(addUpdateArray(delegations, matchid, "a1", ref));
   }
+  // eslint-disable-next-line no-unused-vars
   const OnRefSelectedA2 = (matchid, ref) => {
     setDelegations(addUpdateArray(delegations, matchid, "a2", ref));
   }
+  // eslint-disable-next-line no-unused-vars
   const OnRefSelectedObs = (matchid, ref) => {
     setDelegations(addUpdateArray(delegations, matchid, "Obs", ref));
   }
 
+  // eslint-disable-next-line no-unused-vars
   const GetRefereeName = (matchid, pos) => {
     const idx = delegations.findIndex(elem => elem.matchid === matchid);
     if (idx !== -1) {
@@ -87,15 +81,16 @@ const DelegableMatches = (props) => {
     return 'Arbitru nedelegat';
   }
 
+  // eslint-disable-next-line no-unused-vars
   const handleDelegationSubmit = (event) => {
-    event.preventDefault();
-    const formatted = delegations.map(elem => ({
-      "created_by": props.userid,
-      "first_referee_id": elem.a1.refid,
-      "second_referee_id": elem.a2.refid,
-      "observer_id": elem.Obs.refid,
-      "match_id": elem.matchid
-    }));
+    // event.preventDefault();
+    // const formatted = delegations.map(elem => ({
+    //   "created_by": props.userid,
+    //   "first_referee_id": elem.a1.refid,
+    //   "second_referee_id": elem.a2.refid,
+    //   "observer_id": elem.Obs.refid,
+    //   "match_id": elem.matchid
+    // }));
 
     // axios
     //     .post("/api/drafts", {
@@ -111,11 +106,9 @@ const DelegableMatches = (props) => {
     //     });
 
   }
-
-  const onSelectAllClick = () => {
-
-  }
+  // eslint-disable-next-line no-unused-vars
   const shortlistById = groupBy(shortlist, elem => elem.match_id);
+
   const headCells = [
     { id: 'match_no', numeric: false, disablePadding: false, label: 'Număr meci' },
     { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
@@ -144,5 +137,39 @@ const DelegableMatches = (props) => {
   );
 
 };
-/* eslint-enable react/prop-types */
+
+DelegableMatches.propTypes = {
+  user: PropTypes.string.isRequired,
+  matches: PropTypes.arrayOf(
+    PropTypes.exact({
+      match_id: PropTypes.number.isRequired,
+      match_no: PropTypes.number.isRequired,
+      match_date: PropTypes.string.isRequired,
+      team_a_name: PropTypes.string.isRequired,
+      team_b_name: PropTypes.string.isRequired,
+      full_name_competition: PropTypes.string.isRequired,
+      season: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  shortlist: PropTypes.arrayOf(
+    PropTypes.exact({
+      match_id: PropTypes.number.isRequired,
+      referee_id: PropTypes.number.isRequired,
+      referee_name: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  matchesLoading: PropTypes.bool,
+  shortlistLoading: PropTypes.bool,
+  error: PropTypes.string,
+  DoFetchMatches: PropTypes.func.isRequired,
+  DoFetchShortlist: PropTypes.func.isRequired,
+}
+
+DelegableMatches.defaultProps = {
+  error: '',
+  matchesLoading: true,
+  shortlistLoading: true,
+}
+
 export default connect(mapStateToProps, mapDispatchToProps)(DelegableMatches);

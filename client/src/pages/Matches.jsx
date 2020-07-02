@@ -1,13 +1,13 @@
 import { Table, Spinner, Container } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { FetchMatches } from '../actions/MatchesActions';
 
 import DismissibleHelper from '../components/DismissibleHelper';
+import dateFormatter from '../utils/datemanip';
 
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 const mapStateToProps = (state) => ({
     matches: state.matches.matches,
     loading: state.matches.loading,
@@ -20,40 +20,6 @@ const mapDispatchToProps = (dispatch) => ({
     }
 });
 
-const DummyTable = () => {
-    return (
-        <Table striped bordered size="sm">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Username</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td colSpan="2">Larry the Bird</td>
-                    <td>@twitter</td>
-                </tr>
-            </tbody>
-        </Table>
-    );
-}
-
 
 const Matches = (props) => {
 
@@ -63,7 +29,9 @@ const Matches = (props) => {
         onFetchMatches(request);
     };
 
+    /* eslint-disable no-unused-vars */
     const { matches, loading, error } = props;
+    /* eslint-disable no-unused-vars */
 
     useEffect(() => {
         if (loading) {
@@ -88,19 +56,19 @@ const Matches = (props) => {
                                 <th>A1</th>
                                 <th>A2</th>
                                 <th>Obs</th>
+                                <th>Competitie</th>
+                                <th>Locatie</th>
                             </tr>
                         </thead>
                         <tbody>
                             {matches.map((match) => {
-                                const dt = new Date(match.match_date);
-                                const dtstr = `${dt.getDate()}-${dt.getMonth() + 1}-${dt.getFullYear()}`;
                                 return (
-                                    <tr>
+                                    <tr key={match.match_no}>
                                         <td>
                                             {match.match_no}
                                         </td>
                                         <td>
-                                            {dtstr}
+                                            {dateFormatter(match.match_date)}
                                         </td>
                                         <td>
                                             {match.team_a_name}
@@ -127,15 +95,32 @@ const Matches = (props) => {
                     </Table>
                 </>
             }
-            <DummyTable />
         </Container>
     );
 };
+
+Matches.propTypes = {
+    matches: PropTypes.arrayOf(PropTypes.exact({
+        id: PropTypes.number.isRequired,
+        match_no: PropTypes.number.isRequired,
+        match_date: PropTypes.string.isRequired,
+        team_a_name: PropTypes.string.isRequired,
+        team_b_name: PropTypes.string.isRequired,
+        first_referee_name: PropTypes.string.isRequired,
+        second_referee_name: PropTypes.string.isRequired,
+        observer: PropTypes.string.isRequired,
+        competition: PropTypes.string.isRequired,
+        location: PropTypes.string.isRequired,
+    })).isRequired,
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.string,
+    onFetchMatches: PropTypes.func.isRequired,
+}
+Matches.defaultProps = {
+    error: ''
+}
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(Matches);
-
-/* eslint-enable react/prop-types */
-/* eslint-enable no-unused-vars */

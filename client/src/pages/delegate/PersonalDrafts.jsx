@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
-/* eslint-disable react/prop-types */
-import { FetchPersonalDrafts } from '../../actions/delegate/personalDraftsActions';
+
+import { FetchPersonalDrafts, FetchPersonalDraftsShortlist } from '../../actions/delegate/personalDraftsActions';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
 import EnhancedTable from '../../components/EnhancedTable';
 
@@ -14,30 +15,40 @@ const mapStateToProps = (state) => ({
   user: state.login.user,
   drafts: state.delegate.personal.drafts,
   draftsLoading: state.delegate.personal.draftsLoading,
+  shortlist: state.delegate.personal.shortlist,
+  shortlistLoading: state.delegate.personal.shortlistLoading,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   DoFetchDrafts: (request) => {
     dispatch(FetchPersonalDrafts(request));
   },
+  DoFetchShortlist: (request) => {
+    dispatch(FetchPersonalDraftsShortlist(request));
+  }
 });
 
-/* eslint-disable no-unused-vars */
 
-const ProposedDrafts = (props) => {
+const PersonalDrafts = (props) => {
 
   // eslint-disable-next-line no-unused-vars
-  const { user, drafts, draftsLoading, error } = props;
+  const { user, drafts, draftsLoading, shortlist, shortlistLoading, error } = props;
 
   useEffect(() => {
-    const { DoFetchDrafts } = props;
+    const { DoFetchDrafts, DoFetchShortlist } = props;
 
     if (draftsLoading) {
       DoFetchDrafts({
         username: user,
       });
     }
-  }, [draftsLoading]);
+    if (shortlistLoading) {
+      DoFetchShortlist({
+        username: user,
+      })
+    }
+
+  }, [draftsLoading, shortlistLoading]);
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
@@ -69,6 +80,38 @@ const ProposedDrafts = (props) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProposedDrafts);
+PersonalDrafts.propTypes = {
+  user: PropTypes.string.isRequired,
+  drafts: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      match_no: PropTypes.number.isRequired,
+      match_date: PropTypes.string.isRequired,
+      team_a_name: PropTypes.string.isRequired,
+      team_b_name: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
+      first_referee: PropTypes.string.isRequired,
+      second_referee: PropTypes.string.isRequired,
+      observer: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  shortlist: PropTypes.arrayOf(
+    PropTypes.exact({
 
-/* eslint-enable react/prop-types */
+    })
+  ).isRequired,
+  draftsLoading: PropTypes.bool,
+  shortlistLoading: PropTypes.bool,
+  error: PropTypes.string,
+  DoFetchDrafts: PropTypes.func.isRequired,
+  DoFetchShortlist: PropTypes.func.isRequired,
+}
+
+PersonalDrafts.defaultProps = {
+  error: '',
+  draftsLoading: true,
+  shortlistLoading: true,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalDrafts);

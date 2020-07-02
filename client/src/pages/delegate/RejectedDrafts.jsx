@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import EnhancedTable from '../../components/EnhancedTable';
 
-/* eslint-disable react/prop-types */
 import { FetchRejectedDrafts, FetchRejectedShortlist } from '../../actions/delegate/rejectedDraftsActions';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
 import dateConverter from '../../utils/datemanip';
@@ -79,6 +79,48 @@ const RejectedDrafts = (props) => {
   );
 };
 
+RejectedDrafts.propTypes = {
+  user: PropTypes.string.isRequired,
+  drafts: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number,
+      match_no: PropTypes.string.isRequired,
+      match_date: PropTypes.string.isRequired,
+      team_a_name: PropTypes.string.isRequired,
+      team_b_name: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
+      a1: PropTypes.string.isRequired,
+      a2: PropTypes.string.isRequired,
+      obs: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  shortlist: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      match_no: PropTypes.number.isRequired,
+      match_date: PropTypes.string.isRequired,
+      first_referee: PropTypes.string.isRequired,
+      second_referee: PropTypes.string.isRequired,
+      observer: PropTypes.string.isRequired,
+      team_a_name: PropTypes.string.isRequired,
+      team_b_name: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  draftsLoading: PropTypes.bool,
+  shortlistLoading: PropTypes.bool,
+  error: PropTypes.string,
+  DoFetchDrafts: PropTypes.func.isRequired,
+  DoFetchShortlist: PropTypes.func.isRequired,
+}
+
+RejectedDrafts.defaultProps = {
+  error: '',
+  shortlistLoading: true,
+  draftsLoading: true,
+}
+
 export default connect(mapStateToProps, mapDispatchToProps)(RejectedDrafts);
 
-/* eslint-enable react/prop-types */

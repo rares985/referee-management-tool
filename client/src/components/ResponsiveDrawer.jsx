@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -152,5 +152,24 @@ const ResponsiveDrawer = (props) => {
     </div>
   );
 }
+
+ResponsiveDrawer.propTypes = {
+  window: PropTypes.element,
+  links: PropTypes.arrayOf(PropTypes.exact({
+    exclusive: PropTypes.bool,
+    text: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+    icon: PropTypes.element.isRequired
+  })).isRequired,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ]).isRequired,
+}
+
+ResponsiveDrawer.defaultProps = {
+  window: undefined,
+}
+
 
 export default ResponsiveDrawer;

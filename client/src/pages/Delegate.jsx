@@ -43,5 +43,4 @@ const Delegate = () => {
         </Container>
     );
 }
-/* eslint-enable react/prop-types */
 export default Delegate;
