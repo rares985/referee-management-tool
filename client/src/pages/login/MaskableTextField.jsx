@@ -1,5 +1,5 @@
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -80,5 +80,23 @@ const MaskableTextField = (props) => {
     </FormControl>
   );
 }
+
+MaskableTextField.propTypes = {
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  fullWidth: PropTypes.bool,
+  required: PropTypes.bool,
+  margin: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  error: PropTypes.string,
+}
+
+MaskableTextField.defaultProps = {
+  fullWidth: true,
+  required: true,
+  error: ''
+};
 
 export default MaskableTextField;

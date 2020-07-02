@@ -99,7 +99,7 @@ const Login = (props) => {
             onChange={(event) => setUsername(event.target.value)}
           />
           <MaskableTextField
-            margin="normal"
+            margin="none"
             required
             fullWidth
             name="password"

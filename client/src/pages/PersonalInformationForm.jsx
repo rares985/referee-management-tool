@@ -1,16 +1,23 @@
-/* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 
-import { Button, FormGroup, FormControl, FormLabel, Card } from 'react-bootstrap';
+import { FormGroup, FormControl, FormLabel } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
 
-// eslint-disable-next-line no-unused-vars
-const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
-});
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(3),
+  }
+}));
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -44,6 +51,8 @@ const PersonalInformationForm = (props) => {
   // eslint-disable-next-line no-unused-vars
   const { user, info, loading, error } = props;
   const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
+
+  const classes = useStyles();
 
   useEffect(() => {
     if (loading) {
@@ -81,107 +90,127 @@ const PersonalInformationForm = (props) => {
   };
 
   return (
-    <>
+    <CssBaseline>
       {loading && <CircularProgress />}
       {!loading &&
-        <div className="login">
-          <Card border="dark">
-            <form onSubmit={handleSubmit}>
-              <div className="avatar">
-                <PersonBoundingBox />
-              </div>
-              <FormGroup controlId="last_name">
-                <FormLabel>Nume</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </FormGroup>
-              <FormGroup controlId="first_name">
-                <FormLabel>Prenume</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </FormGroup>
-              <FormGroup controlId="address">
-                <FormLabel>Adresă</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
-              </FormGroup>
-              <FormGroup controlId="birth_date">
-                <FormLabel>Data nașterii</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                />
-              </FormGroup>
-              <FormGroup controlId="mobile_phone">
-                <FormLabel>Număr telefon mobil</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="tel"
-                  pattern="07[1-9][0-9][0-9]{6}"
-                  value={mobilePhone}
-                  onChange={(e) => setMobilePhone(e.target.value)}
-                />
-              </FormGroup>
-              <FormGroup controlId="personal_email">
-                <FormLabel>Adresă e-mail</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="email"
-                  value={email === '' ? info.email : email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </FormGroup>
-              <FormGroup controlId="category">
-                <FormLabel>Categorie</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={category}
-                  readOnly
-                />
-              </FormGroup>
-              <FormGroup controlId="lot">
-                <FormLabel>Lot</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={lot}
-                  readOnly
-                />
-              </FormGroup>
-              <FormGroup controlId="county">
-                <FormLabel>Judet</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={county}
-                  readOnly
-                />
-              </FormGroup>
-              <Button block disabled={!validateForm()} type="submit">
-                Actualizare
+        <Paper elevation={4} className={classes.root}>
+          <form onSubmit={handleSubmit}>
+            <div className="avatar">
+              <PersonBoundingBox />
+            </div>
+            <FormGroup controlId="last_name">
+              <FormLabel>Nume</FormLabel>
+              <FormControl
+                autoFocus
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup controlId="first_name">
+              <FormLabel>Prenume</FormLabel>
+              <FormControl
+                autoFocus
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup controlId="address">
+              <FormLabel>Adresă</FormLabel>
+              <FormControl
+                autoFocus
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup controlId="birth_date">
+              <FormLabel>Data nașterii</FormLabel>
+              <FormControl
+                autoFocus
+                type="date"
+                value={birthDate}
+                onChange={(e) => setBirthDate(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup controlId="mobile_phone">
+              <FormLabel>Număr telefon mobil</FormLabel>
+              <FormControl
+                autoFocus
+                type="tel"
+                pattern="07[1-9][0-9][0-9]{6}"
+                value={mobilePhone}
+                onChange={(e) => setMobilePhone(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup controlId="personal_email">
+              <FormLabel>Adresă e-mail</FormLabel>
+              <FormControl
+                autoFocus
+                type="email"
+                value={email === '' ? info.email : email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </FormGroup>
+            <FormGroup controlId="category">
+              <FormLabel>Categorie</FormLabel>
+              <FormControl
+                autoFocus
+                type="text"
+                value={category}
+                readOnly
+              />
+            </FormGroup>
+            <FormGroup controlId="lot">
+              <FormLabel>Lot</FormLabel>
+              <FormControl
+                autoFocus
+                type="text"
+                value={lot}
+                readOnly
+              />
+            </FormGroup>
+            <FormGroup controlId="county">
+              <FormLabel>Judet</FormLabel>
+              <FormControl
+                autoFocus
+                type="text"
+                value={county}
+                readOnly
+              />
+            </FormGroup>
+            <Button variant="contained" color="primary" block disabled={!validateForm()} type="submit">
+              Actualizare
               </Button>
-            </form>
-          </Card>
-        </div>
+          </form>
+        </Paper>
       }
-    </>
+    </CssBaseline >
   );
 };
+
+PersonalInformationForm.propTypes = {
+  user: PropTypes.string.isRequired,
+  info: PropTypes.exact({
+    first_name: PropTypes.string.isRequired,
+    last_name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    phone_number: PropTypes.string.isRequired,
+    email: PropTypes.string.isRequired,
+    jud: PropTypes.string.isRequired,
+    cat: PropTypes.string.isRequired,
+    lot: PropTypes.string.isRequired,
+  }).isRequired,
+  loading: PropTypes.bool.isRequired,
+  error: PropTypes.string,
+  doFetchPersonalInfo: PropTypes.func.isRequired,
+  doUpdatePersonalInfo: PropTypes.func.isRequired,
+}
+
+PersonalInformationForm.defaultProps = {
+  error: ''
+}
 
 export default connect(
   mapStateToProps,
