@@ -9,19 +9,18 @@ import Grid from '@material-ui/core/Grid';
 
 import DashboardItem from './dashboard/DashboardItem';
 
-
 import {
   Clock,
   PersonBoundingBox,
   Calendar,
   BoxArrowLeft,
   ListCheck,
-  List
+  List,
 } from '../components/Icons';
 
 import { FetchUserRights, LogoutUser } from '../actions/DashboardActions';
 
-// eslint-disable-next-line no-unused-vars 
+// eslint-disable-next-line no-unused-vars
 import DismissibleHelper from '../components/DismissibleHelper';
 
 const useStyles = makeStyles(() => ({
@@ -34,9 +33,8 @@ const mapStateToProps = (state) => ({
   user: state.login.user,
   rights: state.user.rights,
   loading: state.user.loading,
-  error: state.user.error
+  error: state.user.error,
 });
-
 
 const mapDispatchToProps = (dispatch) => ({
   doFetchUserRights: (request) => {
@@ -44,14 +42,10 @@ const mapDispatchToProps = (dispatch) => ({
   },
   doLogoutUser: (request) => {
     dispatch(LogoutUser(request));
-  }
+  },
 });
 
-
-
-
 const Dashboard = (props) => {
-
   // eslint-disable-next-line no-unused-vars
   const { user, rights, loading, error } = props;
 
@@ -59,17 +53,16 @@ const Dashboard = (props) => {
     const { doFetchUserRights } = props;
     if (loading) {
       doFetchUserRights({
-        username: user
+        username: user,
       });
     }
-  }, [loading]);
+  });
 
   const handleLogout = () => {
-
     const { doLogoutUser } = props;
 
     doLogoutUser({
-      username: user
+      username: user,
     });
 
     navigate('/login');
@@ -77,68 +70,68 @@ const Dashboard = (props) => {
 
   const baseCards = [
     {
-      title: "Istoric meciuri",
-      text: "Vizualizează un istoric al meciurilor la care ai fost delegat",
-      buttonLabel: "Vizualizează",
-      path: "/viewhistory",
+      title: 'Istoric meciuri',
+      text: 'Vizualizează un istoric al meciurilor la care ai fost delegat',
+      buttonLabel: 'Vizualizează',
+      path: '/viewhistory',
       icon: <Clock />,
     },
     {
-      title: "Date personale",
-      text: "Actualizează datele tale cu caracter personal",
-      buttonLabel: "Actualizează",
-      path: "/updateinfo",
+      title: 'Date personale',
+      text: 'Actualizează datele tale cu caracter personal',
+      buttonLabel: 'Actualizează',
+      path: '/updateinfo',
       icon: <PersonBoundingBox />,
     },
     {
-      title: "Perioade de indisponibilitate",
-      text: "Vezi perioadele tale de indisponibilitate și modifică-le",
-      buttonLabel: "Adaugă",
-      path: "/addunavailable",
+      title: 'Perioade de indisponibilitate',
+      text: 'Vezi perioadele tale de indisponibilitate și modifică-le',
+      buttonLabel: 'Adaugă',
+      path: '/addunavailable',
       icon: <Calendar />,
     },
 
     rights.delegation && {
-      title: "Vizualizare delegări",
-      text: "Vizualizează și propune noi delegări",
-      buttonLabel: "Creează",
-      path: "/delegate",
-      icon: <List />
+      title: 'Vizualizare delegări',
+      text: 'Vizualizează și propune noi delegări',
+      buttonLabel: 'Creează',
+      path: '/delegate',
+      icon: <List />,
     },
 
     rights.approval && {
-      title: "Aprobă/Respinge propuneri",
-      text: "Aproba sau respinge propuneri de delegare",
-      buttonLabel: "Aproba",
-      path: "/approvedrafts",
-      icon: <ListCheck />
+      title: 'Aprobă/Respinge propuneri',
+      text: 'Aproba sau respinge propuneri de delegare',
+      buttonLabel: 'Aproba',
+      path: '/approvedrafts',
+      icon: <ListCheck />,
     },
 
     rights.team && {
-      title: "Vizualizare echipă",
-      text: "Vizualizeaza informații despre echipa mea",
-      buttonLabel: "Vizualizează",
-      path: "/team",
-      icon: <Calendar />
+      title: 'Vizualizare echipă',
+      text: 'Vizualizeaza informații despre echipa mea',
+      buttonLabel: 'Vizualizează',
+      path: '/team',
+      icon: <Calendar />,
     },
     {
-      title: "Deautentificare",
-      text: "Deautentificați-vă de pe site",
-      buttonLabel: "Deautentificare",
-      path: "/logout",
+      title: 'Deautentificare',
+      text: 'Deautentificați-vă de pe site',
+      buttonLabel: 'Deautentificare',
+      path: '/logout',
       icon: <BoxArrowLeft />,
       onClick: handleLogout,
     },
-  ]
+  ];
 
   /* to filter out false elements introduced by split above */
-  const allCards = baseCards.filter(elem => elem);
+  const allCards = baseCards.filter((elem) => elem);
   const classes = useStyles();
 
   return (
     <CssBaseline>
       {loading && <CircularProgress />}
-      {!loading &&
+      {!loading && (
         <div className={classes.root}>
           <Grid container spacing={3}>
             {allCards.map((card) => (
@@ -149,13 +142,13 @@ const Dashboard = (props) => {
                   text={card.text}
                   path={card.path}
                   buttonLabel={card.buttonLabel}
-                  onClick={() => card.onClick ? card.onClick() : navigate(card.path)}
+                  onClick={() => (card.onClick ? card.onClick() : navigate(card.path))}
                 />
               </Grid>
             ))}
           </Grid>
         </div>
-      }
+      )}
     </CssBaseline>
   );
 };
@@ -165,7 +158,7 @@ Dashboard.propTypes = {
   rights: PropTypes.shape({
     delegation: PropTypes.bool.isRequired,
     approval: PropTypes.bool.isRequired,
-    team: PropTypes.bool.isRequired
+    team: PropTypes.bool.isRequired,
   }).isRequired,
   loading: PropTypes.bool.isRequired,
   doFetchUserRights: PropTypes.func.isRequired,
@@ -174,10 +167,7 @@ Dashboard.propTypes = {
 };
 
 Dashboard.defaultProps = {
-  error: ''
-}
+  error: '',
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

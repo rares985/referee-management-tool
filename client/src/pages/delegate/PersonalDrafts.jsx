@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
-
-import { FetchPersonalDrafts, FetchPersonalDraftsShortlist } from '../../actions/delegate/personalDraftsActions';
+import {
+  FetchPersonalDrafts,
+  FetchPersonalDraftsShortlist,
+} from '../../actions/delegate/personalDraftsActions';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
 import EnhancedTable from '../../components/EnhancedTable';
 
 import dateConverter from '../../utils/datemanip';
-
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -25,12 +26,10 @@ const mapDispatchToProps = (dispatch) => ({
   },
   DoFetchShortlist: (request) => {
     dispatch(FetchPersonalDraftsShortlist(request));
-  }
+  },
 });
 
-
 const PersonalDrafts = (props) => {
-
   // eslint-disable-next-line no-unused-vars
   const { user, drafts, draftsLoading, shortlist, shortlistLoading, error } = props;
 
@@ -45,10 +44,9 @@ const PersonalDrafts = (props) => {
     if (shortlistLoading) {
       DoFetchShortlist({
         username: user,
-      })
+      });
     }
-
-  }, [draftsLoading, shortlistLoading]);
+  });
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
@@ -66,16 +64,14 @@ const PersonalDrafts = (props) => {
     <>
       {draftsLoading && <CircularProgress />}
       <TableHeaderSelector />
-      {!draftsLoading &&
+      {!draftsLoading && (
         <EnhancedTable
           tableName="În lucru (ciorne) "
-          rows={drafts.map(elem => (
-            { ...elem, match_date: dateConverter(elem.match_date) }
-          ))}
+          rows={drafts.map((elem) => ({ ...elem, match_date: dateConverter(elem.match_date) }))}
           headCells={headCells}
           selectable
         />
-      }
+      )}
     </>
   );
 };
@@ -96,22 +92,18 @@ PersonalDrafts.propTypes = {
       location: PropTypes.string.isRequired,
     })
   ).isRequired,
-  shortlist: PropTypes.arrayOf(
-    PropTypes.exact({
-
-    })
-  ).isRequired,
+  shortlist: PropTypes.arrayOf(PropTypes.exact({})).isRequired,
   draftsLoading: PropTypes.bool,
   shortlistLoading: PropTypes.bool,
   error: PropTypes.string,
   DoFetchDrafts: PropTypes.func.isRequired,
   DoFetchShortlist: PropTypes.func.isRequired,
-}
+};
 
 PersonalDrafts.defaultProps = {
   error: '',
   draftsLoading: true,
   shortlistLoading: true,
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalDrafts);

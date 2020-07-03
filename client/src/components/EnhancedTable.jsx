@@ -10,14 +10,15 @@ import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
+import ChooseRefereeModal from './ChooseRefereeModal';
 
 const useStyles = makeStyles({
   table: {
     minWidth: 750,
   },
-}));
+});
 
-function descendingComparator(a, b, orderBy) {
+const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -25,15 +26,15 @@ function descendingComparator(a, b, orderBy) {
     return 1;
   }
   return 0;
-}
+};
 
-function getComparator(order, orderBy) {
+const getComparator = (order, orderBy) => {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-}
+};
 
-function stableSort(array, comparator) {
+const stableSort = (array, comparator) => {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -41,12 +42,17 @@ function stableSort(array, comparator) {
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
-}
+};
 
 const EnhancedTable = (props) => {
   const classes = useStyles();
   const { rows, headCells, tableName, selectable } = props;
-  const { handleFirstRefereeChoice, handleSecondRefereeChoice, handleObserverChoice, shortlistById } = props;
+  const {
+    handleFirstRefereeChoice,
+    handleSecondRefereeChoice,
+    handleObserverChoice,
+    shortlistById,
+  } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
@@ -111,7 +117,6 @@ const EnhancedTable = (props) => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
-
   return (
     <>
       <EnhancedTableToolbar numSelected={selected.length} tableName={tableName} />
@@ -119,7 +124,7 @@ const EnhancedTable = (props) => {
         <Table
           className={classes.table}
           aria-labelledby="tableTitle"
-          size='small'
+          size="small"
           aria-label="enhanced table"
         >
           <EnhancedTableHead
@@ -158,8 +163,8 @@ const EnhancedTable = (props) => {
                         />
                       </TableCell>
                     ) : (
-                        <></>
-                      )}
+                      <></>
+                    )}
                     <TableCell component="th" id={labelId} scope="row" padding="default">
                       {row.match_no}
                     </TableCell>
@@ -168,34 +173,37 @@ const EnhancedTable = (props) => {
                     <TableCell align="right">{row.team_b_name}</TableCell>
                     <TableCell align="right">{row.full_name_competition}</TableCell>
                     <TableCell align="right">
-                      {row.first_referee_name ?
-                        (row.first_referee_name) :
-                        (<ChooseRefereeModal
+                      {row.first_referee_name ? (
+                        row.first_referee_name
+                      ) : (
+                        <ChooseRefereeModal
                           matchid={row.id}
                           onSaveCloseCB={handleFirstRefereeChoice}
                           shortlist={shortlistById}
-                        />)
-                      }
+                        />
+                      )}
                     </TableCell>
                     <TableCell align="right">
-                      {row.second_referee_name ?
-                        (row.second_referee_name) :
-                        (<ChooseRefereeModal
+                      {row.second_referee_name ? (
+                        row.second_referee_name
+                      ) : (
+                        <ChooseRefereeModal
                           matchid={row.id}
                           onSaveCloseCB={handleSecondRefereeChoice}
                           shortlist={shortlistById}
-                        />)
-                      }
+                        />
+                      )}
                     </TableCell>
                     <TableCell align="right">
-                      {row.observer_name ?
-                        (row.observer_name) :
-                        (<ChooseRefereeModal
+                      {row.observer_name ? (
+                        row.observer_name
+                      ) : (
+                        <ChooseRefereeModal
                           matchid={row.id}
                           onSaveCloseCB={handleObserverChoice}
                           shortlist={shortlistById}
-                        />)
-                      }
+                        />
+                      )}
                     </TableCell>
                     <TableCell align="right">{row.location}</TableCell>
                   </TableRow>
@@ -223,27 +231,29 @@ const EnhancedTable = (props) => {
 };
 
 EnhancedTable.propTypes = {
-  rows: PropTypes.arrayOf(PropTypes.exact({
-    id: PropTypes.number.isRequired,
-    match_no: PropTypes.number.isRequired,
-    match_date: PropTypes.string.isRequired,
-    team_a_name: PropTypes.string.isRequired,
-    team_b_name: PropTypes.string.isRequired,
-    competition_name: PropTypes.string.isRequired,
-    a1: PropTypes.string.isRequired,
-    a2: PropTypes.string.isRequired,
-    obs: PropTypes.string.isRequired,
-    location: PropTypes.string.isRequired,
-  })).isRequired,
-  headCells: PropTypes.arrayOf(PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    numeric: PropTypes.bool.isRequired,
-    disablePadding: PropTypes.bool.isRequired,
-    label: PropTypes.string.isRequired,
-  })).isRequired,
-  shortlistById: PropTypes.arrayOf(PropTypes.exact({
-
-  })).isRequired,
+  rows: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      match_no: PropTypes.number.isRequired,
+      match_date: PropTypes.string.isRequired,
+      team_a_name: PropTypes.string.isRequired,
+      team_b_name: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
+      a1: PropTypes.string.isRequired,
+      a2: PropTypes.string.isRequired,
+      obs: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  headCells: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.string.isRequired,
+      numeric: PropTypes.bool.isRequired,
+      disablePadding: PropTypes.bool.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  shortlistById: PropTypes.arrayOf(PropTypes.exact({})).isRequired,
   tableName: PropTypes.string.isRequired,
   selectable: PropTypes.bool,
   handleFirstRefereeChoice: PropTypes.func.isRequired,

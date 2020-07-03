@@ -13,18 +13,17 @@ import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(3),
-  }
+  },
 }));
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
   info: state.personal.info,
   loading: state.personal.loading,
-  error: state.personal.error
+  error: state.personal.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -33,7 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
   doUpdatePersonalInfo: (request) => {
     dispatch(UpdatePersonalInfo(request));
-  }
+  },
 });
 
 const PersonalInformationForm = (props) => {
@@ -55,10 +54,11 @@ const PersonalInformationForm = (props) => {
 
   const classes = useStyles();
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     if (loading) {
       doFetchPersonalInfo({
-        username: user
+        username: user,
       });
     } else {
       /* Loading has finished, update local state */
@@ -72,6 +72,7 @@ const PersonalInformationForm = (props) => {
       setLot(info.lot);
     }
   }, [loading]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const validateForm = () => {
     return true;
@@ -94,7 +95,7 @@ const PersonalInformationForm = (props) => {
     <Container component="main" maxWidth="sm">
       <CssBaseline>
         {loading && <CircularProgress />}
-        {!loading &&
+        {!loading && (
           <Paper elevation={4} className={classes.root}>
             <form onSubmit={handleSubmit}>
               <div className="avatar">
@@ -157,38 +158,29 @@ const PersonalInformationForm = (props) => {
               </FormGroup>
               <FormGroup controlId="category">
                 <FormLabel>Categorie</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={category}
-                  readOnly
-                />
+                <FormControl autoFocus type="text" value={category} readOnly />
               </FormGroup>
               <FormGroup controlId="lot">
                 <FormLabel>Lot</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={lot}
-                  readOnly
-                />
+                <FormControl autoFocus type="text" value={lot} readOnly />
               </FormGroup>
               <FormGroup controlId="county">
                 <FormLabel>Judet</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="text"
-                  value={county}
-                  readOnly
-                />
+                <FormControl autoFocus type="text" value={county} readOnly />
               </FormGroup>
-              <Button variant="contained" color="primary" block="true" disabled={!validateForm()} type="submit">
+              <Button
+                variant="contained"
+                color="primary"
+                block="true"
+                disabled={!validateForm()}
+                type="submit"
+              >
                 Actualizare
               </Button>
             </form>
           </Paper>
-        }
-      </CssBaseline >
+        )}
+      </CssBaseline>
     </Container>
   );
 };
@@ -210,7 +202,7 @@ PersonalInformationForm.propTypes = {
   error: PropTypes.string,
   doFetchPersonalInfo: PropTypes.func.isRequired,
   doUpdatePersonalInfo: PropTypes.func.isRequired,
-}
+};
 
 PersonalInformationForm.defaultProps = {
   error: '',
@@ -224,11 +216,7 @@ PersonalInformationForm.defaultProps = {
     jud: '',
     cat: '',
     lot: '',
-  }
-}
+  },
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PersonalInformationForm);
-
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalInformationForm);
