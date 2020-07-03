@@ -19,7 +19,6 @@ const proposedDraftsReducer = (state = initialState, action) => {
       return {
         ...state,
         proposedLoading: false,
-        shortlistLoading: true,
         proposed: action.payload.proposed
       };
     case PROPOSED_DRAFTS_FAILURE:

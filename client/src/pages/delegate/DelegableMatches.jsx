@@ -106,8 +106,21 @@ const DelegableMatches = (props) => {
     //     });
 
   }
+
   // eslint-disable-next-line no-unused-vars
-  const shortlistById = groupBy(shortlist, elem => elem.match_id);
+  const onFirstRefereeChoice = (event) => {
+
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  const onSecondRefereeChoice = (event) => {
+
+  }
+
+  // eslint-disable-next-line no-unused-vars
+  const onObserverChoice = (event) => {
+
+  }
 
   const headCells = [
     { id: 'match_no', numeric: false, disablePadding: false, label: 'Număr meci' },
@@ -115,9 +128,9 @@ const DelegableMatches = (props) => {
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
     { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'a1', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'a2', numeric: false, disablePadding: false, label: 'A2' },
-    { id: 'obs', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'first_referee_name', numeric: false, disablePadding: false, label: 'A1' },
+    { id: 'second_referee_name', numeric: false, disablePadding: false, label: 'A2' },
+    { id: 'observer_name', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
 
@@ -126,9 +139,13 @@ const DelegableMatches = (props) => {
       {matchesLoading && <CircularProgress />}
       {!matchesLoading &&
         <EnhancedTable
+          handleFirstRefereeChoice={onFirstRefereeChoice}
+          handleSecondRefereeChoice={onSecondRefereeChoice}
+          handleObserverChoice={onObserverChoice}
           tableName="Meciuri delegabile"
+          shortlistById={groupBy(shortlist, elem => elem.match_id)}
           rows={matches.map(elem => ({
-            ...elem, match_date: dateConverter(elem.match_date), a1: '-', a2: '-', obs: '-'
+            ...elem, match_date: dateConverter(elem.match_date)
           }))}
           headCells={headCells}
         />

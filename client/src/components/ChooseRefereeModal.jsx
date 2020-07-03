@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, Button, Form, ListGroup } from 'react-bootstrap';
+import IconButton from '@material-ui/core/IconButton';
+import CreateIcon from '@material-ui/icons/Create';
 import { filter } from 'lodash';
-import { Pencil } from './Icons';
 
 import removeAccents from '../utils/strmanip';
 
@@ -31,9 +32,9 @@ const ChooseRefereeModal = (props) => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        <Pencil />
-      </Button>
+      <IconButton onClick={handleShow}>
+        <CreateIcon fontSize="small" />
+      </IconButton>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -77,7 +78,8 @@ ChooseRefereeModal.propTypes = {
   shortlist: PropTypes.arrayOf(PropTypes.exact({
     referee_name: PropTypes.string.isRequired,
     referee_id: PropTypes.number.isRequired
-  })),
+  })).isRequired,
+  onSaveCloseCB: PropTypes.func.isRequired,
   matchid: PropTypes.number.isRequired,
 };
 

@@ -18,12 +18,11 @@ router.post("/", (req, res) => {
   const { username, password } = req.body;
   console.log(`AUTH: Got request: ${username}, ${password}`);
 
-  if (username === undefined || password === undefined) {
+  if (!username || !password) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
     var query = `SELECT Password FROM [dbo].[User] WHERE Username='${username}'`;
 
-    console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
       if (err) {
         console.error(err);
@@ -31,7 +30,6 @@ router.post("/", (req, res) => {
         if (rowCount === 0) {
           res.status(401).send("Login failure!");
         }
-        console.log(`Got ${rowCount} rows`);
       }
     });
 

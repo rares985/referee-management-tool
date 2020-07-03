@@ -70,7 +70,7 @@ const PersonalDrafts = (props) => {
         <EnhancedTable
           tableName="În lucru (ciorne) "
           rows={drafts.map(elem => (
-            { ...elem, match_date: dateConverter(elem.match_date), a1: '-', a2: '-', obs: '-' }
+            { ...elem, match_date: dateConverter(elem.match_date) }
           ))}
           headCells={headCells}
           selectable

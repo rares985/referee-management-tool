@@ -41,7 +41,7 @@ const EnhancedTableToolbar = (props) => {
     >
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
+          {numSelected} rânduri selectate
         </Typography>
       ) : (
           <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
@@ -50,14 +50,14 @@ const EnhancedTableToolbar = (props) => {
         )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+        <Tooltip title="Șterge">
+          <IconButton aria-label="șterge">
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
+          <Tooltip title="Filtrează rânduri">
+            <IconButton aria-label="filtreaza">
               <FilterListIcon />
             </IconButton>
           </Tooltip>

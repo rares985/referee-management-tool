@@ -25,7 +25,7 @@ const Delegate = () => {
     const classes = useStyles();
 
     return (
-        <Container component="main" maxWidth="md" className={classes.container}>
+        <Container component="main" maxWidth="lg" className={classes.container}>
             <CssBaseline>
                 <Paper elevation={4} className={classes.paper}>
                     <DelegableMatches />

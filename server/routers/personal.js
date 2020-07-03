@@ -39,12 +39,12 @@ const UpdatePersonalInfo = (req, res) => {
   );
 
   if (
-    username === undefined ||
-    address === undefined ||
-    firstName === undefined ||
-    lastName === undefined ||
-    mobilePhone === undefined ||
-    email === undefined
+    !username ||
+    !address ||
+    !firstName ||
+    !lastName ||
+    !mobilePhone ||
+    !email
   ) {
     res.status(401).send("Invalid parameters!");
   } else {

@@ -11,7 +11,7 @@ const initialState = {
   rejected: [],
   rejectedLoading: true,
   shortlist: [],
-  shortlistLoading: false
+  shortlistLoading: true
 };
 
 const rejectedDraftsReducer = (state = initialState, action) => {
@@ -24,7 +24,6 @@ const rejectedDraftsReducer = (state = initialState, action) => {
       return {
         ...state,
         rejectedLoading: false,
-        shortlistLoading: true,
         rejected: action.payload.rejected
       };
     case REJECTED_DRAFTS_FAILURE:
