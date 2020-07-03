@@ -9,14 +9,16 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import { Form, FormControl, Col } from 'react-bootstrap';
-import UnavailableDatesTable from './unavailable/UnavailableDatesTable';
+
+import EnhancedTableSelectable from '../components/EnhancedTableSelectable';
+
+import dateFormatter from '../utils/datemanip';
 
 import {
   FetchUpcomingUnavailabilities,
   FetchOldUnavailabilities,
-  AddNewUnavailability
+  AddNewUnavailability,
 } from '../actions/UnavailabilityPeriodActions';
-
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -26,7 +28,7 @@ const mapStateToProps = (state) => ({
   oldLoading: state.unavailabilityPeriods.oldLoading,
   updateFinished: state.unavailabilityPeriods.updateFinished,
   error: state.unavailabilityPeriods.error,
-})
+});
 
 const mapDispatchToProps = (dispatch) => ({
   doFetchUpcoming: (request) => {
@@ -37,10 +39,8 @@ const mapDispatchToProps = (dispatch) => ({
   },
   addNewPeriod: (request) => {
     dispatch(AddNewUnavailability(request));
-  }
+  },
 });
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-  }
+  },
 }));
 
 const UnavailabilityPeriods = (props) => {
@@ -62,8 +62,17 @@ const UnavailabilityPeriods = (props) => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  // eslint-disable-next-line no-unused-vars
-  const { user, upcomingDates, upcomingLoading, oldDates, oldLoading, updateFinished, error } = props;
+  /* eslint-disable no-unused-vars */
+  const {
+    user,
+    upcomingDates,
+    upcomingLoading,
+    oldDates,
+    oldLoading,
+    updateFinished,
+    error,
+  } = props;
+  /* eslint-enable no-unused-vars */
 
   const [newUnavailabilityDates, setNewUnavailabilityDates] = useState([]);
 
@@ -72,17 +81,16 @@ const UnavailabilityPeriods = (props) => {
     return true;
   };
 
-
   useEffect(() => {
     const { doFetchUpcoming, doFetchOld } = props;
     if (upcomingLoading) {
       doFetchUpcoming({
-        username: user
+        username: user,
       });
     }
     if (oldLoading) {
       doFetchOld({
-        username: user
+        username: user,
       });
     }
   });
@@ -94,28 +102,48 @@ const UnavailabilityPeriods = (props) => {
       {
         StartDate: startDate,
         EndDate: endDate,
-      }
+      },
     ]);
-
   };
 
   const tables = [
     {
       loading: oldLoading,
-      title: "Perioade de indisponibilitate trecute",
+      title: 'Perioade de indisponibilitate trecute',
       dates: oldDates,
     },
     {
       loading: upcomingLoading,
-      title: "Perioade de indisponibilitate în perioada următoare",
+      title: 'Perioade de indisponibilitate în perioada următoare',
       dates: upcomingDates,
       deletable: true,
     },
     {
       loading: false,
-      title: "Perioade de indisponibilitate noi",
+      title: 'Perioade de indisponibilitate noi',
       dates: newUnavailabilityDates,
-    }
+    },
+  ];
+
+  const headCells = [
+    {
+      id: 'StartDate',
+      numeric: false,
+      disablePadding: false,
+      label: 'Data începerii',
+    },
+    {
+      id: 'EndDate',
+      numeric: false,
+      disablePadding: false,
+      label: 'Data încheierii',
+    },
+    {
+      id: 'Reason',
+      numeric: false,
+      disablePadding: false,
+      label: 'Motiv',
+    },
   ];
 
   return (
@@ -125,12 +153,19 @@ const UnavailabilityPeriods = (props) => {
           return (
             <Paper elevation={4} className={classes.root} key={table.title}>
               {table.loading && <CircularProgress />}
-              {!table.loading &&
-                <UnavailableDatesTable
-                  title={table.title}
-                  deletable={table.deletable ? table.deletable : false}
-                  dates={table.dates} />
-              }
+              {!table.loading && (
+                <EnhancedTableSelectable
+                  tableName={table.title}
+                  rows={table.dates.map((elem) => ({
+                    ...elem,
+                    StartDate: dateFormatter(elem.StartDate),
+                    EndDate: dateFormatter(elem.EndDate),
+                  }))}
+                  headCells={headCells}
+                  selectedKey="id"
+                  selectable={table.deletable}
+                />
+              )}
             </Paper>
           );
         })}
@@ -158,33 +193,43 @@ const UnavailabilityPeriods = (props) => {
                 />
               </Col>
               <Col>
-                <Button variant="contained" color="primary" block disabled={!validateForm()} type="submit">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  block="true"
+                  disabled={!validateForm()}
+                  type="submit"
+                >
                   Adaugă
-              </Button>
+                </Button>
               </Col>
             </Form.Row>
           </Form>
         </Paper>
       </CssBaseline>
-    </Container >
+    </Container>
   );
 };
 
 UnavailabilityPeriods.propTypes = {
   user: PropTypes.string.isRequired,
-  upcomingDates: PropTypes.arrayOf(PropTypes.exact({
-    id: PropTypes.number.isRequired,
-    StartDate: PropTypes.string.isRequired,
-    EndDate: PropTypes.string.isRequired,
-    Reason: PropTypes.string.isRequired,
-  })).isRequired,
+  upcomingDates: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      StartDate: PropTypes.string.isRequired,
+      EndDate: PropTypes.string.isRequired,
+      Reason: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   upcomingLoading: PropTypes.bool.isRequired,
-  oldDates: PropTypes.arrayOf(PropTypes.exact({
-    id: PropTypes.number.isRequired,
-    StartDate: PropTypes.string.isRequired,
-    EndDate: PropTypes.string.isRequired,
-    Reason: PropTypes.string.isRequired,
-  })).isRequired,
+  oldDates: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      StartDate: PropTypes.string.isRequired,
+      EndDate: PropTypes.string.isRequired,
+      Reason: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   oldLoading: PropTypes.bool.isRequired,
   updateFinished: PropTypes.bool.isRequired,
   error: PropTypes.string,
@@ -193,7 +238,7 @@ UnavailabilityPeriods.propTypes = {
 };
 
 UnavailabilityPeriods.defaultProps = {
-  error: ''
-}
+  error: '',
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UnavailabilityPeriods);
