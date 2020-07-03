@@ -111,7 +111,6 @@ const EnhancedTable = (props) => {
   };
 
   const isSelected = (matchNo) => {
-    console.log(`Checking ${selected} for ${matchNo}`);
     return selected.indexOf(matchNo) !== -1;
   };
 
@@ -177,7 +176,8 @@ const EnhancedTable = (props) => {
                         row.first_referee_name
                       ) : (
                         <ChooseRefereeModal
-                          matchid={row.id}
+                          matchid={row.match_id}
+                          title="Alege arbitru A1"
                           onSaveCloseCB={handleFirstRefereeChoice}
                           shortlist={shortlistById}
                         />
@@ -188,7 +188,8 @@ const EnhancedTable = (props) => {
                         row.second_referee_name
                       ) : (
                         <ChooseRefereeModal
-                          matchid={row.id}
+                          matchid={row.match_id}
+                          title="Alege arbitru A2"
                           onSaveCloseCB={handleSecondRefereeChoice}
                           shortlist={shortlistById}
                         />
@@ -199,7 +200,8 @@ const EnhancedTable = (props) => {
                         row.observer_name
                       ) : (
                         <ChooseRefereeModal
-                          matchid={row.id}
+                          matchid={row.match_id}
+                          title="Alege observator"
                           onSaveCloseCB={handleObserverChoice}
                           shortlist={shortlistById}
                         />
@@ -233,15 +235,13 @@ const EnhancedTable = (props) => {
 EnhancedTable.propTypes = {
   rows: PropTypes.arrayOf(
     PropTypes.exact({
-      id: PropTypes.number.isRequired,
+      match_id: PropTypes.number.isRequired,
       match_no: PropTypes.number.isRequired,
       match_date: PropTypes.string.isRequired,
       team_a_name: PropTypes.string.isRequired,
       team_b_name: PropTypes.string.isRequired,
-      competition_name: PropTypes.string.isRequired,
-      a1: PropTypes.string.isRequired,
-      a2: PropTypes.string.isRequired,
-      obs: PropTypes.string.isRequired,
+      full_name_competition: PropTypes.string.isRequired,
+      season: PropTypes.string.isRequired,
       location: PropTypes.string.isRequired,
     })
   ).isRequired,
@@ -253,7 +253,7 @@ EnhancedTable.propTypes = {
       label: PropTypes.string.isRequired,
     })
   ).isRequired,
-  shortlistById: PropTypes.arrayOf(PropTypes.exact({})).isRequired,
+  shortlistById: PropTypes.objectOf(PropTypes.arrayOf({}).isRequired).isRequired,
   tableName: PropTypes.string.isRequired,
   selectable: PropTypes.bool,
   handleFirstRefereeChoice: PropTypes.func.isRequired,

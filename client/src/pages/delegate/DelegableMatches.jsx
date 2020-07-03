@@ -107,13 +107,25 @@ const DelegableMatches = (props) => {
   };
 
   // eslint-disable-next-line no-unused-vars
-  const onFirstRefereeChoice = (event) => {};
+  const onFirstRefereeChoice = (matchId, referee) => {
+    console.log(referee);
+    console.dir(referee);
+    console.log(`Chosen ${referee.referee_name} as A1 for match with id ${matchId}`);
+  };
 
   // eslint-disable-next-line no-unused-vars
-  const onSecondRefereeChoice = (event) => {};
+  const onSecondRefereeChoice = (matchId, referee) => {
+    console.log(referee);
+    console.dir(referee);
+    console.log(`Chosen ${referee.referee_name} as A2 for match with id ${matchId}`);
+  };
 
   // eslint-disable-next-line no-unused-vars
-  const onObserverChoice = (event) => {};
+  const onObserverChoice = (matchId, referee) => {
+    console.log(referee);
+    console.dir(referee);
+    console.log(`Chosen ${referee.referee_name} as Observer for match with id ${matchId}`);
+  };
 
   const headCells = [
     { id: 'match_no', numeric: false, disablePadding: false, label: 'Număr meci' },
@@ -127,16 +139,18 @@ const DelegableMatches = (props) => {
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
 
+  const shortlistById = groupBy(shortlist, (elem) => elem.match_id);
+
   return (
     <>
-      {matchesLoading && <CircularProgress />}
-      {!matchesLoading && (
+      {(matchesLoading || shortlistLoading) && <CircularProgress />}
+      {!(matchesLoading || shortlistLoading) && (
         <EnhancedTable
           handleFirstRefereeChoice={onFirstRefereeChoice}
           handleSecondRefereeChoice={onSecondRefereeChoice}
           handleObserverChoice={onObserverChoice}
           tableName="Meciuri delegabile"
-          shortlistById={groupBy(shortlist, (elem) => elem.match_id)}
+          shortlistById={shortlistById}
           rows={matches.map((elem) => ({
             ...elem,
             match_date: dateConverter(elem.match_date),

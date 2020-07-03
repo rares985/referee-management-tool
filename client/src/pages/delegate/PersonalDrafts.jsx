@@ -48,16 +48,70 @@ const PersonalDrafts = (props) => {
     }
   });
 
+  // eslint-disable-next-line no-unused-vars
+  const onFirstRefereeChoice = (event) => {};
+
+  // eslint-disable-next-line no-unused-vars
+  const onSecondRefereeChoice = (event) => {};
+
+  // eslint-disable-next-line no-unused-vars
+  const onObserverChoice = (event) => {};
+
   const headCells = [
-    { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
-    { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
-    { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
-    { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
-    { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'a1', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'a2', numeric: false, disablePadding: false, label: 'A2' },
-    { id: 'obs', numeric: false, disablePadding: false, label: 'Observator' },
-    { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
+    {
+      id: 'match_no',
+      numeric: true,
+      disablePadding: true,
+      label: 'Număr meci',
+    },
+    {
+      id: 'match_date',
+      numeric: false,
+      disablePadding: false,
+      label: 'Data desfășurării',
+    },
+    {
+      id: 'team_a_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Echipa A',
+    },
+    {
+      id: 'team_b_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Echipa B',
+    },
+    {
+      id: 'full_name_competition',
+      numeric: false,
+      disablePadding: false,
+      label: 'Competiție',
+    },
+    {
+      id: 'a1',
+      numeric: false,
+      disablePadding: false,
+      label: 'A1',
+    },
+    {
+      id: 'a2',
+      numeric: false,
+      disablePadding: false,
+      label: 'A2',
+    },
+    {
+      id: 'obs',
+      numeric: false,
+      disablePadding: false,
+      label: 'Observator',
+    },
+    {
+      id: 'location',
+      numeric: false,
+      disablePadding: false,
+      label: 'Locație',
+    },
   ];
 
   return (
@@ -67,7 +121,10 @@ const PersonalDrafts = (props) => {
       {!draftsLoading && (
         <EnhancedTable
           tableName="În lucru (ciorne) "
-          rows={drafts.map((elem) => ({ ...elem, match_date: dateConverter(elem.match_date) }))}
+          rows={drafts.map((elem) => ({
+            ...elem,
+            match_date: dateConverter(elem.match_date),
+          }))}
           headCells={headCells}
           selectable
         />
@@ -80,7 +137,7 @@ PersonalDrafts.propTypes = {
   user: PropTypes.string.isRequired,
   drafts: PropTypes.arrayOf(
     PropTypes.exact({
-      id: PropTypes.number.isRequired,
+      match_id: PropTypes.number.isRequired,
       match_no: PropTypes.number.isRequired,
       match_date: PropTypes.string.isRequired,
       team_a_name: PropTypes.string.isRequired,

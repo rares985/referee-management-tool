@@ -1,86 +1,118 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button, Form, ListGroup } from 'react-bootstrap';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import IconButton from '@material-ui/core/IconButton';
 import CreateIcon from '@material-ui/icons/Create';
 import { filter } from 'lodash';
 
 import removeAccents from '../utils/strmanip';
 
-
 const ChooseRefereeModal = (props) => {
   const [show, setShow] = useState(false);
+  /* eslint-disable no-unused-vars */
   const [chosen, setChosen] = useState({});
   const [query, setQuery] = useState('');
+  /* eslint-enable no-unused-vars */
 
   const handleClose = () => setShow(false);
+  const handleOpen = () => setShow(true);
+
+  const handleChoice = (ref) => {
+    setQuery(ref.referee_name);
+    setChosen(ref);
+  };
+
   const handleSaveClose = () => {
     props.onSaveCloseCB(props.matchid, chosen);
     handleClose();
-  }
+  };
 
-  const { shortlist, matchid } = props;
-
-  const handleShow = () => setShow(true);
+  const { shortlist, matchid, text, title } = props;
 
   const shortlistMatch = shortlist[matchid];
-  const refs = shortlistMatch.map(elem => ({ "referee_name": elem.referee_name, "referee_id": elem.referee_id }));
-  const matching = filter(refs,
-    elem => query === "" ?
-      true :
-      removeAccents(elem.referee_name.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1);
+  const refs = shortlistMatch.map((elem) => ({
+    referee_name: elem.referee_name,
+    referee_id: elem.referee_id,
+  }));
+  /* eslint-disable no-unused-vars */
+  const matching = filter(refs, (elem) =>
+    query === ''
+      ? true
+      : removeAccents(elem.referee_name.toLowerCase()).indexOf(
+          removeAccents(query.toLowerCase())
+        ) !== -1
+  );
+  /* eslint-enable no-unused-vars */
 
   return (
-    <>
-      <IconButton onClick={handleShow}>
+    <div>
+      <IconButton onClick={handleOpen}>
         <CreateIcon fontSize="small" />
       </IconButton>
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Alege arbitru</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form.Control
+      <Dialog
+        open={show}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+        scroll="paper"
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{text}</DialogContentText>
+          <TextField
             autoFocus
-            className="mb-3"
+            margin="dense"
+            id="name"
+            label="Nume arbitru"
             type="text"
-            placeholder="Cauta arbitru..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            fullWidth
           />
-          <ListGroup>
-
+          <List>
             {matching.map((ref) => {
               return (
-                <ListGroup.Item key={ref.referee_id} action onClick={() => setChosen(ref)}>
-                  {ref.referee_name}
-                </ListGroup.Item>
+                <ListItem autoFocus button key={ref.referee_id} onClick={() => handleChoice(ref)}>
+                  <ListItemText primary={ref.referee_name} />
+                </ListItem>
               );
             })}
-          </ListGroup>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Închide
-                        </Button>
-          <Button variant="primary" onClick={handleSaveClose}>
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} variant="contained" color="primary">
+            Anulează
+          </Button>
+          <Button onClick={handleSaveClose} variant="contained" color="primary">
             Salvează
-                        </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
-
-}
+};
 
 ChooseRefereeModal.propTypes = {
-  shortlist: PropTypes.arrayOf(PropTypes.exact({
-    referee_name: PropTypes.string.isRequired,
-    referee_id: PropTypes.number.isRequired
-  })).isRequired,
+  shortlist: PropTypes.objectOf(PropTypes.array.isRequired).isRequired,
+  text: PropTypes.string,
+  title: PropTypes.string.isRequired,
   onSaveCloseCB: PropTypes.func.isRequired,
-  matchid: PropTypes.number.isRequired,
+  matchid: PropTypes.number,
+};
+
+ChooseRefereeModal.defaultProps = {
+  matchid: 0,
+  text: '',
 };
 
 export default ChooseRefereeModal;
