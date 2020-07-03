@@ -1,10 +1,6 @@
 var express = require("express");
 var router = express.Router();
 
-const connection = require("../db-conn");
-var Request = require("tedious").Request;
-var TYPES = require("tedious").TYPES;
-
 const sql = require("mssql");
 const poolConnect = require("../db-conn-mssql");
 
@@ -43,14 +39,14 @@ const DeleteUpcomingPeriodsPersonal = (req, res) => {
   console.log(req.data);
   const { ids, username } = req.body;
 
-  const query = `DELETE FROM unavailability_period WHERE id IN ${["(", ids.toString(), ")"].join(
-    ""
-  )}`;
-
   if (!ids || !username) {
     res.status(400).send("Invalid parameters");
     return;
   }
+
+  const query = `DELETE FROM unavailability_period WHERE id IN ${["(", ids.toString(), ")"].join(
+    ""
+  )}`;
 
   poolConnect
     .then((pool) => {
@@ -66,57 +62,57 @@ const DeleteUpcomingPeriodsPersonal = (req, res) => {
 };
 
 const GetUpcomingPeriodsPersonal = (req, res) => {
-  var query = "[dbo].[GetUpcomingUnavailabilityPeriodsPersonal] @Username";
   const { username } = req.query;
 
-  let periods = [];
+  if (!username) {
+    res.status(400).send("Invalid parameters");
+  }
 
-  const request = new Request(query, (err) => {
-    if (err) {
+  poolConnect
+    .then((pool) => {
+      pool
+        .request()
+        .input("Username", sql.VarChar(50), username)
+        .execute("GetUpcomingUnavailabilityPeriodsPersonal", (err, proc_res) => {
+          if (err) {
+            console.log(err);
+            res.status(501).send("Internal database error");
+            return;
+          }
+          res.status(200).send(proc_res.recordset);
+        });
+    })
+    .catch((err) => {
       console.log(err);
-      res.status(400).send(err);
-    } else {
-      res.status(200).send(periods);
-    }
-  });
-  request.addParameter("Username", TYPES.VarChar, username);
-
-  request.on("row", (cols) => {
-    let obj = {};
-    cols.forEach((col) => {
-      obj[col.metadata.colName] = col.value;
+      res.status(501).send("Internal database error");
     });
-    periods.push(obj);
-  });
-
-  connection.execSql(request);
 };
 
 const GetOldPeriodsPersonal = (req, res) => {
-  var query = "[dbo].[GetUnavailabilityPeriodsOld] @Username";
   const { username } = req.query;
 
-  let periods = [];
+  if (!username) {
+    res.status(400).send("Invalid parameters");
+  }
 
-  const request = new Request(query, (err) => {
-    if (err) {
+  poolConnect
+    .then((pool) => {
+      pool
+        .request()
+        .input("Username", sql.VarChar(50), username)
+        .execute("GetUnavailabilityPeriodsOld", (err, proc_res) => {
+          if (err) {
+            console.log(err);
+            res.status(501).send("Internal database error");
+            return;
+          }
+          res.status(200).send(proc_res.recordset);
+        });
+    })
+    .catch((err) => {
       console.log(err);
-      res.status(400).send(err);
-    } else {
-      res.status(200).send(periods);
-    }
-  });
-  request.addParameter("Username", TYPES.VarChar, username);
-
-  request.on("row", (cols) => {
-    let obj = {};
-    cols.forEach((col) => {
-      obj[col.metadata.colName] = col.value;
+      res.status(501).send("Internal database error");
     });
-    periods.push(obj);
-  });
-
-  connection.execSql(request);
 };
 
 router.post("/", AddUnavailabilityPeriod);
