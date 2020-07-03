@@ -4,10 +4,12 @@ import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 import EnhancedTable from '../../components/EnhancedTable';
 
-import { FetchRejectedDrafts, FetchRejectedShortlist } from '../../actions/delegate/rejectedDraftsActions';
+import {
+  FetchRejectedDrafts,
+  FetchRejectedShortlist,
+} from '../../actions/delegate/rejectedDraftsActions';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
 import dateConverter from '../../utils/datemanip';
-
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -15,7 +17,7 @@ const mapStateToProps = (state) => ({
   draftsLoading: state.delegate.rejected.rejectedLoading,
   shortlist: state.delegate.rejected.shortlist,
   shortlistLoading: state.delegate.rejected.shortlistLoading,
-  error: state.delegate.rejected.error
+  error: state.delegate.rejected.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -24,12 +26,10 @@ const mapDispatchToProps = (dispatch) => ({
   },
   DoFetchShortlist: (request) => {
     dispatch(FetchRejectedShortlist(request));
-  }
+  },
 });
 
-
 const RejectedDrafts = (props) => {
-
   // eslint-disable-next-line no-unused-vars
   const { user, drafts, shortlist, draftsLoading, shortlistLoading, error } = props;
 
@@ -47,34 +47,91 @@ const RejectedDrafts = (props) => {
         username: user,
       });
     }
-
   });
 
+  // eslint-disable-next-line no-unused-vars
+  const onFirstRefereeChoice = (event) => {};
+
+  // eslint-disable-next-line no-unused-vars
+  const onSecondRefereeChoice = (event) => {};
+
+  // eslint-disable-next-line no-unused-vars
+  const onObserverChoice = (event) => {};
+
   const headCells = [
-    { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
-    { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
-    { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
-    { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
-    { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'a1', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'a2', numeric: false, disablePadding: false, label: 'A2' },
-    { id: 'obs', numeric: false, disablePadding: false, label: 'Observator' },
-    { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
+    {
+      id: 'match_no',
+      numeric: true,
+      disablePadding: true,
+      label: 'Număr meci',
+    },
+    {
+      id: 'match_date',
+      numeric: false,
+      disablePadding: false,
+      label: 'Data desfășurării',
+    },
+    {
+      id: 'team_a_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Echipa A',
+    },
+    {
+      id: 'team_b_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Echipa B',
+    },
+    {
+      id: 'full_name_competition',
+      numeric: false,
+      disablePadding: false,
+      label: 'Competiție',
+    },
+    {
+      id: 'a1',
+      numeric: false,
+      disablePadding: false,
+      label: 'A1',
+    },
+    {
+      id: 'a2',
+      numeric: false,
+      disablePadding: false,
+      label: 'A2',
+    },
+    {
+      id: 'obs',
+      numeric: false,
+      disablePadding: false,
+      label: 'Observator',
+    },
+    {
+      id: 'location',
+      numeric: false,
+      disablePadding: false,
+      label: 'Locație',
+    },
   ];
 
   return (
     <>
       {draftsLoading && <CircularProgress />}
       <TableHeaderSelector />
-      {!draftsLoading &&
+      {!draftsLoading && (
         <EnhancedTable
+          handleFirstRefereeChoice={onFirstRefereeChoice}
+          handleSecondRefereeChoice={onSecondRefereeChoice}
+          handleObserverChoice={onObserverChoice}
           tableName="Propuneri respinse "
-          rows={drafts.map(elem => ({
-            ...elem, match_date: dateConverter(elem.match_date), a1: '-', a2: '-', obs: '-'
+          rows={drafts.map((elem) => ({
+            ...elem,
+            match_date: dateConverter(elem.match_date),
           }))}
           headCells={headCells}
         />
-      }
+      )}
     </>
   );
 };
@@ -83,7 +140,7 @@ RejectedDrafts.propTypes = {
   user: PropTypes.string.isRequired,
   drafts: PropTypes.arrayOf(
     PropTypes.exact({
-      id: PropTypes.number,
+      match_id: PropTypes.number,
       match_no: PropTypes.string.isRequired,
       match_date: PropTypes.string.isRequired,
       team_a_name: PropTypes.string.isRequired,
@@ -114,13 +171,12 @@ RejectedDrafts.propTypes = {
   error: PropTypes.string,
   DoFetchDrafts: PropTypes.func.isRequired,
   DoFetchShortlist: PropTypes.func.isRequired,
-}
+};
 
 RejectedDrafts.defaultProps = {
   error: '',
   shortlistLoading: true,
   draftsLoading: true,
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(RejectedDrafts);
-

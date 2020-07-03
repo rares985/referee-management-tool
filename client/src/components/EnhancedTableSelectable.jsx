@@ -4,17 +4,22 @@ import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import Button from '@material-ui/core/Button';
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
-import ChooseRefereeModal from './ChooseRefereeModal';
 
 const useStyles = makeStyles({
   table: {
     minWidth: 750,
+  },
+  bottomTable: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
 });
 
@@ -44,17 +49,12 @@ const stableSort = (array, comparator) => {
   return stabilizedThis.map((el) => el[0]);
 };
 
-const EnhancedTable = (props) => {
+const EnhancedTableSelectable = (props) => {
   const classes = useStyles();
   const { rows, headCells, tableName, selectable, selectedKey } = props;
-  const {
-    handleFirstRefereeChoice,
-    handleSecondRefereeChoice,
-    handleObserverChoice,
-    shortlistById,
-  } = props;
+  const { handleDeleteSelectedClick, handleConfirmSelectedClick, button } = props;
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('match_no');
+  const [orderBy, setOrderBy] = React.useState(selectedKey);
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -67,26 +67,19 @@ const EnhancedTable = (props) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.match_no);
+      const newSelecteds = rows.map((n) => n[selectedKey]);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleHeadCellsPadding = () => {
-    if (selectable) {
-      return [{ ...headCells[0], disablePadding: true }, ...headCells.slice(1)];
-    }
-    return [{ ...headCells[0], disablePadding: false }, ...headCells.slice(1)];
-  };
-
-  const handleClick = (event, match) => {
-    const selectedIndex = selected.indexOf(match.match_no);
+  const handleClick = (event, row) => {
+    const selectedIndex = selected.indexOf(row[selectedKey]);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, match.match_no);
+      newSelected = newSelected.concat(selected, row[selectedKey]);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -97,7 +90,6 @@ const EnhancedTable = (props) => {
         selected.slice(selectedIndex + 1)
       );
     }
-    console.log(`Setting to ${newSelected}`);
     setSelected(newSelected);
   };
 
@@ -110,15 +102,19 @@ const EnhancedTable = (props) => {
     setPage(0);
   };
 
-  const isSelected = (matchNo) => {
-    return selected.indexOf(matchNo) !== -1;
+  const isSelected = (selectedValue) => {
+    return selected.indexOf(selectedValue) !== -1;
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   return (
     <>
-      <EnhancedTableToolbar numSelected={selected.length} tableName={tableName} />
+      <EnhancedTableToolbar
+        handleDeleteClick={() => handleDeleteSelectedClick(selected)}
+        numSelected={selected.length}
+        tableName={tableName}
+      />
       <TableContainer>
         <Table
           className={classes.table}
@@ -129,7 +125,7 @@ const EnhancedTable = (props) => {
           <EnhancedTableHead
             classes={classes}
             numSelected={selected.length}
-            headCells={handleHeadCellsPadding()}
+            headCells={headCells}
             order={order}
             orderBy={orderBy}
             onSelectAllClick={handleSelectAllClick}
@@ -164,50 +160,15 @@ const EnhancedTable = (props) => {
                     ) : (
                       <></>
                     )}
-                    <TableCell component="th" id={labelId} scope="row" padding="default">
-                      {row.match_no}
-                    </TableCell>
-                    <TableCell align="right">{row.match_date}</TableCell>
-                    <TableCell align="right">{row.team_a_name}</TableCell>
-                    <TableCell align="right">{row.team_b_name}</TableCell>
-                    <TableCell align="right">{row.full_name_competition}</TableCell>
-                    <TableCell align="right">
-                      {row.first_referee_name ? (
-                        row.first_referee_name
-                      ) : (
-                        <ChooseRefereeModal
-                          matchid={row.match_id}
-                          title="Alege arbitru A1"
-                          onSaveCloseCB={handleFirstRefereeChoice}
-                          shortlist={shortlistById}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell align="right">
-                      {row.second_referee_name ? (
-                        row.second_referee_name
-                      ) : (
-                        <ChooseRefereeModal
-                          matchid={row.match_id}
-                          title="Alege arbitru A2"
-                          onSaveCloseCB={handleSecondRefereeChoice}
-                          shortlist={shortlistById}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell align="right">
-                      {row.observer_name ? (
-                        row.observer_name
-                      ) : (
-                        <ChooseRefereeModal
-                          matchid={row.match_id}
-                          title="Alege observator"
-                          onSaveCloseCB={handleObserverChoice}
-                          shortlist={shortlistById}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell align="right">{row.location}</TableCell>
+                    {headCells
+                      .filter((elem) => elem.id !== selectedKey)
+                      .map((elem) => {
+                        return (
+                          <TableCell key={elem.id} align={elem.numeric ? 'right' : 'left'}>
+                            {row[elem.id]}
+                          </TableCell>
+                        );
+                      })}
                   </TableRow>
                 );
               })}
@@ -219,32 +180,37 @@ const EnhancedTable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      <div className={classes.bottomTable}>
+        {button && (
+          <Button
+            variant="contained"
+            onClick={handleConfirmSelectedClick}
+            color="primary"
+            block="true"
+            disabled={selected.length === 0}
+            type="submit"
+          >
+            Confirmă
+          </Button>
+        )}
+
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </div>
     </>
   );
 };
 
-EnhancedTable.propTypes = {
-  rows: PropTypes.arrayOf(
-    PropTypes.exact({
-      match_id: PropTypes.number.isRequired,
-      match_no: PropTypes.number.isRequired,
-      match_date: PropTypes.string.isRequired,
-      team_a_name: PropTypes.string.isRequired,
-      team_b_name: PropTypes.string.isRequired,
-      full_name_competition: PropTypes.string.isRequired,
-      season: PropTypes.string.isRequired,
-      location: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+/* eslint-disable react/forbid-prop-types */
+EnhancedTableSelectable.propTypes = {
+  rows: PropTypes.array.isRequired,
   headCells: PropTypes.arrayOf(
     PropTypes.exact({
       id: PropTypes.string.isRequired,
@@ -253,17 +219,20 @@ EnhancedTable.propTypes = {
       label: PropTypes.string.isRequired,
     })
   ).isRequired,
-  shortlistById: PropTypes.objectOf(PropTypes.arrayOf({}).isRequired).isRequired,
   tableName: PropTypes.string.isRequired,
   selectable: PropTypes.bool,
-  handleFirstRefereeChoice: PropTypes.func.isRequired,
-  handleSecondRefereeChoice: PropTypes.func.isRequired,
-  handleObserverChoice: PropTypes.func.isRequired,
   selectedKey: PropTypes.string.isRequired,
+  handleDeleteSelectedClick: PropTypes.func,
+  handleConfirmSelectedClick: PropTypes.func,
+  button: PropTypes.bool,
 };
+/* eslint-enable react/forbid-prop-types */
 
-EnhancedTable.defaultProps = {
+EnhancedTableSelectable.defaultProps = {
   selectable: false,
+  button: false,
+  handleDeleteSelectedClick: () => {},
+  handleConfirmSelectedClick: () => {},
 };
 
-export default EnhancedTable;
+export default EnhancedTableSelectable;

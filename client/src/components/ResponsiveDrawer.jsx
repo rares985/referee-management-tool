@@ -67,7 +67,8 @@ const ResponsiveDrawer = (props) => {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {links.filter(elem => !elem.exclusive)
+        {links
+          .filter((elem) => !elem.exclusive)
           .map((link) => (
             <ListItem onClick={() => navigate(link.path)} button key={link.text}>
               <ListItemIcon>{link.icon}</ListItemIcon>
@@ -78,7 +79,8 @@ const ResponsiveDrawer = (props) => {
       <Divider />
       <List>
         {/* TODO Check why dashboard appears before login */}
-        {links.filter(elem => elem.exclusive)
+        {links
+          .filter((elem) => elem.exclusive)
           .map((link) => (
             <ListItem onClick={() => navigate(link.path)} button key={link.text}>
               <ListItemIcon>{link.icon}</ListItemIcon>
@@ -145,31 +147,27 @@ const ResponsiveDrawer = (props) => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Container fluid="true">
-          {children}
-        </Container>
+        <Container fluid="true">{children}</Container>
       </main>
     </div>
   );
-}
+};
 
 ResponsiveDrawer.propTypes = {
   window: PropTypes.element,
-  links: PropTypes.arrayOf(PropTypes.exact({
-    exclusive: PropTypes.bool,
-    text: PropTypes.string.isRequired,
-    path: PropTypes.string.isRequired,
-    icon: PropTypes.element.isRequired
-  })).isRequired,
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ]).isRequired,
-}
+  links: PropTypes.arrayOf(
+    PropTypes.exact({
+      exclusive: PropTypes.bool,
+      text: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      icon: PropTypes.element.isRequired,
+    })
+  ).isRequired,
+  children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
+};
 
 ResponsiveDrawer.defaultProps = {
   window: undefined,
-}
-
+};
 
 export default ResponsiveDrawer;

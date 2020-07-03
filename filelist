@@ -3,8 +3,6 @@
 .gitattributes
 .gitignore
 .travis.yml
-LICENSE
-README.md
 azure-pipelines.yml
 client/.babelrc
 client/.eslintignore
@@ -30,9 +28,7 @@ client/src/actions/delegate/proposedDraftsActions.js
 client/src/actions/delegate/rejectedDraftsActions.js
 client/src/actions/index.js
 client/src/assets/scss/base.scss
-client/src/assets/scss/login.scss
 client/src/assets/scss/page-container.scss
-client/src/assets/scss/toolbar.scss
 client/src/components/ChooseRefereeModal.jsx
 client/src/components/DismissibleHelper.jsx
 client/src/components/EnhancedTable.jsx
@@ -55,10 +51,13 @@ client/src/pages/PersonalInformationForm.jsx
 client/src/pages/PersonalMatchHistory.jsx
 client/src/pages/Team.jsx
 client/src/pages/UnavailabilityPeriods.jsx
+client/src/pages/dashboard/DashboardItem.jsx
 client/src/pages/delegate/DelegableMatches.jsx
 client/src/pages/delegate/PersonalDrafts.jsx
 client/src/pages/delegate/ProposedDrafts.jsx
 client/src/pages/delegate/RejectedDrafts.jsx
+client/src/pages/login/MaskableTextField.jsx
+client/src/pages/unavailable/UnavailableDatesTable.jsx
 client/src/reducers/approve/approveDraftsReducer.js
 client/src/reducers/checkTokenReducer.js
 client/src/reducers/dashboardReducer.js
@@ -84,7 +83,6 @@ client/webpack.config.prod.js
 server.js
 server/auth_middleware.js
 server/data/add_static_data.sql
-server/data/refereee-management-tool.dbml
 server/data/sql_procedures_forge.sql
 server/db-conn-mssql.js
 server/db-conn.js

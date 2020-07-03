@@ -7,16 +7,18 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import { Form, FormControl, Col } from 'react-bootstrap';
-import UnavailableDatesTable from './unavailable/UnavailableDatesTable';
+
+import EnhancedTableSelectable from '../components/EnhancedTableSelectable';
+import DateAdder from './unavailable/DateAdder';
+
+import dateFormatter from '../utils/datemanip';
 
 import {
   FetchUpcomingUnavailabilities,
   FetchOldUnavailabilities,
-  AddNewUnavailability
+  AddNewUnavailability,
+  DeleteUpcoming,
 } from '../actions/UnavailabilityPeriodActions';
-
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -26,7 +28,7 @@ const mapStateToProps = (state) => ({
   oldLoading: state.unavailabilityPeriods.oldLoading,
   updateFinished: state.unavailabilityPeriods.updateFinished,
   error: state.unavailabilityPeriods.error,
-})
+});
 
 const mapDispatchToProps = (dispatch) => ({
   doFetchUpcoming: (request) => {
@@ -37,10 +39,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
   addNewPeriod: (request) => {
     dispatch(AddNewUnavailability(request));
-  }
+  },
+
+  doDelete: (request) => {
+    dispatch(DeleteUpcoming(request));
+  },
 });
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,69 +57,112 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-  }
+  },
 }));
 
 const UnavailabilityPeriods = (props) => {
   const classes = useStyles();
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [id, setId] = useState(0);
 
-  // eslint-disable-next-line no-unused-vars
-  const { user, upcomingDates, upcomingLoading, oldDates, oldLoading, updateFinished, error } = props;
+  /* eslint-disable no-unused-vars */
+  const {
+    user,
+    upcomingDates,
+    upcomingLoading,
+    oldDates,
+    oldLoading,
+    updateFinished,
+    error,
+  } = props;
+  /* eslint-enable no-unused-vars */
 
   const [newUnavailabilityDates, setNewUnavailabilityDates] = useState([]);
-
-  const validateForm = () => {
-    // return startDate >= Date.now() && endDate >= Date.now() && startDate <= endDate;
-    return true;
-  };
-
 
   useEffect(() => {
     const { doFetchUpcoming, doFetchOld } = props;
     if (upcomingLoading) {
       doFetchUpcoming({
-        username: user
+        username: user,
       });
     }
     if (oldLoading) {
       doFetchOld({
-        username: user
+        username: user,
       });
     }
   });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleNewDateAdd = (date) => {
     setNewUnavailabilityDates([
       ...newUnavailabilityDates,
       {
-        StartDate: startDate,
-        EndDate: endDate,
-      }
+        id,
+        StartDate: date.startDate,
+        EndDate: date.endDate,
+        Reason: date.reason,
+      },
     ]);
 
+    setId(id + 1);
+  };
+
+  const onDeleteSelectedUpcoming = (selectedIds) => {
+    const { doDelete } = props;
+    doDelete({
+      ids: selectedIds,
+      username: user,
+    });
+  };
+
+  const onDeleteSelectedNew = (selectedIds) => {
+    setNewUnavailabilityDates(
+      newUnavailabilityDates.filter((elem) => !selectedIds.includes(elem.id))
+    );
   };
 
   const tables = [
     {
       loading: oldLoading,
-      title: "Perioade de indisponibilitate trecute",
+      title: 'Perioade de indisponibilitate trecute',
       dates: oldDates,
     },
     {
       loading: upcomingLoading,
-      title: "Perioade de indisponibilitate în perioada următoare",
+      title: 'Perioade de indisponibilitate în perioada următoare',
       dates: upcomingDates,
       deletable: true,
+      handleDeleteSelected: onDeleteSelectedUpcoming,
     },
     {
       loading: false,
-      title: "Perioade de indisponibilitate noi",
+      title: 'Perioade de indisponibilitate noi',
       dates: newUnavailabilityDates,
-    }
+      deletable: true,
+      button: true,
+      handleDeleteSelected: onDeleteSelectedNew,
+    },
+  ];
+
+  const headCells = [
+    {
+      id: 'StartDate',
+      numeric: false,
+      disablePadding: false,
+      label: 'Data începerii',
+    },
+    {
+      id: 'EndDate',
+      numeric: false,
+      disablePadding: false,
+      label: 'Data încheierii',
+    },
+    {
+      id: 'Reason',
+      numeric: false,
+      disablePadding: false,
+      label: 'Motiv',
+    },
   ];
 
   return (
@@ -125,12 +172,21 @@ const UnavailabilityPeriods = (props) => {
           return (
             <Paper elevation={4} className={classes.root} key={table.title}>
               {table.loading && <CircularProgress />}
-              {!table.loading &&
-                <UnavailableDatesTable
-                  title={table.title}
-                  deletable={table.deletable ? table.deletable : false}
-                  dates={table.dates} />
-              }
+              {!table.loading && (
+                <EnhancedTableSelectable
+                  tableName={table.title}
+                  rows={table.dates.map((elem) => ({
+                    ...elem,
+                    StartDate: dateFormatter(elem.StartDate),
+                    EndDate: dateFormatter(elem.EndDate),
+                  }))}
+                  headCells={headCells}
+                  button={table.button}
+                  handleDeleteSelectedClick={table.handleDeleteSelected}
+                  selectedKey="id"
+                  selectable={table.deletable}
+                />
+              )}
             </Paper>
           );
         })}
@@ -139,61 +195,42 @@ const UnavailabilityPeriods = (props) => {
           <Typography component="h1" variant="h5">
             Adaugă indisponibilitate
           </Typography>
-          <Form onSubmit={handleSubmit}>
-            <Form.Row>
-              <Col>
-                <FormControl
-                  autoFocus
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-              </Col>
-              <Col>
-                <FormControl
-                  autoFocus
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </Col>
-              <Col>
-                <Button variant="contained" color="primary" block disabled={!validateForm()} type="submit">
-                  Adaugă
-              </Button>
-              </Col>
-            </Form.Row>
-          </Form>
+          <DateAdder onAdd={handleNewDateAdd} />
         </Paper>
       </CssBaseline>
-    </Container >
+    </Container>
   );
 };
 
 UnavailabilityPeriods.propTypes = {
   user: PropTypes.string.isRequired,
-  upcomingDates: PropTypes.arrayOf(PropTypes.exact({
-    id: PropTypes.number.isRequired,
-    StartDate: PropTypes.string.isRequired,
-    EndDate: PropTypes.string.isRequired,
-    Reason: PropTypes.string.isRequired,
-  })).isRequired,
+  upcomingDates: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      StartDate: PropTypes.string.isRequired,
+      EndDate: PropTypes.string.isRequired,
+      Reason: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   upcomingLoading: PropTypes.bool.isRequired,
-  oldDates: PropTypes.arrayOf(PropTypes.exact({
-    id: PropTypes.number.isRequired,
-    StartDate: PropTypes.string.isRequired,
-    EndDate: PropTypes.string.isRequired,
-    Reason: PropTypes.string.isRequired,
-  })).isRequired,
+  oldDates: PropTypes.arrayOf(
+    PropTypes.exact({
+      id: PropTypes.number.isRequired,
+      StartDate: PropTypes.string.isRequired,
+      EndDate: PropTypes.string.isRequired,
+      Reason: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   oldLoading: PropTypes.bool.isRequired,
   updateFinished: PropTypes.bool.isRequired,
   error: PropTypes.string,
   doFetchUpcoming: PropTypes.func.isRequired,
   doFetchOld: PropTypes.func.isRequired,
+  doDelete: PropTypes.func.isRequired,
 };
 
 UnavailabilityPeriods.defaultProps = {
-  error: ''
-}
+  error: '',
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UnavailabilityPeriods);

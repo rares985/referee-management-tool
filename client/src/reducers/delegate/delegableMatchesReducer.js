@@ -11,7 +11,7 @@ const initialState = {
   matches: [],
   matchesLoading: true,
   shortlist: [],
-  shortlistLoading: false
+  shortlistLoading: true
 };
 
 const delegableMatchesReducer = (state = initialState, action) => {
@@ -24,7 +24,6 @@ const delegableMatchesReducer = (state = initialState, action) => {
       return {
         ...state,
         matchesLoading: false,
-        shortlistLoading: true,
         matches: action.payload.matches
       };
     case DELEGABLE_MATCHES_FAILURE:
@@ -36,6 +35,7 @@ const delegableMatchesReducer = (state = initialState, action) => {
     case ELIGIBLE_REFS_BEGIN:
       return {
         ...state,
+        shortlistLoading: true,
       };
     case ELIGIBLE_REFS_SUCCESS:
       return {

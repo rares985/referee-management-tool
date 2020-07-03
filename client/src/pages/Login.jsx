@@ -5,6 +5,7 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
@@ -24,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    padding: theme.spacing(2),
   },
   avatar: {
     margin: theme.spacing(1),
@@ -38,20 +40,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const mapStateToProps = (state) => ({
   user: state.login.user,
-  error: state.login.error
+  error: state.login.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   onSubmitLoginRequest: (request) => {
     dispatch(LoginAction(request));
-  }
+  },
 });
 
 const Login = (props) => {
-
   const classes = useStyles();
 
   const [username, setUsername] = useState('');
@@ -68,14 +68,14 @@ const Login = (props) => {
 
     onSubmitLoginRequest({
       username,
-      password
+      password,
     });
   }
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <div className={classes.paper}>
+      <Paper elevation={4} className={classes.paper}>
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -95,7 +95,7 @@ const Login = (props) => {
             autoFocus
             value={username}
             error={error}
-            helperText={error ? "Username/parola incorecta" : ''}
+            helperText={error ? 'Username/parola incorecta' : ''}
             onChange={(event) => setUsername(event.target.value)}
           />
           <MaskableTextField
@@ -108,7 +108,7 @@ const Login = (props) => {
             autoComplete="current-password"
             value={password}
             error={error}
-            helperText={error ? "Username/parola incorecta" : ''}
+            helperText={error ? 'Username/parola incorecta' : ''}
             onChange={(event) => setPassword(event.target.value)}
           />
           <FormControlLabel
@@ -133,21 +133,18 @@ const Login = (props) => {
             </Grid>
           </Grid>
         </form>
-      </div>
+      </Paper>
     </Container>
   );
-}
+};
 
 Login.propTypes = {
   error: PropTypes.string,
   onSubmitLoginRequest: PropTypes.func.isRequired,
-}
+};
 
 Login.defaultProps = {
   error: '',
-}
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

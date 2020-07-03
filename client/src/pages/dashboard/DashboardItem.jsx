@@ -18,20 +18,21 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     marginTop: theme.spacing(2),
-  }
+  },
+  avatar: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
 }));
 
 const DashboardItem = (props) => {
-
   const { icon, title, text, buttonLabel, onClick } = props;
 
   const classes = useStyles();
 
   return (
     <Paper elevation={4} className={classes.root}>
-      <div className="avatar">
-        {icon}
-      </div>
+      <div className={classes.avatar}>{icon}</div>
       <Typography className={classes.elements} component="h1" variant="h5">
         {title}
       </Typography>
@@ -54,4 +55,3 @@ DashboardItem.propTypes = {
 };
 
 export default DashboardItem;
-

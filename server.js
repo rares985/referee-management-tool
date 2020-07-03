@@ -265,8 +265,6 @@ app.get("/api/publicmatches", (req, res) => {
       console.error(err);
       res.status(400).send("Failed to query the database");
     } else {
-      console.log("Sending...");
-      console.log(matches);
       res.status(200).send(matches);
     }
   });

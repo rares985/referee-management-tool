@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-
 import { CircularProgress } from '@material-ui/core';
 import FetchProposedDrafts from '../../actions/delegate/proposedDraftsActions';
 import TableHeaderSelector from '../../components/TableHeaderSelector';
@@ -10,12 +9,11 @@ import TableHeaderSelector from '../../components/TableHeaderSelector';
 import EnhancedTable from '../../components/EnhancedTable';
 import dateConverter from '../../utils/datemanip';
 
-
 const mapStateToProps = (state) => ({
   user: state.login.user,
   drafts: state.delegate.proposed.proposed,
   draftsLoading: state.delegate.proposed.proposedLoading,
-  error: state.delegate.proposed.error
+  error: state.delegate.proposed.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -24,9 +22,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-
 const ProposedDrafts = (props) => {
-
   // eslint-disable-next-line no-unused-vars
   const { user, drafts, draftsLoading, error } = props;
 
@@ -38,7 +34,7 @@ const ProposedDrafts = (props) => {
         username: user,
       });
     }
-  }, [draftsLoading]);
+  });
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
@@ -56,11 +52,19 @@ const ProposedDrafts = (props) => {
     <>
       {draftsLoading && <CircularProgress />}
       <TableHeaderSelector />
-      {!draftsLoading && <EnhancedTable
-        tableName="Propuse pentru aprobare "
-        rows={drafts.map(elem => ({ ...elem, match_date: dateConverter(elem.match_date), a1: '-', a2: '-', obs: '-' }))}
-        headCells={headCells}
-      />}
+      {!draftsLoading && (
+        <EnhancedTable
+          tableName="Propuse pentru aprobare "
+          rows={drafts.map((elem) => ({
+            ...elem,
+            match_date: dateConverter(elem.match_date),
+            a1: '-',
+            a2: '-',
+            obs: '-',
+          }))}
+          headCells={headCells}
+        />
+      )}
     </>
   );
 };
@@ -85,13 +89,10 @@ ProposedDrafts.propTypes = {
   draftsLoading: PropTypes.bool.isRequired,
   error: PropTypes.string,
   DoFetchDrafts: PropTypes.func.isRequired,
-}
+};
 
 ProposedDrafts.defaultProps = {
   error: '',
-}
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ProposedDrafts);
+export default connect(mapStateToProps, mapDispatchToProps)(ProposedDrafts);

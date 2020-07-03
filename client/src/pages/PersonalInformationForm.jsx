@@ -3,28 +3,40 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 
-import { FormGroup, FormControl, FormLabel } from 'react-bootstrap';
+import { FormGroup } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(3),
-  }
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  avatar: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
   info: state.personal.info,
   loading: state.personal.loading,
-  error: state.personal.error
+  error: state.personal.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -33,14 +45,13 @@ const mapDispatchToProps = (dispatch) => ({
   },
   doUpdatePersonalInfo: (request) => {
     dispatch(UpdatePersonalInfo(request));
-  }
+  },
 });
 
 const PersonalInformationForm = (props) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
-  const [birthDate, setBirthDate] = useState('');
   const [mobilePhone, setMobilePhone] = useState('');
   const [email, setEmail] = useState('');
 
@@ -55,10 +66,11 @@ const PersonalInformationForm = (props) => {
 
   const classes = useStyles();
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     if (loading) {
       doFetchPersonalInfo({
-        username: user
+        username: user,
       });
     } else {
       /* Loading has finished, update local state */
@@ -72,6 +84,7 @@ const PersonalInformationForm = (props) => {
       setLot(info.lot);
     }
   }, [loading]);
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   const validateForm = () => {
     return true;
@@ -94,101 +107,123 @@ const PersonalInformationForm = (props) => {
     <Container component="main" maxWidth="sm">
       <CssBaseline>
         {loading && <CircularProgress />}
-        {!loading &&
+        {!loading && (
           <Paper elevation={4} className={classes.root}>
-            <form onSubmit={handleSubmit}>
-              <div className="avatar">
+            <form onSubmit={handleSubmit} className={classes.form}>
+              <div className={classes.avatar}>
                 <PersonBoundingBox />
               </div>
               <FormGroup controlId="last_name">
-                <FormLabel>Nume</FormLabel>
-                <FormControl
+                <TextField
+                  variant="outlined"
+                  margin="normal"
                   autoFocus
                   type="text"
+                  label="Nume"
+                  fullWidth
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="first_name">
-                <FormLabel>Prenume</FormLabel>
-                <FormControl
+                <TextField
+                  variant="outlined"
+                  margin="normal"
                   autoFocus
                   type="text"
+                  label="Prenume"
+                  fullWidth
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="address">
-                <FormLabel>Adresă</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
                   type="text"
+                  label="Adresa"
+                  fullWidth
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </FormGroup>
-              <FormGroup controlId="birth_date">
-                <FormLabel>Data nașterii</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                />
-              </FormGroup>
               <FormGroup controlId="mobile_phone">
-                <FormLabel>Număr telefon mobil</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
                   type="tel"
+                  label="Număr telefon mobil"
+                  fullWidth
                   pattern="07[1-9][0-9][0-9]{6}"
                   value={mobilePhone}
                   onChange={(e) => setMobilePhone(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="personal_email">
-                <FormLabel>Adresă e-mail</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
                   type="email"
-                  value={email === '' ? info.email : email}
+                  label="Adresă e-mail"
+                  value={email}
+                  fullWidth
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="category">
-                <FormLabel>Categorie</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
                   type="text"
+                  label="Categorie"
                   value={category}
                   readOnly
                 />
               </FormGroup>
               <FormGroup controlId="lot">
-                <FormLabel>Lot</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
                   type="text"
+                  label="Lot"
                   value={lot}
                   readOnly
                 />
               </FormGroup>
               <FormGroup controlId="county">
-                <FormLabel>Judet</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
                   type="text"
+                  label="Județ"
                   value={county}
                   readOnly
                 />
               </FormGroup>
-              <Button variant="contained" color="primary" block="true" disabled={!validateForm()} type="submit">
+              <Button
+                className={classes.submit}
+                variant="contained"
+                color="primary"
+                block="true"
+                disabled={!validateForm()}
+                type="submit"
+              >
                 Actualizare
               </Button>
             </form>
           </Paper>
-        }
-      </CssBaseline >
+        )}
+      </CssBaseline>
     </Container>
   );
 };
@@ -210,7 +245,7 @@ PersonalInformationForm.propTypes = {
   error: PropTypes.string,
   doFetchPersonalInfo: PropTypes.func.isRequired,
   doUpdatePersonalInfo: PropTypes.func.isRequired,
-}
+};
 
 PersonalInformationForm.defaultProps = {
   error: '',
@@ -224,11 +259,7 @@ PersonalInformationForm.defaultProps = {
     jud: '',
     cat: '',
     lot: '',
-  }
-}
+  },
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PersonalInformationForm);
-
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalInformationForm);

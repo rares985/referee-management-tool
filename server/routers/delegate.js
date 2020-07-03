@@ -55,7 +55,6 @@ const GetDelegableMatches = (req, res) => {
 }
 
 const GetEligibleRefsForDelegableMatches = (req, res) => {
-  console.log(req.query);
   const { username } = req.query;
 
   poolConnect
@@ -69,7 +68,6 @@ const GetEligibleRefsForDelegableMatches = (req, res) => {
             return;
           }
           res.status(200).send(proc_res.recordset);
-          console.dir(proc_res);
         });
     })
     .catch(err => {

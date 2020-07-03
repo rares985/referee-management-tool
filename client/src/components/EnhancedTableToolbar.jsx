@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { lighten, makeStyles } from '@material-ui/core/styles'
+import { lighten, makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,13 +17,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   title: {
     flex: '1 1 100%',
   },
@@ -31,7 +31,7 @@ const useToolbarStyles = makeStyles((theme) => ({
 
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, tableName } = props;
+  const { numSelected, tableName, handleDeleteClick } = props;
 
   return (
     <Toolbar
@@ -41,27 +41,27 @@ const EnhancedTableToolbar = (props) => {
     >
       {numSelected > 0 ? (
         <Typography className={classes.title} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
+          {numSelected} rânduri selectate
         </Typography>
       ) : (
-          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-            {tableName}
-          </Typography>
-        )}
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+          {tableName}
+        </Typography>
+      )}
 
       {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton aria-label="delete">
+        <Tooltip title="Șterge">
+          <IconButton aria-label="șterge" onClick={handleDeleteClick}>
             <DeleteIcon />
           </IconButton>
         </Tooltip>
       ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
+        <Tooltip title="Filtrează rânduri">
+          <IconButton aria-label="filtreaza">
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
     </Toolbar>
   );
 };
@@ -69,6 +69,7 @@ const EnhancedTableToolbar = (props) => {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   tableName: PropTypes.string.isRequired,
-}
+  handleDeleteClick: PropTypes.func.isRequired,
+};
 
 export default EnhancedTableToolbar;

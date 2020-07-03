@@ -1,29 +1,30 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
 const jwt = require("jsonwebtoken");
 
 const bcrypt = require("bcryptjs");
 
-const connection = require('../db-conn');
-var Request = require('tedious').Request;
-var TYPES = require('tedious').TYPES;
+const sql = require("mssql");
+const poolConnect = require("../db-conn-mssql");
+
+const connection = require("../db-conn");
+var Request = require("tedious").Request;
+var TYPES = require("tedious").TYPES;
 
 /* JWT secret */
 const secret = process.env.JWT_SECRET;
-
 
 /* AUTHENTICATE route */
 router.post("/", (req, res) => {
   const { username, password } = req.body;
   console.log(`AUTH: Got request: ${username}, ${password}`);
 
-  if (username === undefined || password === undefined) {
+  if (!username || !password) {
     res.status(401).send("Invalid parameters for authentication");
   } else {
     var query = `SELECT Password FROM [dbo].[User] WHERE Username='${username}'`;
 
-    console.log(`Going to execute query ${query}`);
     request = new Request(query, (err, rowCount) => {
       if (err) {
         console.error(err);
@@ -31,7 +32,6 @@ router.post("/", (req, res) => {
         if (rowCount === 0) {
           res.status(401).send("Login failure!");
         }
-        console.log(`Got ${rowCount} rows`);
       }
     });
 
@@ -74,6 +74,5 @@ router.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.sendStatus(200);
 });
-
 
 module.exports = router;
