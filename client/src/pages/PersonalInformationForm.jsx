@@ -3,12 +3,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import { connect } from 'react-redux';
 
-import { FormGroup, FormControl, FormLabel } from 'react-bootstrap';
+import { FormGroup } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
@@ -16,6 +17,18 @@ import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoAc
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(3),
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  avatar: {
+    display: 'flex',
+    justifyContent: 'center',
+    margin: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
   },
 }));
 
@@ -39,7 +52,6 @@ const PersonalInformationForm = (props) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
-  const [birthDate, setBirthDate] = useState('');
   const [mobilePhone, setMobilePhone] = useState('');
   const [email, setEmail] = useState('');
 
@@ -97,78 +109,109 @@ const PersonalInformationForm = (props) => {
         {loading && <CircularProgress />}
         {!loading && (
           <Paper elevation={4} className={classes.root}>
-            <form onSubmit={handleSubmit}>
-              <div className="avatar">
+            <form onSubmit={handleSubmit} className={classes.form}>
+              <div className={classes.avatar}>
                 <PersonBoundingBox />
               </div>
               <FormGroup controlId="last_name">
-                <FormLabel>Nume</FormLabel>
-                <FormControl
+                <TextField
+                  variant="outlined"
+                  margin="normal"
                   autoFocus
                   type="text"
+                  label="Nume"
+                  fullWidth
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="first_name">
-                <FormLabel>Prenume</FormLabel>
-                <FormControl
+                <TextField
+                  variant="outlined"
+                  margin="normal"
                   autoFocus
                   type="text"
+                  label="Prenume"
+                  fullWidth
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="address">
-                <FormLabel>Adresă</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
                   type="text"
+                  label="Adresa"
+                  fullWidth
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
               </FormGroup>
-              <FormGroup controlId="birth_date">
-                <FormLabel>Data nașterii</FormLabel>
-                <FormControl
-                  autoFocus
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                />
-              </FormGroup>
               <FormGroup controlId="mobile_phone">
-                <FormLabel>Număr telefon mobil</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
                   type="tel"
+                  label="Număr telefon mobil"
+                  fullWidth
                   pattern="07[1-9][0-9][0-9]{6}"
                   value={mobilePhone}
                   onChange={(e) => setMobilePhone(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="personal_email">
-                <FormLabel>Adresă e-mail</FormLabel>
-                <FormControl
+                <TextField
                   autoFocus
+                  variant="outlined"
+                  margin="normal"
                   type="email"
-                  value={email === '' ? info.email : email}
+                  label="Adresă e-mail"
+                  value={email}
+                  fullWidth
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormGroup>
               <FormGroup controlId="category">
-                <FormLabel>Categorie</FormLabel>
-                <FormControl autoFocus type="text" value={category} readOnly />
+                <TextField
+                  autoFocus
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  type="text"
+                  label="Categorie"
+                  value={category}
+                  readOnly
+                />
               </FormGroup>
               <FormGroup controlId="lot">
-                <FormLabel>Lot</FormLabel>
-                <FormControl autoFocus type="text" value={lot} readOnly />
+                <TextField
+                  autoFocus
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  type="text"
+                  label="Lot"
+                  value={lot}
+                  readOnly
+                />
               </FormGroup>
               <FormGroup controlId="county">
-                <FormLabel>Judet</FormLabel>
-                <FormControl autoFocus type="text" value={county} readOnly />
+                <TextField
+                  autoFocus
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  type="text"
+                  label="Județ"
+                  value={county}
+                  readOnly
+                />
               </FormGroup>
               <Button
+                className={classes.submit}
                 variant="contained"
                 color="primary"
                 block="true"
