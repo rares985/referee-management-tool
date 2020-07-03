@@ -7,10 +7,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import { Form, FormControl, Col } from 'react-bootstrap';
 
 import EnhancedTableSelectable from '../components/EnhancedTableSelectable';
+import DateAdder from './unavailable/DateAdder';
 
 import dateFormatter from '../utils/datemanip';
 
@@ -18,6 +17,7 @@ import {
   FetchUpcomingUnavailabilities,
   FetchOldUnavailabilities,
   AddNewUnavailability,
+  DeleteUpcoming,
 } from '../actions/UnavailabilityPeriodActions';
 
 const mapStateToProps = (state) => ({
@@ -40,6 +40,10 @@ const mapDispatchToProps = (dispatch) => ({
   addNewPeriod: (request) => {
     dispatch(AddNewUnavailability(request));
   },
+
+  doDelete: (request) => {
+    dispatch(DeleteUpcoming(request));
+  },
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -59,8 +63,7 @@ const useStyles = makeStyles((theme) => ({
 const UnavailabilityPeriods = (props) => {
   const classes = useStyles();
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [id, setId] = useState(0);
 
   /* eslint-disable no-unused-vars */
   const {
@@ -76,11 +79,6 @@ const UnavailabilityPeriods = (props) => {
 
   const [newUnavailabilityDates, setNewUnavailabilityDates] = useState([]);
 
-  const validateForm = () => {
-    // return startDate >= Date.now() && endDate >= Date.now() && startDate <= endDate;
-    return true;
-  };
-
   useEffect(() => {
     const { doFetchUpcoming, doFetchOld } = props;
     if (upcomingLoading) {
@@ -95,15 +93,32 @@ const UnavailabilityPeriods = (props) => {
     }
   });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleNewDateAdd = (date) => {
     setNewUnavailabilityDates([
       ...newUnavailabilityDates,
       {
-        StartDate: startDate,
-        EndDate: endDate,
+        id,
+        StartDate: date.startDate,
+        EndDate: date.endDate,
+        Reason: date.reason,
       },
     ]);
+
+    setId(id + 1);
+  };
+
+  const onDeleteSelectedUpcoming = (selectedIds) => {
+    const { doDelete } = props;
+    doDelete({
+      ids: selectedIds,
+      username: user,
+    });
+  };
+
+  const onDeleteSelectedNew = (selectedIds) => {
+    setNewUnavailabilityDates(
+      newUnavailabilityDates.filter((elem) => !selectedIds.includes(elem.id))
+    );
   };
 
   const tables = [
@@ -117,11 +132,15 @@ const UnavailabilityPeriods = (props) => {
       title: 'Perioade de indisponibilitate în perioada următoare',
       dates: upcomingDates,
       deletable: true,
+      handleDeleteSelected: onDeleteSelectedUpcoming,
     },
     {
       loading: false,
       title: 'Perioade de indisponibilitate noi',
       dates: newUnavailabilityDates,
+      deletable: true,
+      button: true,
+      handleDeleteSelected: onDeleteSelectedNew,
     },
   ];
 
@@ -162,6 +181,8 @@ const UnavailabilityPeriods = (props) => {
                     EndDate: dateFormatter(elem.EndDate),
                   }))}
                   headCells={headCells}
+                  button={table.button}
+                  handleDeleteSelectedClick={table.handleDeleteSelected}
                   selectedKey="id"
                   selectable={table.deletable}
                 />
@@ -174,37 +195,7 @@ const UnavailabilityPeriods = (props) => {
           <Typography component="h1" variant="h5">
             Adaugă indisponibilitate
           </Typography>
-          <Form onSubmit={handleSubmit}>
-            <Form.Row>
-              <Col>
-                <FormControl
-                  autoFocus
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
-              </Col>
-              <Col>
-                <FormControl
-                  autoFocus
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                />
-              </Col>
-              <Col>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  block="true"
-                  disabled={!validateForm()}
-                  type="submit"
-                >
-                  Adaugă
-                </Button>
-              </Col>
-            </Form.Row>
-          </Form>
+          <DateAdder onAdd={handleNewDateAdd} />
         </Paper>
       </CssBaseline>
     </Container>
@@ -235,6 +226,7 @@ UnavailabilityPeriods.propTypes = {
   error: PropTypes.string,
   doFetchUpcoming: PropTypes.func.isRequired,
   doFetchOld: PropTypes.func.isRequired,
+  doDelete: PropTypes.func.isRequired,
 };
 
 UnavailabilityPeriods.defaultProps = {

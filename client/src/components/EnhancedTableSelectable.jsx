@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
+import Button from '@material-ui/core/Button';
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
@@ -14,6 +15,11 @@ import EnhancedTableToolbar from './EnhancedTableToolbar';
 const useStyles = makeStyles({
   table: {
     minWidth: 750,
+  },
+  bottomTable: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
 });
 
@@ -46,6 +52,7 @@ const stableSort = (array, comparator) => {
 const EnhancedTableSelectable = (props) => {
   const classes = useStyles();
   const { rows, headCells, tableName, selectable, selectedKey } = props;
+  const { handleDeleteSelectedClick, handleConfirmSelectedClick, button } = props;
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState(selectedKey);
   const [selected, setSelected] = React.useState([]);
@@ -103,7 +110,11 @@ const EnhancedTableSelectable = (props) => {
 
   return (
     <>
-      <EnhancedTableToolbar numSelected={selected.length} tableName={tableName} />
+      <EnhancedTableToolbar
+        handleDeleteClick={() => handleDeleteSelectedClick(selected)}
+        numSelected={selected.length}
+        tableName={tableName}
+      />
       <TableContainer>
         <Table
           className={classes.table}
@@ -169,15 +180,30 @@ const EnhancedTableSelectable = (props) => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={rows.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
+      <div className={classes.bottomTable}>
+        {button && (
+          <Button
+            variant="contained"
+            onClick={handleConfirmSelectedClick}
+            color="primary"
+            block="true"
+            disabled={selected.length === 0}
+            type="submit"
+          >
+            Confirmă
+          </Button>
+        )}
+
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </div>
     </>
   );
 };
@@ -196,11 +222,17 @@ EnhancedTableSelectable.propTypes = {
   tableName: PropTypes.string.isRequired,
   selectable: PropTypes.bool,
   selectedKey: PropTypes.string.isRequired,
+  handleDeleteSelectedClick: PropTypes.func,
+  handleConfirmSelectedClick: PropTypes.func,
+  button: PropTypes.bool,
 };
 /* eslint-enable react/forbid-prop-types */
 
 EnhancedTableSelectable.defaultProps = {
   selectable: false,
+  button: false,
+  handleDeleteSelectedClick: () => {},
+  handleConfirmSelectedClick: () => {},
 };
 
 export default EnhancedTableSelectable;

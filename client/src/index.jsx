@@ -3,25 +3,23 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { roRO } from '@material-ui/core/locale';
+import DateFnsUtils from '@date-io/date-fns';
+import 'date-fns';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 import * as serviceWorker from './serviceWorker';
 import App from './App/App';
 import store from './store/index';
 
-const theme = createMuiTheme(
-  {
-    palette: {
-      primary: { main: '#1976d2' },
-    },
-  },
-  roRO
-);
+const theme = createMuiTheme(roRO);
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>
-    <Provider store={store}>
-      <App />
-    </Provider>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </MuiPickersUtilsProvider>
   </ThemeProvider>,
   document.getElementById('root')
 );

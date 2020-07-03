@@ -1,4 +1,4 @@
-const sql = require('mssql');
+const sql = require("mssql");
 
 var connectionConfig = {
   user: process.env.DB_USERNAME,
@@ -9,9 +9,9 @@ var connectionConfig = {
 };
 
 const pool = new sql.ConnectionPool(connectionConfig);
-const poolConnect = pool.connect()
+const poolConnect = pool.connect();
 
-pool.on('error', err => {
+pool.on("error", (err) => {
   console.error(err);
 });
 
