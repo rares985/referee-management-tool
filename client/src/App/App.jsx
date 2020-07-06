@@ -30,24 +30,26 @@ const App = (props) => {
     {
       text: 'Acasă',
       path: '/',
-      icon: <HomeIcon />
+      icon: <HomeIcon />,
     },
     {
       text: 'Meciuri',
       path: '/matches',
-      icon: <EventIcon />
+      icon: <EventIcon />,
     },
     {
       text: 'Autentificare',
       path: '/login',
-      icon: <LockIcon />
+      icon: <LockIcon />,
     },
-    user !== '' ? {
-      exclusive: true,
-      text: 'Dashboard',
-      path: '/dashboard',
-      icon: <DashboardIcon />
-    } : false,
+    user !== ''
+      ? {
+          exclusive: true,
+          text: 'Dashboard',
+          path: '/dashboard',
+          icon: <DashboardIcon />,
+        }
+      : false,
   ];
 
   /* Declare routes as protected */
@@ -61,21 +63,21 @@ const App = (props) => {
 
   useEffect(() => {
     if (finished) {
-      navigate("/dashboard");
+      navigate('/dashboard');
     }
   }, [finished]);
 
   return (
     <div className="app">
-      <ResponsiveDrawer links={links.filter(elem => elem)}>
+      <ResponsiveDrawer links={links.filter((elem) => elem)}>
         <Router>
           <Home path="/" />
           <Matches path="/matches" />
-          {(user === '') && <Login path="/login" />}
-          {(user !== '') && <Dashboard path="/dashboard" />}
+          {user === '' && <Login path="/login" />}
+          {user !== '' && <Dashboard path="/dashboard" />}
           {<Dashboard path="/dashboard" />}
           {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-          <PersonalInformationForm path="/updateinfo" />
+          <PersonalInformationForm user={user} path="/updateinfo" />
           {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
           <PersonalMatchHistory path="/viewhistory" />
           {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}

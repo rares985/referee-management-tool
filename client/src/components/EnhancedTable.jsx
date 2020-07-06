@@ -97,7 +97,6 @@ const EnhancedTable = (props) => {
         selected.slice(selectedIndex + 1)
       );
     }
-    console.log(`Setting to ${newSelected}`);
     setSelected(newSelected);
   };
 

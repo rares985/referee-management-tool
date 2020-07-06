@@ -22,7 +22,8 @@ const GetPersonalInfo = (req, res) => {
             res.status(501).send("Internal database error");
             return;
           }
-          res.status(200).send(proc_res.recordset);
+          /* Only one personal Info */
+          res.status(200).send(proc_res.recordset[0]);
         });
     })
     .catch((err) => {
@@ -42,11 +43,11 @@ const UpdatePersonalInfo = (req, res) => {
       pool
         .request()
         .input("Username", sql.VarChar(50), username)
-        .input("FirstName", sql.VarChar(30), username)
-        .input("LastName", sql.VarChar(30), username)
+        .input("FirstName", sql.VarChar(30), firstName)
+        .input("LastName", sql.VarChar(30), lastName)
         .input("Address", sql.VarChar(50), username)
-        .input("Email", sql.VarChar(50), username)
-        .input("PhoneNumber", sql.VarChar(10), username)
+        .input("Email", sql.VarChar(50), email)
+        .input("PhoneNumber", sql.VarChar(10), mobilePhone)
         .execute("UpdatePersonalInfo", (err, proc_res) => {
           if (err) {
             console.log(err);

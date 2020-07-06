@@ -255,31 +255,6 @@ app.get("/api/shortlist", (req, res) => {
   }
 });
 
-app.get("/api/publicmatches", (req, res) => {
-  console.log(`GET_PUBLIC_MATCHES: Got request`);
-
-  var query = `[dbo].[GetPublicMatches]`;
-  let matches = [];
-  var request = new Request(query, (err, rowCount) => {
-    if (err) {
-      console.error(err);
-      res.status(400).send("Failed to query the database");
-    } else {
-      res.status(200).send(matches);
-    }
-  });
-
-  request.on("row", (cols) => {
-    let obj = {};
-    cols.forEach((col) => {
-      obj[col.metadata.colName] = col.value;
-    });
-    matches.push(obj);
-  });
-
-  connection.execSql(request);
-});
-
 /* =============================== SERVICE ROUTES ==================================== */
 
 /* =============================== DEFAULT ROUTES ==================================== */

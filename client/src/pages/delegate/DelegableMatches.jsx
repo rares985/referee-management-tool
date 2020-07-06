@@ -108,22 +108,16 @@ const DelegableMatches = (props) => {
 
   // eslint-disable-next-line no-unused-vars
   const onFirstRefereeChoice = (matchId, referee) => {
-    console.log(referee);
-    console.dir(referee);
     console.log(`Chosen ${referee.referee_name} as A1 for match with id ${matchId}`);
   };
 
   // eslint-disable-next-line no-unused-vars
   const onSecondRefereeChoice = (matchId, referee) => {
-    console.log(referee);
-    console.dir(referee);
     console.log(`Chosen ${referee.referee_name} as A2 for match with id ${matchId}`);
   };
 
   // eslint-disable-next-line no-unused-vars
   const onObserverChoice = (matchId, referee) => {
-    console.log(referee);
-    console.dir(referee);
     console.log(`Chosen ${referee.referee_name} as Observer for match with id ${matchId}`);
   };
 

@@ -79,6 +79,7 @@ BEGIN
   INSERT INTO unavailability_period (referee_id, start_date, end_date, reason)
     VALUES (@RefereeID, @StartDate, @EndDate, @Reason)
 END
+
 -- Example of how to call
 EXEC AddUnavailabilityPeriod @Username = 'cjaprahova'
                             ,@Reason = N'suspendat'

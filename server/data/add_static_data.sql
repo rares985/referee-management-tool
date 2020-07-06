@@ -52,7 +52,7 @@ INSERT INTO lot (name)
 GO
 
 INSERT INTO category (name)
-  VALUES ('International'),
+  VALUES ('Internațional'),
   ('Republican'),
   ('I'),
   ('II'),
@@ -64,6 +64,10 @@ GO
 INSERT INTO age_group (name)
   VALUES ('Seniori'),
   ('Juniori'),
-  ('Cadeti'),
-  ('Sperante'),
+  ('Cadeți'),
+  ('Speranțe'),
   ('Minivolei');
+
+INSERT INTO sex (name, abbreviation)
+  VALUES ('Masculin', 'M'),
+  ('Feminin', 'F');

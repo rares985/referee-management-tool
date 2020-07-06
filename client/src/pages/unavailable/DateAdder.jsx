@@ -25,7 +25,6 @@ const DateAdder = (props) => {
   const handleAddNewDate = (event) => {
     event.preventDefault();
 
-    console.log(`Reason=<${reason}>`);
     if (reason === '') {
       setError(true);
       return;
