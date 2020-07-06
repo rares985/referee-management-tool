@@ -32,14 +32,13 @@ const ChooseRefereeModal = (props) => {
   };
 
   const handleSaveClose = () => {
-    props.onSaveCloseCB(props.matchid, chosen);
+    props.onSaveCloseCB(chosen);
     handleClose();
   };
 
-  const { shortlist, matchid, text, title } = props;
+  const { shortlist, text, title } = props;
 
-  const shortlistMatch = shortlist[matchid];
-  const refs = shortlistMatch.map((elem) => ({
+  const refs = shortlist.map((elem) => ({
     referee_name: elem.referee_name,
     referee_id: elem.referee_id,
   }));
@@ -107,11 +106,9 @@ ChooseRefereeModal.propTypes = {
   text: PropTypes.string,
   title: PropTypes.string.isRequired,
   onSaveCloseCB: PropTypes.func.isRequired,
-  matchid: PropTypes.number,
 };
 
 ChooseRefereeModal.defaultProps = {
-  matchid: 0,
   text: '',
 };
 

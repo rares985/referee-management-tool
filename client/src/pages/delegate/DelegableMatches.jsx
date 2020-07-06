@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 import { CircularProgress } from '@material-ui/core';
 import { groupBy } from 'lodash';
-import EnhancedTable from '../../components/EnhancedTable';
+import NiceTableCustomPicker from '../../components/NiceTableCustomPicker';
 
 import {
   FetchDelegableMatches,
@@ -105,7 +105,7 @@ const DelegableMatches = (props) => {
     { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
-    { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
+    { id: 'competition_name', numeric: false, disablePadding: false, label: 'Competiție' },
     { id: 'first_referee_name', numeric: false, disablePadding: false, label: 'A1' },
     { id: 'second_referee_name', numeric: false, disablePadding: false, label: 'A2' },
     { id: 'observer_name', numeric: false, disablePadding: false, label: 'Observator' },
@@ -118,18 +118,18 @@ const DelegableMatches = (props) => {
     <>
       {(matchesLoading || shortlistLoading) && <CircularProgress />}
       {!(matchesLoading || shortlistLoading) && (
-        <EnhancedTable
-          selectedKey="match_id"
+        <NiceTableCustomPicker
+          tableName="Meciuri delegabile"
+          primaryKey="match_id"
+          headCells={headCells}
           handleFirstRefereeChoice={onFirstRefereeChoice}
           handleSecondRefereeChoice={onSecondRefereeChoice}
           handleObserverChoice={onObserverChoice}
-          tableName="Meciuri delegabile"
           shortlistById={shortlistById}
           rows={matches.map((elem) => ({
             ...elem,
             match_date: dateConverter(elem.match_date),
           }))}
-          headCells={headCells}
         />
       )}
     </>
@@ -155,7 +155,7 @@ DelegableMatches.propTypes = {
       match_id: PropTypes.number.isRequired,
       referee_id: PropTypes.number.isRequired,
       referee_name: PropTypes.string.isRequired,
-    })
+    }).isRequired
   ).isRequired,
   matchesLoading: PropTypes.bool,
   shortlistLoading: PropTypes.bool,

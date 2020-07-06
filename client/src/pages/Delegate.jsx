@@ -29,10 +29,10 @@ const Delegate = () => {
     <Container component="main" maxWidth="lg" className={classes.container}>
       <CssBaseline>
         <Paper elevation={4} className={classes.paper}>
-          {/* <DelegableMatches /> */}
+          <DelegableMatches />
         </Paper>
         <Paper elevation={4} className={classes.paper}>
-          <PersonalDrafts />
+          {/* <PersonalDrafts /> */}
         </Paper>
         <Paper elevation={4} className={classes.paper}>
           {/* <ProposedDrafts /> */}
