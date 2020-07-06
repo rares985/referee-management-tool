@@ -4,13 +4,17 @@ import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import Button from '@material-ui/core/Button';
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Checkbox from '@material-ui/core/Checkbox';
+import Button from '@material-ui/core/Button';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
+
+import ChooseRefereeModal from './ChooseRefereeModal';
+
+import { getComparator, stableSort } from '../utils/comparators';
 
 const useStyles = makeStyles({
   table: {
@@ -23,38 +27,28 @@ const useStyles = makeStyles({
   },
 });
 
-const descendingComparator = (a, b, orderBy) => {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-};
-
-const getComparator = (order, orderBy) => {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-};
-
-const stableSort = (array, comparator) => {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-};
-
-const EnhancedTableSelectable = (props) => {
+const NiceTableCustomPicker = (props) => {
   const classes = useStyles();
-  const { rows, headCells, tableName, selectable, selectedKey } = props;
-  const { handleDeleteSelectedClick, handleConfirmSelectedClick, button } = props;
+
+  /* Table meta-information */
+  const { tableName, rowsPerPageOptions } = props;
+  const { acceptsRowSelect, acceptsRowDelete } = props;
+
+  /* Table data */
+  const { rows, headCells, primaryKey } = props;
+  const {
+    handleDeleteSelectedClick,
+    handleConfirmSelectedClick,
+    hasConfirmButton,
+    handleFirstRefereeChoice,
+    handleSecondRefereeChoice,
+    handleObserverChoice,
+  } = props;
+
+  const { shortlistById } = props;
+
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState(selectedKey);
+  const [orderBy, setOrderBy] = React.useState(primaryKey);
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -67,7 +61,7 @@ const EnhancedTableSelectable = (props) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n[selectedKey]);
+      const newSelecteds = rows.map((n) => n[primaryKey]);
       setSelected(newSelecteds);
       return;
     }
@@ -75,11 +69,11 @@ const EnhancedTableSelectable = (props) => {
   };
 
   const handleClick = (event, row) => {
-    const selectedIndex = selected.indexOf(row[selectedKey]);
+    const selectedIndex = selected.indexOf(row[primaryKey]);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, row[selectedKey]);
+      newSelected = newSelected.concat(selected, row[primaryKey]);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -102,17 +96,23 @@ const EnhancedTableSelectable = (props) => {
     setPage(0);
   };
 
+  const handleConfirmSelectedClickLocal = (event) => {
+    event.preventDefault();
+
+    handleConfirmSelectedClick(selected);
+  };
+
   const isSelected = (selectedValue) => {
     return selected.indexOf(selectedValue) !== -1;
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
   return (
     <>
       <EnhancedTableToolbar
         handleDeleteClick={() => handleDeleteSelectedClick(selected)}
         numSelected={selected.length}
+        supportsDelete={acceptsRowDelete}
         tableName={tableName}
       />
       <TableContainer>
@@ -131,26 +131,26 @@ const EnhancedTableSelectable = (props) => {
             onSelectAllClick={handleSelectAllClick}
             onRequestSort={handleRequestSort}
             rowCount={rows.length}
-            selectable={selectable}
+            selectable={acceptsRowSelect}
           />
           <TableBody>
             {stableSort(rows, getComparator(order, orderBy))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, index) => {
-                const isItemSelected = isSelected(row[selectedKey]);
+                const isItemSelected = isSelected(row[primaryKey]);
                 const labelId = `enhanced - table - checkbox - ${index} `;
 
                 return (
                   <TableRow
                     hover
-                    onClick={selectable ? (event) => handleClick(event, row) : null}
-                    role={selectable ? 'checkbox' : null}
+                    onClick={acceptsRowSelect ? (event) => handleClick(event, row) : null}
+                    role={acceptsRowSelect ? 'checkbox' : null}
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row[selectedKey]}
+                    key={row[primaryKey]}
                     selected={isItemSelected}
                   >
-                    {selectable ? (
+                    {acceptsRowSelect ? (
                       <TableCell padding="checkbox">
                         <Checkbox
                           checked={isItemSelected}
@@ -160,31 +160,70 @@ const EnhancedTableSelectable = (props) => {
                     ) : (
                       <></>
                     )}
-                    {headCells
-                      .filter((elem) => elem.id !== selectedKey)
-                      .map((elem) => {
-                        return (
-                          <TableCell key={elem.id} align={elem.numeric ? 'right' : 'left'}>
-                            {row[elem.id]}
-                          </TableCell>
-                        );
-                      })}
+                    <TableCell component="th" id={labelId} scope="row" padding="default">
+                      {row.match_no}
+                    </TableCell>
+                    <TableCell align="right">{row.match_date}</TableCell>
+                    <TableCell align="right">{row.team_a_name}</TableCell>
+                    <TableCell align="right">{row.team_b_name}</TableCell>
+                    <TableCell align="right">{row.competition_name}</TableCell>
+                    <TableCell align="right">
+                      {row.first_referee_name ? (
+                        row.first_referee_name
+                      ) : (
+                        <ChooseRefereeModal
+                          title="Alege arbitru A1"
+                          onSaveCloseCB={(choice) => handleFirstRefereeChoice(row.match_id, choice)}
+                          shortlist={shortlistById[row.match_id]}
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.second_referee_name ? (
+                        row.second_referee_name
+                      ) : (
+                        <ChooseRefereeModal
+                          title="Alege arbitru A2"
+                          onSaveCloseCB={(choice) =>
+                            handleSecondRefereeChoice(row.match_id, choice)
+                          }
+                          shortlist={shortlistById[row.match_id]}
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.observer_name ? (
+                        row.observer_name
+                      ) : (
+                        <ChooseRefereeModal
+                          matchid={row.match_id}
+                          title="Alege observator"
+                          onSaveCloseCB={(choice) => handleObserverChoice(row.match_id, choice)}
+                          shortlist={shortlistById[row.match_id]}
+                        />
+                      )}
+                    </TableCell>
+                    <TableCell align="right">{row.location}</TableCell>
                   </TableRow>
                 );
               })}
+
+            {/* Fill the rest of the table with space */}
             {emptyRows > 0 && (
               <TableRow style={{ height: 33 * emptyRows }}>
-                <TableCell colSpan={6} />
+                <TableCell colSpan={headCells.length} />
               </TableRow>
             )}
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* Add confirm button to bottom of table */}
       <div className={classes.bottomTable}>
-        {button && (
+        {hasConfirmButton && (
           <Button
             variant="contained"
-            onClick={handleConfirmSelectedClick}
+            onClick={handleConfirmSelectedClickLocal}
             color="primary"
             block="true"
             disabled={selected.length === 0}
@@ -195,7 +234,7 @@ const EnhancedTableSelectable = (props) => {
         )}
 
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={rowsPerPageOptions}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
@@ -208,9 +247,22 @@ const EnhancedTableSelectable = (props) => {
   );
 };
 
-/* eslint-disable react/forbid-prop-types */
-EnhancedTableSelectable.propTypes = {
-  rows: PropTypes.array.isRequired,
+NiceTableCustomPicker.propTypes = {
+  rows: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  tableName: PropTypes.string.isRequired,
+  acceptsRowSelect: PropTypes.bool /* and delete */,
+  acceptsRowDelete: PropTypes.bool /* and delete */,
+  shortlistById: PropTypes.objectOf(
+    PropTypes.arrayOf(
+      PropTypes.exact({
+        match_id: PropTypes.number.isRequired,
+        referee_id: PropTypes.number.isRequired,
+        referee_name: PropTypes.string.isRequired,
+      }).isRequired
+    ).isRequired
+  ).isRequired,
+  primaryKey: PropTypes.string.isRequired,
+  hasConfirmButton: PropTypes.bool,
   headCells: PropTypes.arrayOf(
     PropTypes.exact({
       id: PropTypes.string.isRequired,
@@ -219,20 +271,22 @@ EnhancedTableSelectable.propTypes = {
       label: PropTypes.string.isRequired,
     })
   ).isRequired,
-  tableName: PropTypes.string.isRequired,
-  selectable: PropTypes.bool,
-  selectedKey: PropTypes.string.isRequired,
+
   handleDeleteSelectedClick: PropTypes.func,
   handleConfirmSelectedClick: PropTypes.func,
-  button: PropTypes.bool,
+  handleFirstRefereeChoice: PropTypes.func.isRequired,
+  handleSecondRefereeChoice: PropTypes.func.isRequired,
+  handleObserverChoice: PropTypes.func.isRequired,
+  rowsPerPageOptions: PropTypes.arrayOf(PropTypes.number.isRequired),
 };
-/* eslint-enable react/forbid-prop-types */
 
-EnhancedTableSelectable.defaultProps = {
-  selectable: false,
-  button: false,
-  handleDeleteSelectedClick: () => {},
+NiceTableCustomPicker.defaultProps = {
+  acceptsRowSelect: false,
+  acceptsRowDelete: false,
+  hasConfirmButton: false,
   handleConfirmSelectedClick: () => {},
+  handleDeleteSelectedClick: () => {},
+  rowsPerPageOptions: [5, 10, 25],
 };
 
-export default EnhancedTableSelectable;
+export default NiceTableCustomPicker;

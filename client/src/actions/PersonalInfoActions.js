@@ -4,13 +4,12 @@ import {
   FETCH_PERSONAL_INFO_FAILURE,
   UPDATE_PERSONAL_INFO_BEGIN,
   UPDATE_PERSONAL_INFO_SUCCESS,
-  UPDATE_PERSONAL_INFO_FAILURE
+  UPDATE_PERSONAL_INFO_FAILURE,
 } from '../constants/action-types';
 
 const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
+  baseURL: process.env.API_ENDPOINT,
 });
-
 
 const PersonalInfoBegin = () => ({
   type: FETCH_PERSONAL_INFO_BEGIN,
@@ -19,15 +18,15 @@ const PersonalInfoBegin = () => ({
 const PersonalInfoSuccess = (info) => ({
   type: FETCH_PERSONAL_INFO_SUCCESS,
   payload: {
-    info
-  }
+    info,
+  },
 });
 
 const PersonalInfoFailure = (error) => ({
   type: FETCH_PERSONAL_INFO_FAILURE,
   payload: {
-    error
-  }
+    error,
+  },
 });
 
 export const FetchPersonalInfo = (request) => {
@@ -46,21 +45,21 @@ export const FetchPersonalInfo = (request) => {
 };
 
 const UpdatePersonalInfoBegin = () => ({
-  type: UPDATE_PERSONAL_INFO_BEGIN
+  type: UPDATE_PERSONAL_INFO_BEGIN,
 });
 
 const UpdatePersonalInfoSuccess = (info) => ({
   type: UPDATE_PERSONAL_INFO_SUCCESS,
   payload: {
-    info
-  }
+    info,
+  },
 });
 
 const UpdatePersonalInfoFailure = (error) => ({
   type: UPDATE_PERSONAL_INFO_FAILURE,
   payload: {
-    error
-  }
+    error,
+  },
 });
 
 export const UpdatePersonalInfo = (request) => {
@@ -68,11 +67,11 @@ export const UpdatePersonalInfo = (request) => {
     dispatch(UpdatePersonalInfoBegin());
     axios
       .post('/api/personal', request)
-      .then(res => {
+      .then((res) => {
         dispatch(UpdatePersonalInfoSuccess(res));
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch(UpdatePersonalInfoFailure(err.error));
-      })
-  }
-}
+      });
+  };
+};

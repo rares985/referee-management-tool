@@ -4,8 +4,8 @@ import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 
-import DelegableMatches from './delegate/DelegableMatches';
 /* eslint-disable no-unused-vars */
+import DelegableMatches from './delegate/DelegableMatches';
 import ProposedDrafts from './delegate/ProposedDrafts';
 import RejectedDrafts from './delegate/RejectedDrafts';
 import PersonalDrafts from './delegate/PersonalDrafts';

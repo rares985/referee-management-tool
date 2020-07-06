@@ -48,78 +48,43 @@ const PersonalDrafts = (props) => {
     }
   });
 
-  // eslint-disable-next-line no-unused-vars
-  const onFirstRefereeChoice = (event) => {};
+  /* eslint-disable no-console */
+  const onFirstRefereeChoice = (id, referee) => {
+    console.log(`Chosen ${referee} as A1 for ${id}`);
+  };
 
-  // eslint-disable-next-line no-unused-vars
-  const onSecondRefereeChoice = (event) => {};
+  const onSecondRefereeChoice = (id, referee) => {
+    console.log(`Chosen ${referee} as A2 for ${id}`);
+  };
 
-  // eslint-disable-next-line no-unused-vars
-  const onObserverChoice = (event) => {};
+  const onObserverChoice = (id, referee) => {
+    console.log(`Chosen ${referee} as Observer for ${id}`);
+  };
+  /* eslint-enable no-console */
 
   const headCells = [
-    {
-      id: 'match_no',
-      numeric: true,
-      disablePadding: true,
-      label: 'Număr meci',
-    },
-    {
-      id: 'match_date',
-      numeric: false,
-      disablePadding: false,
-      label: 'Data desfășurării',
-    },
-    {
-      id: 'team_a_name',
-      numeric: false,
-      disablePadding: false,
-      label: 'Echipa A',
-    },
-    {
-      id: 'team_b_name',
-      numeric: false,
-      disablePadding: false,
-      label: 'Echipa B',
-    },
-    {
-      id: 'full_name_competition',
-      numeric: false,
-      disablePadding: false,
-      label: 'Competiție',
-    },
-    {
-      id: 'a1',
-      numeric: false,
-      disablePadding: false,
-      label: 'A1',
-    },
-    {
-      id: 'a2',
-      numeric: false,
-      disablePadding: false,
-      label: 'A2',
-    },
-    {
-      id: 'obs',
-      numeric: false,
-      disablePadding: false,
-      label: 'Observator',
-    },
-    {
-      id: 'location',
-      numeric: false,
-      disablePadding: false,
-      label: 'Locație',
-    },
+    { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
+    { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
+    { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
+    { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
+    { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
+    { id: 'a1', numeric: false, disablePadding: false, label: 'A1' },
+    { id: 'a2', numeric: false, disablePadding: false, label: 'A2' },
+    { id: 'obs', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
 
   return (
     <>
-      {draftsLoading && <CircularProgress />}
+      {(draftsLoading || shortlistLoading) && <CircularProgress />}
       <TableHeaderSelector />
-      {!draftsLoading && (
+      {!(draftsLoading || shortlistLoading) && (
         <EnhancedTable
+          selectedKey="id"
+          shortlistById={shortlist}
+          handleFirstRefereeChoice={onFirstRefereeChoice}
+          handleSecondRefereeChoice={onSecondRefereeChoice}
+          handleObserverChoice={onObserverChoice}
           tableName="În lucru (ciorne) "
           rows={drafts.map((elem) => ({
             ...elem,
@@ -137,19 +102,26 @@ PersonalDrafts.propTypes = {
   user: PropTypes.string.isRequired,
   drafts: PropTypes.arrayOf(
     PropTypes.exact({
+      draft_id: PropTypes.number.isRequired,
       match_id: PropTypes.number.isRequired,
       match_no: PropTypes.number.isRequired,
       match_date: PropTypes.string.isRequired,
-      team_a_name: PropTypes.string.isRequired,
-      team_b_name: PropTypes.string.isRequired,
-      competition_name: PropTypes.string.isRequired,
       first_referee: PropTypes.string.isRequired,
       second_referee: PropTypes.string.isRequired,
       observer: PropTypes.string.isRequired,
+      team_a_name: PropTypes.string.isRequired,
+      team_b_name: PropTypes.string.isRequired,
       location: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
     })
   ).isRequired,
-  shortlist: PropTypes.arrayOf(PropTypes.exact({})).isRequired,
+  shortlist: PropTypes.arrayOf(
+    PropTypes.exact({
+      draft_id: PropTypes.number.isRequired,
+      referee_id: PropTypes.number.isRequired,
+      referee_name: PropTypes.string.isRequired,
+    })
+  ).isRequired,
   draftsLoading: PropTypes.bool,
   shortlistLoading: PropTypes.bool,
   error: PropTypes.string,

@@ -13,6 +13,11 @@ import { FormGroup } from 'react-bootstrap';
 import { PersonBoundingBox } from '../components/Icons';
 
 import { FetchPersonalInfo, UpdatePersonalInfo } from '../actions/PersonalInfoActions';
+import DropDownSelector from '../components/DropdownSelector';
+
+import categories from '../constants/categories';
+import counties from '../constants/counties';
+import lots from '../constants/lots';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,10 +35,12 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  selector: {
+    marginTop: theme.spacing(3),
+  },
 }));
 
 const mapStateToProps = (state) => ({
-  user: state.login.user,
   info: state.personal.info,
   loading: state.personal.loading,
   error: state.personal.error,
@@ -61,7 +68,7 @@ const PersonalInformationForm = (props) => {
   const [lot, setLot] = useState('');
 
   // eslint-disable-next-line no-unused-vars
-  const { user, info, loading, error } = props;
+  const { user, info, loading, error, allowChangeRankFields } = props;
   const { doFetchPersonalInfo, doUpdatePersonalInfo } = props;
 
   const classes = useStyles();
@@ -174,40 +181,33 @@ const PersonalInformationForm = (props) => {
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </FormGroup>
-              <FormGroup controlId="category">
-                <TextField
-                  autoFocus
-                  fullWidth
-                  variant="outlined"
-                  margin="normal"
-                  type="text"
+              <FormGroup controlId="categories" className={classes.selector}>
+                <DropDownSelector
                   label="Categorie"
+                  choices={categories}
                   value={category}
-                  readOnly
+                  setValue={setCategory}
+                  allowChange
                 />
               </FormGroup>
-              <FormGroup controlId="lot">
-                <TextField
-                  autoFocus
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  type="text"
+
+              <FormGroup controlId="lots" className={classes.selector}>
+                <DropDownSelector
                   label="Lot"
+                  choices={lots}
                   value={lot}
-                  readOnly
+                  setValue={setLot}
+                  allowChange
                 />
               </FormGroup>
-              <FormGroup controlId="county">
-                <TextField
-                  autoFocus
-                  variant="outlined"
-                  margin="normal"
-                  fullWidth
-                  type="text"
+
+              <FormGroup controlId="counties" className={classes.selector}>
+                <DropDownSelector
                   label="Județ"
+                  choices={counties}
                   value={county}
-                  readOnly
+                  setValue={setCounty}
+                  allowChange
                 />
               </FormGroup>
               <Button
@@ -245,9 +245,11 @@ PersonalInformationForm.propTypes = {
   error: PropTypes.string,
   doFetchPersonalInfo: PropTypes.func.isRequired,
   doUpdatePersonalInfo: PropTypes.func.isRequired,
+  allowChangeRankFields: PropTypes.bool,
 };
 
 PersonalInformationForm.defaultProps = {
+  allowChangeRankFields: false,
   error: '',
   info: {
     id: '',
