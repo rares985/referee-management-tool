@@ -43,9 +43,9 @@ const DateAdder = (props) => {
     <form onSubmit={handleAddNewDate} className={classes.root}>
       <KeyboardDatePicker
         margin="normal"
-        id="date-picker-dialog"
+        id="date-picker-dialog-start"
         label="Data începerii"
-        format="MM/dd/yyyy"
+        format="dd/MM/yyyy"
         value={startDate}
         onChange={setStartDate}
         KeyboardButtonProps={{
@@ -54,9 +54,9 @@ const DateAdder = (props) => {
       />
       <KeyboardDatePicker
         margin="normal"
-        id="date-picker-dialog"
+        id="date-picker-dialog-end"
         label="Data încheierii"
-        format="MM/dd/yyyy"
+        format="dd/MM/yyyy"
         value={endDate}
         onChange={setEndDate}
         KeyboardButtonProps={{

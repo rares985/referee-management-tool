@@ -7,6 +7,8 @@ const poolConnect = require("../db-conn-mssql");
 const AddUnavailabilityPeriod = (req, res) => {
   const { username, reason, startdate, enddate } = req.body;
 
+  console.log(req.body);
+
   if (!username || !reason || !startdate || !enddate) {
     res.status(400).send("Invalid parameters!");
     return;
@@ -27,6 +29,7 @@ const AddUnavailabilityPeriod = (req, res) => {
             return;
           }
           res.status(200).send(proc_res.recordset);
+          return;
         });
     })
     .catch((err) => {
@@ -54,6 +57,7 @@ const DeleteUpcomingPeriodsPersonal = (req, res) => {
     })
     .then((result) => {
       console.log(result);
+      return;
     })
     .catch((err) => {
       console.log(err);
@@ -66,6 +70,7 @@ const GetUpcomingPeriodsPersonal = (req, res) => {
 
   if (!username) {
     res.status(400).send("Invalid parameters");
+    return;
   }
 
   poolConnect
@@ -93,6 +98,7 @@ const GetOldPeriodsPersonal = (req, res) => {
 
   if (!username) {
     res.status(400).send("Invalid parameters");
+    return;
   }
 
   poolConnect

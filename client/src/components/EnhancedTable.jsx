@@ -46,18 +46,29 @@ const stableSort = (array, comparator) => {
 
 const EnhancedTable = (props) => {
   const classes = useStyles();
-  const { rows, headCells, tableName, selectable, selectedKey } = props;
+  const {
+    rows,
+    headCells,
+    tableName,
+    selectable,
+    selectedKey,
+    deletable,
+    handleDeleteAllClick,
+  } = props;
   const {
     handleFirstRefereeChoice,
     handleSecondRefereeChoice,
     handleObserverChoice,
     shortlistById,
   } = props;
+
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('match_no');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  console.log(shortlistById);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -117,7 +128,12 @@ const EnhancedTable = (props) => {
 
   return (
     <>
-      <EnhancedTableToolbar numSelected={selected.length} tableName={tableName} />
+      <EnhancedTableToolbar
+        supportsDelete={deletable}
+        numSelected={selected.length}
+        handleDeleteAllClick={handleDeleteAllClick}
+        tableName={tableName}
+      />
       <TableContainer>
         <Table
           className={classes.table}
@@ -232,18 +248,7 @@ const EnhancedTable = (props) => {
 };
 
 EnhancedTable.propTypes = {
-  rows: PropTypes.arrayOf(
-    PropTypes.exact({
-      match_id: PropTypes.number.isRequired,
-      match_no: PropTypes.number.isRequired,
-      match_date: PropTypes.string.isRequired,
-      team_a_name: PropTypes.string.isRequired,
-      team_b_name: PropTypes.string.isRequired,
-      full_name_competition: PropTypes.string.isRequired,
-      season: PropTypes.string.isRequired,
-      location: PropTypes.string.isRequired,
-    })
-  ).isRequired,
+  rows: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   headCells: PropTypes.arrayOf(
     PropTypes.exact({
       id: PropTypes.string.isRequired,
@@ -252,9 +257,11 @@ EnhancedTable.propTypes = {
       label: PropTypes.string.isRequired,
     })
   ).isRequired,
-  shortlistById: PropTypes.objectOf(PropTypes.arrayOf({}).isRequired).isRequired,
+  shortlistById: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   tableName: PropTypes.string.isRequired,
   selectable: PropTypes.bool,
+  deletable: PropTypes.bool,
+  handleDeleteAllClick: PropTypes.func,
   handleFirstRefereeChoice: PropTypes.func.isRequired,
   handleSecondRefereeChoice: PropTypes.func.isRequired,
   handleObserverChoice: PropTypes.func.isRequired,
@@ -263,6 +270,8 @@ EnhancedTable.propTypes = {
 
 EnhancedTable.defaultProps = {
   selectable: false,
+  deletable: false,
+  handleDeleteAllClick: () => {},
 };
 
 export default EnhancedTable;

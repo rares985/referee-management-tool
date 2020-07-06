@@ -1,7 +1,8 @@
 import React from 'react';
+import NiceTable from '../components/NiceTable';
 
 const Home = () => {
-  return <p>Home</p>;
+  return <NiceTable />;
 };
 
 export default Home;

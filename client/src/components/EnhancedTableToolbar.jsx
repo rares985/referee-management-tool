@@ -29,9 +29,39 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
+const GetToolbarButton = (props) => {
+  const { numSelected, handleDeleteClick, supportsDelete } = props;
+  if (numSelected > 0) {
+    return (
+      <Tooltip title="Șterge">
+        <IconButton aria-label="șterge" onClick={handleDeleteClick}>
+          <DeleteIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  }
+  if (supportsDelete) {
+    return (
+      <Tooltip title="Filtrează rânduri">
+        <IconButton aria-label="filtreaza">
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
+    );
+  }
+
+  return <></>;
+};
+
+GetToolbarButton.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+  handleDeleteClick: PropTypes.func.isRequired,
+  supportsDelete: PropTypes.bool.isRequired,
+};
+
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
-  const { numSelected, tableName, handleDeleteClick } = props;
+  const { numSelected, tableName, handleDeleteClick, supportsDelete } = props;
 
   return (
     <Toolbar
@@ -48,20 +78,11 @@ const EnhancedTableToolbar = (props) => {
           {tableName}
         </Typography>
       )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Șterge">
-          <IconButton aria-label="șterge" onClick={handleDeleteClick}>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filtrează rânduri">
-          <IconButton aria-label="filtreaza">
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
+      <GetToolbarButton
+        numSelected={numSelected}
+        handleDeleteClick={handleDeleteClick}
+        supportsDelete={supportsDelete}
+      />
     </Toolbar>
   );
 };
@@ -70,6 +91,9 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
   tableName: PropTypes.string.isRequired,
   handleDeleteClick: PropTypes.func.isRequired,
+  supportsDelete: PropTypes.bool.isRequired,
 };
+
+EnhancedTableToolbar.defaultProps = {};
 
 export default EnhancedTableToolbar;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { format } from 'date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -8,7 +9,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
-import EnhancedTableSelectable from '../components/EnhancedTableSelectable';
+import NiceTable from '../components/NiceTable';
 import DateAdder from './unavailable/DateAdder';
 
 import dateFormatter from '../utils/datemanip';
@@ -121,6 +122,29 @@ const UnavailabilityPeriods = (props) => {
     );
   };
 
+  const onConfirmSelectedNew = (selectedIds) => {
+    const { addNewPeriod } = props;
+
+    console.log(`Trying to add following selected IDS:`);
+    console.dir(selectedIds);
+
+    console.log(`newUnavailabilityDates = `);
+    console.dir(newUnavailabilityDates);
+
+    newUnavailabilityDates
+      .filter((elem) => selectedIds.includes(elem.id))
+      .forEach((date) => {
+        addNewPeriod({
+          username: user,
+          startdate: format(date.StartDate, 'yyyy-MM-dd'),
+          enddate: format(date.EndDate, 'yyyy-MM-dd'),
+          reason: date.Reason,
+        });
+      });
+
+    setNewUnavailabilityDates([]);
+  };
+
   const tables = [
     {
       loading: oldLoading,
@@ -139,7 +163,8 @@ const UnavailabilityPeriods = (props) => {
       title: 'Perioade de indisponibilitate noi',
       dates: newUnavailabilityDates,
       deletable: true,
-      button: true,
+      hasConfirmButton: true,
+      handleConfirmSelected: onConfirmSelectedNew,
       handleDeleteSelected: onDeleteSelectedNew,
     },
   ];
@@ -173,7 +198,7 @@ const UnavailabilityPeriods = (props) => {
             <Paper elevation={4} className={classes.root} key={table.title}>
               {table.loading && <CircularProgress />}
               {!table.loading && (
-                <EnhancedTableSelectable
+                <NiceTable
                   tableName={table.title}
                   rows={table.dates.map((elem) => ({
                     ...elem,
@@ -181,10 +206,12 @@ const UnavailabilityPeriods = (props) => {
                     EndDate: dateFormatter(elem.EndDate),
                   }))}
                   headCells={headCells}
-                  button={table.button}
+                  hasConfirmButton={table.hasConfirmButton}
+                  handleConfirmSelectedClick={table.handleConfirmSelected}
                   handleDeleteSelectedClick={table.handleDeleteSelected}
-                  selectedKey="id"
-                  selectable={table.deletable}
+                  primaryKey="id"
+                  acceptsRowSelect={table.deletable}
+                  acceptsRowDelete={table.deletable}
                 />
               )}
             </Paper>
@@ -227,6 +254,7 @@ UnavailabilityPeriods.propTypes = {
   doFetchUpcoming: PropTypes.func.isRequired,
   doFetchOld: PropTypes.func.isRequired,
   doDelete: PropTypes.func.isRequired,
+  addNewPeriod: PropTypes.func.isRequired,
 };
 
 UnavailabilityPeriods.defaultProps = {

@@ -47,28 +47,29 @@ app.use(
 /* REGISTER route */
 app.post("/api/register", (req, res) => {
   const { username, password } = req.body;
+
+  if (!username || !password) {
+    res.status(400).send("Invalid parameters");
+    return;
+  }
   console.log(`REGISTER: Got request: ${username}, ${password}`);
 
-  if (username === undefined || password === undefined) {
-    res.status(400).send("Invalid parameters for registration");
-  } else {
-    bcrypt.hash(password, 10, (err, hash) => {
-      if (err) {
-        throw err;
-      } else {
-        var query = `EXEC [dbo].[RegisterNewUser]  @Username = '${username}', @Password = '${hash}';`;
-        const request = new Request(query, (err, rowCount) => {
-          if (err) {
-            res.status(500).send(`Could not register!`);
-            console.error(err);
-          } else {
-            res.status(200).send(`Welcome to the club, ${username}!`);
-          }
-        });
-        connection.execSql(request);
-      }
-    });
-  }
+  bcrypt.hash(password, 10, (err, hash) => {
+    if (err) {
+      throw err;
+    } else {
+      var query = `EXEC [dbo].[RegisterNewUser]  @Username = '${username}', @Password = '${hash}';`;
+      const request = new Request(query, (err, rowCount) => {
+        if (err) {
+          res.status(500).send(`Could not register!`);
+          console.error(err);
+        } else {
+          res.status(200).send(`Welcome to the club, ${username}!`);
+        }
+      });
+      connection.execSql(request);
+    }
+  });
 });
 
 /* GET PERSONAL MATCH HISTORY */
@@ -76,10 +77,12 @@ app.get("/api/matchHistory", (req, res) => {
   const username = req.query.username;
   console.log(`FETCH_MATCH_HISTORY: Got request: ${username}`);
 
-  if (username === undefined) {
-    res.status(401).send("Invalid parameters for authentication");
-  } else {
-    var query = `SELECT
+  if (!username) {
+    res.status(400).send("Invalid parameters");
+    return;
+  }
+
+  var query = `SELECT
       M.MatchNo as 'MatchNumber',
       M.MatchDay as 'MatchDay',
       TI.Name as 'TeamAName',
@@ -108,107 +111,108 @@ app.get("/api/matchHistory", (req, res) => {
     OR R2.UserID = U.ID
     WHERE(U.Username = '${username}');`;
 
-    console.log(`Going to execute query ${query}`);
-    request = new Request(query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("User information not in database!");
-      } else {
-        console.log(`Got ${rowCount} rows`);
-      }
-    });
+  console.log(`Going to execute query ${query}`);
+  request = new Request(query, (err, rowCount) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send("User information not in database!");
+    } else {
+      console.log(`Got ${rowCount} rows`);
+    }
+  });
 
-    var matches = [];
-    request.on("row", (cols) => {
-      let obj = {};
-      cols.forEach((col) => {
-        obj[col.metadata.colName] = col.value;
-      });
-      console.log(`Adding ${JSON.stringify(obj)}`);
-      matches.push(JSON.stringify(obj));
+  var matches = [];
+  request.on("row", (cols) => {
+    let obj = {};
+    cols.forEach((col) => {
+      obj[col.metadata.colName] = col.value;
     });
+    console.log(`Adding ${JSON.stringify(obj)}`);
+    matches.push(JSON.stringify(obj));
+  });
 
-    request.on("doneInProc", (r, m, rs, ro) => {
-      res.status(200).send(matches);
-    });
+  request.on("doneInProc", (r, m, rs, ro) => {
+    res.status(200).send(matches);
+  });
 
-    connection.execSql(request);
-  }
+  connection.execSql(request);
 });
 
 app.get("/api/userinfo", (req, res) => {
   const username = req.query.username;
+
+  if (!username) {
+    res.status(400).send("Invalid parameters");
+    return;
+  }
+
   console.log(`USER_INFO: Got request: ${username}`);
 
-  if (username === undefined) {
-    res.status(401).send("Invalid parameters for authentication");
-  } else {
-    let user_info = {
-      userid: -1,
-      delegation: false,
-      approval: false,
-      team: false,
-    };
+  let user_info = {
+    userid: -1,
+    delegation: false,
+    approval: false,
+    team: false,
+  };
 
-    var id_query = `SELECT id from [user] WHERE username='${username}'`;
-    var id_request = new Request(id_query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Could not perform the database query!");
-      } else {
-        console.log("id_request OK");
-        res.status(200).send(user_info);
+  var id_query = `SELECT id from [user] WHERE username='${username}'`;
+  var id_request = new Request(id_query, (err, rowCount) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send("Could not perform the database query!");
+    } else {
+      console.log("id_request OK");
+      res.status(200).send(user_info);
+    }
+  });
+
+  id_request.on("row", (cols) => {
+    user_info.userid = parseInt(cols[0].value);
+  });
+
+  var delegable_query = `[dbo].[GetDelegableCompetitions] ${username}`;
+  var delegable_request = new Request(delegable_query, (err, rowCount) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send("Could not perform database query!");
+    } else {
+      console.log("delegable_request OK");
+      if (rowCount > 0) {
+        user_info.delegation = true;
       }
-    });
+      connection.execSql(id_request);
+    }
+  });
 
-    id_request.on("row", (cols) => {
-      user_info.userid = parseInt(cols[0].value);
-    });
-
-    var delegable_query = `[dbo].[GetDelegableCompetitions] ${username}`;
-    var delegable_request = new Request(delegable_query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Could not perform database query!");
-      } else {
-        console.log("delegable_request OK");
-        if (rowCount > 0) {
-          user_info.delegation = true;
-        }
-        connection.execSql(id_request);
+  var approval_query = `[dbo].[GetApprovableCompetitions] ${username}`;
+  var approval_request = new Request(approval_query, (err, rowCount) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send("Could not perform database query!");
+    } else {
+      console.log("approval_request OK");
+      if (rowCount > 0) {
+        user_info.approval = true;
       }
-    });
+      connection.execSql(delegable_request);
+    }
+  });
 
-    var approval_query = `[dbo].[GetApprovableCompetitions] ${username}`;
-    var approval_request = new Request(approval_query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Could not perform database query!");
-      } else {
-        console.log("approval_request OK");
-        if (rowCount > 0) {
-          user_info.approval = true;
-        }
-        connection.execSql(delegable_request);
+  var check_cja_query = `[dbo].[CheckIfCJAUser] ${username}`;
+  var check_cja_request = new Request(check_cja_query, (err, rowCount) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send("Could not perform database query, please try again.");
+    } else {
+      console.log("check_cja_request OK");
+      if (rowCount > 0) {
+        user_info.team = true;
       }
-    });
+      connection.execSql(approval_request);
+    }
+  });
 
-    var check_cja_query = `[dbo].[CheckIfCJAUser] ${username}`;
-    var check_cja_request = new Request(check_cja_query, (err, rowCount) => {
-      if (err) {
-        console.error(err);
-        res.status(400).send("Could not perform database query, please try again.");
-      } else {
-        console.log("check_cja_request OK");
-        if (rowCount > 0) {
-          user_info.team = true;
-        }
-        connection.execSql(approval_request);
-      }
-    });
-
-    connection.execSql(check_cja_request);
-  }
+  connection.execSql(check_cja_request);
 });
 
 app.post("/api/drafts", (req, res) => {

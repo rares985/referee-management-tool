@@ -22,6 +22,7 @@ router.post("/", (req, res) => {
 
   if (!username || !password) {
     res.status(401).send("Invalid parameters for authentication");
+    return;
   } else {
     var query = `SELECT Password FROM [dbo].[User] WHERE Username='${username}'`;
 

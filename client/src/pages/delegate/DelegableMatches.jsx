@@ -83,28 +83,7 @@ const DelegableMatches = (props) => {
   };
 
   // eslint-disable-next-line no-unused-vars
-  const handleDelegationSubmit = (event) => {
-    // event.preventDefault();
-    // const formatted = delegations.map(elem => ({
-    //   "created_by": props.userid,
-    //   "first_referee_id": elem.a1.refid,
-    //   "second_referee_id": elem.a2.refid,
-    //   "observer_id": elem.Obs.refid,
-    //   "match_id": elem.matchid
-    // }));
-    // axios
-    //     .post("/api/drafts", {
-    //         matches: formatted
-    //     })
-    //     .then(response => {
-    //         if (response.status === 200) {
-    //             console.log('OK, drafts posted');
-    //         }
-    //     })
-    //     .catch(err => {
-    //         console.error(err);
-    //     });
-  };
+  const handleDelegationSubmit = (event) => {};
 
   // eslint-disable-next-line no-unused-vars
   const onFirstRefereeChoice = (matchId, referee) => {
@@ -140,6 +119,7 @@ const DelegableMatches = (props) => {
       {(matchesLoading || shortlistLoading) && <CircularProgress />}
       {!(matchesLoading || shortlistLoading) && (
         <EnhancedTable
+          selectedKey="match_id"
           handleFirstRefereeChoice={onFirstRefereeChoice}
           handleSecondRefereeChoice={onSecondRefereeChoice}
           handleObserverChoice={onObserverChoice}
@@ -165,7 +145,7 @@ DelegableMatches.propTypes = {
       match_date: PropTypes.string.isRequired,
       team_a_name: PropTypes.string.isRequired,
       team_b_name: PropTypes.string.isRequired,
-      full_name_competition: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
       season: PropTypes.string.isRequired,
       location: PropTypes.string.isRequired,
     })

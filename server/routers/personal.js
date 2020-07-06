@@ -36,6 +36,7 @@ const UpdatePersonalInfo = (req, res) => {
   const { username, address, firstName, lastName, mobilePhone, email } = req.body;
   if (!username || !address || !firstName || !lastName || !mobilePhone || !email) {
     res.status(400).send("Invalid parameters");
+    return;
   }
 
   poolConnect
@@ -68,6 +69,7 @@ const GetPersonalHistory = (req, res) => {
 
   if (!username) {
     res.status(400).send("Invalid parameters");
+    return;
   }
 
   poolConnect

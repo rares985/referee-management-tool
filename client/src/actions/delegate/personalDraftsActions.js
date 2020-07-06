@@ -4,11 +4,11 @@ import {
   PERSONAL_DRAFTS_FAILURE,
   PERSONAL_DRAFTS_SHORTLIST_BEGIN,
   PERSONAL_DRAFTS_SHORTLIST_SUCCESS,
-  PERSONAL_DRAFTS_SHORTLIST_FAILURE
+  PERSONAL_DRAFTS_SHORTLIST_FAILURE,
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
-  baseURL: process.env.API_ENDPOINT
+  baseURL: process.env.API_ENDPOINT,
 });
 
 const FetchPersonalDraftsBegin = () => ({
@@ -18,15 +18,15 @@ const FetchPersonalDraftsBegin = () => ({
 const FetchPersonalDraftsSuccess = (drafts) => ({
   type: PERSONAL_DRAFTS_SUCCESS,
   payload: {
-    drafts
-  }
+    drafts,
+  },
 });
 
 const FetchPersonalDraftsFailure = (error) => ({
   type: PERSONAL_DRAFTS_FAILURE,
   payload: {
-    error
-  }
+    error,
+  },
 });
 
 export const FetchPersonalDrafts = (request) => {
@@ -36,32 +36,32 @@ export const FetchPersonalDrafts = (request) => {
 
     axios
       .get('/api/delegate/drafts/matches', GetRequest)
-      .then(res => {
+      .then((res) => {
         dispatch(FetchPersonalDraftsSuccess(res.data));
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch(FetchPersonalDraftsFailure(err.error));
-      })
-  }
+      });
+  };
 };
 
 const FetchPersonalDraftsShortlistBegin = () => ({
   type: PERSONAL_DRAFTS_SHORTLIST_BEGIN,
-})
+});
 
 const FetchPersonalDraftsShortlistSuccess = (shortlist) => ({
   type: PERSONAL_DRAFTS_SHORTLIST_SUCCESS,
   payload: {
-    shortlist
-  }
-})
+    shortlist,
+  },
+});
 
 const FetchPersonalDraftsShortlistFailure = (error) => ({
   type: PERSONAL_DRAFTS_SHORTLIST_FAILURE,
   payload: {
-    error
-  }
-})
+    error,
+  },
+});
 
 export const FetchPersonalDraftsShortlist = (request) => {
   const GetRequest = { params: request };
@@ -70,11 +70,11 @@ export const FetchPersonalDraftsShortlist = (request) => {
 
     axios
       .get('/api/delegate/drafts/shortlist', GetRequest)
-      .then(res => {
+      .then((res) => {
         dispatch(FetchPersonalDraftsShortlistSuccess(res.data));
       })
-      .catch(err => {
+      .catch((err) => {
         dispatch(FetchPersonalDraftsShortlistFailure(err.error));
-      })
-  }
-}
+      });
+  };
+};

@@ -103,7 +103,7 @@ const ChooseRefereeModal = (props) => {
 };
 
 ChooseRefereeModal.propTypes = {
-  shortlist: PropTypes.objectOf(PropTypes.array.isRequired).isRequired,
+  shortlist: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   text: PropTypes.string,
   title: PropTypes.string.isRequired,
   onSaveCloseCB: PropTypes.func.isRequired,
