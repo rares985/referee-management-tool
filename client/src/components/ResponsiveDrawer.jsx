@@ -147,7 +147,9 @@ const ResponsiveDrawer = (props) => {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Container fluid="true">{children}</Container>
+        <Container fluid="true" maxWidth="lg">
+          {children}
+        </Container>
       </main>
     </div>
   );

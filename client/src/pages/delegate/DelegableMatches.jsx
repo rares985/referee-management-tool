@@ -94,18 +94,29 @@ const DelegableMatches = (props) => {
   };
 
   const headCells = [
-    { id: 'match_no', numeric: false, disablePadding: false, label: 'Număr meci' },
+    { id: 'match_no', numeric: true, disablePadding: false, label: 'Număr meci' },
     { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
     { id: 'competition_name', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'first_referee_name', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'second_referee_name', numeric: false, disablePadding: false, label: 'A2' },
+    {
+      id: 'first_referee_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Primul arbitru (A1)',
+    },
+    {
+      id: 'second_referee_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Arbitru secund (A2) ',
+    },
     { id: 'observer_name', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
 
   const shortlistById = groupBy(shortlist, (elem) => elem.match_id);
+  console.dir(shortlistById);
 
   return (
     <>

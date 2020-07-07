@@ -16,6 +16,7 @@ import {
   BoxArrowLeft,
   ListCheck,
   List,
+  ViewList,
 } from '../components/Icons';
 
 import { FetchUserRights, LogoutUser } from '../actions/DashboardActions';
@@ -89,6 +90,13 @@ const Dashboard = (props) => {
       buttonLabel: 'Adaugă',
       path: '/addunavailable',
       icon: <Calendar />,
+    },
+    {
+      title: 'Propuneri de delegare',
+      text: 'Vizualizează propunerile tale și starea lor',
+      buttonLabel: 'Vizualizează',
+      path: '/proposed',
+      icon: <ViewList />,
     },
 
     rights.delegation && {

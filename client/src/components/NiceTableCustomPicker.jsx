@@ -17,7 +17,7 @@ import { getComparator, stableSort } from '../utils/comparators';
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 750,
+    width: 500,
   },
   bottomTable: {
     display: 'flex',
@@ -44,6 +44,8 @@ const NiceTableCustomPicker = (props) => {
     handleObserverChoice,
   } = props;
 
+  const { firstRef, secondRef, observer } = props;
+
   const { shortlistById } = props;
 
   const [order, setOrder] = React.useState('asc');
@@ -51,11 +53,6 @@ const NiceTableCustomPicker = (props) => {
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  /* eslint-disable */
-  const [firstRef, setFirstRef] = React.useState('');
-  const [secondRef, setSecondRef] = React.useState('');
-  const [observer, setObserver] = React.useState('');
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -111,6 +108,11 @@ const NiceTableCustomPicker = (props) => {
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
+  console.log('rows');
+  console.dir(rows);
+  console.log('shortlistById');
+  console.dir(shortlistById);
   return (
     <>
       <EnhancedTableToolbar
@@ -164,9 +166,7 @@ const NiceTableCustomPicker = (props) => {
                     ) : (
                       <></>
                     )}
-                    <TableCell component="th" id={labelId} scope="row" padding="default">
-                      {row.match_no}
-                    </TableCell>
+                    <TableCell align="right">{row.match_no}</TableCell>
                     <TableCell align="right">{row.match_date}</TableCell>
                     <TableCell align="right">{row.team_a_name}</TableCell>
                     <TableCell align="right">{row.team_b_name}</TableCell>
@@ -174,21 +174,21 @@ const NiceTableCustomPicker = (props) => {
                     <TableCell align="right">
                       <TextFieldPicker
                         value={firstRef}
-                        refs={shortlistById}
+                        refs={shortlistById[row[primaryKey]]}
                         onChange={handleFirstRefereeChoice}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <TextFieldPicker
                         value={secondRef}
-                        refs={shortlistById}
+                        refs={shortlistById[row[primaryKey]]}
                         onChange={handleSecondRefereeChoice}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <TextFieldPicker
                         value={observer}
-                        refs={shortlistById}
+                        refs={shortlistById[row[primaryKey]]}
                         onChange={handleObserverChoice}
                       />
                     </TableCell>
@@ -260,6 +260,10 @@ NiceTableCustomPicker.propTypes = {
     })
   ).isRequired,
 
+  firstRef: PropTypes.string,
+  secondRef: PropTypes.string,
+  observer: PropTypes.string,
+
   handleDeleteSelectedClick: PropTypes.func,
   handleConfirmSelectedClick: PropTypes.func,
   handleFirstRefereeChoice: PropTypes.func.isRequired,
@@ -272,6 +276,9 @@ NiceTableCustomPicker.defaultProps = {
   acceptsRowSelect: false,
   acceptsRowDelete: false,
   hasConfirmButton: false,
+  firstRef: 'Arbitru nedelegat',
+  secondRef: 'Arbitru nedelegat',
+  observer: 'Arbitru nedelegat',
   handleConfirmSelectedClick: () => {},
   handleDeleteSelectedClick: () => {},
   rowsPerPageOptions: [5, 10, 25],

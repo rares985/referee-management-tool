@@ -9,7 +9,6 @@ import {
   FetchPersonalDrafts,
   FetchPersonalDraftsShortlist,
 } from '../../actions/delegate/personalDraftsActions';
-import TableHeaderSelector from '../../components/TableHeaderSelector';
 import NiceTableCustomPicker from '../../components/NiceTableCustomPicker';
 
 import dateConverter from '../../utils/datemanip';
@@ -70,8 +69,8 @@ const PersonalDrafts = (props) => {
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
     { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'first_referee', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'second_referee', numeric: false, disablePadding: false, label: 'A2' },
+    { id: 'first_referee', numeric: false, disablePadding: false, label: 'Primul arbitru (A1)' },
+    { id: 'second_referee', numeric: false, disablePadding: false, label: 'Arbitru secund (A2)' },
     { id: 'obserer', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
@@ -82,10 +81,9 @@ const PersonalDrafts = (props) => {
   return (
     <>
       {(draftsLoading || shortlistLoading) && <CircularProgress />}
-      <TableHeaderSelector />
       {!(draftsLoading || shortlistLoading) && (
         <NiceTableCustomPicker
-          primaryKey="id"
+          primaryKey="draft_id"
           shortlistById={shortlistById}
           handleFirstRefereeChoice={onFirstRefereeChoice}
           handleSecondRefereeChoice={onSecondRefereeChoice}
@@ -96,7 +94,7 @@ const PersonalDrafts = (props) => {
             match_date: dateConverter(elem.match_date),
           }))}
           headCells={headCells}
-          selectable
+          acceptsRowSelect
         />
       )}
     </>

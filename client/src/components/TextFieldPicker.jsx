@@ -17,6 +17,8 @@ const TextFieldPicker = (props) => {
     setOpen(false);
   };
 
+  console.dir(refs);
+
   return (
     <>
       <TextField
@@ -27,6 +29,8 @@ const TextFieldPicker = (props) => {
         onClick={() => setOpen(true)}
         margin={margin}
         variant={variant}
+        multiline
+        fullWidth
       />
       <SearchableDialog
         onChange={handleDialogChoice}

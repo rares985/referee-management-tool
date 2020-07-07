@@ -6,8 +6,6 @@ import Paper from '@material-ui/core/Paper';
 
 /* eslint-disable no-unused-vars */
 import DelegableMatches from './delegate/DelegableMatches';
-import ProposedDrafts from './delegate/ProposedDrafts';
-import RejectedDrafts from './delegate/RejectedDrafts';
 import PersonalDrafts from './delegate/PersonalDrafts';
 
 /* eslint-enable no-unused-vars */
@@ -26,16 +24,10 @@ const useStyles = makeStyles((theme) => ({
 const Delegate = () => {
   const classes = useStyles();
 
-  const pages = [
-    <DelegableMatches />,
-    // <PersonalDrafts />,
-    // <ProposedDrafts />,
-    // <ProposedDrafts />,
-    // <RejectedDrafts />,
-  ];
+  const pages = [<DelegableMatches />, <PersonalDrafts />];
 
   return (
-    <Container component="main" maxWidth="lg" className={classes.container}>
+    <Container component="main" maxWidth="xl" className={classes.container}>
       <CssBaseline>
         {pages.map((page) => {
           return (
