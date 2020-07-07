@@ -34,6 +34,7 @@ const mapDispatchToProps = (dispatch) => ({
 const DelegableMatches = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [delegated, setDelegated] = useState([]);
+
   // eslint-disable-next-line no-unused-vars
   const [delegations, setDelegations] = useState([]);
 
@@ -58,18 +59,6 @@ const DelegableMatches = (props) => {
       });
     }
   });
-  // eslint-disable-next-line no-unused-vars
-  const OnRefSelectedA1 = (matchid, ref) => {
-    setDelegations(addUpdateArray(delegations, matchid, 'a1', ref));
-  };
-  // eslint-disable-next-line no-unused-vars
-  const OnRefSelectedA2 = (matchid, ref) => {
-    setDelegations(addUpdateArray(delegations, matchid, 'a2', ref));
-  };
-  // eslint-disable-next-line no-unused-vars
-  const OnRefSelectedObs = (matchid, ref) => {
-    setDelegations(addUpdateArray(delegations, matchid, 'Obs', ref));
-  };
 
   // eslint-disable-next-line no-unused-vars
   const GetRefereeName = (matchid, pos) => {
@@ -88,16 +77,20 @@ const DelegableMatches = (props) => {
   // eslint-disable-next-line no-unused-vars
   const onFirstRefereeChoice = (matchId, referee) => {
     console.log(`Chosen ${referee.referee_name} as A1 for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'first_referee', referee));
+    console.dir(delegations);
   };
 
   // eslint-disable-next-line no-unused-vars
   const onSecondRefereeChoice = (matchId, referee) => {
     console.log(`Chosen ${referee.referee_name} as A2 for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'second_referee', referee));
   };
 
   // eslint-disable-next-line no-unused-vars
   const onObserverChoice = (matchId, referee) => {
     console.log(`Chosen ${referee.referee_name} as Observer for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'observer', referee));
   };
 
   const headCells = [

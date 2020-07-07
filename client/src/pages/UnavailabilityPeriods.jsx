@@ -125,12 +125,6 @@ const UnavailabilityPeriods = (props) => {
   const onConfirmSelectedNew = (selectedIds) => {
     const { addNewPeriod } = props;
 
-    console.log(`Trying to add following selected IDS:`);
-    console.dir(selectedIds);
-
-    console.log(`newUnavailabilityDates = `);
-    console.dir(newUnavailabilityDates);
-
     newUnavailabilityDates
       .filter((elem) => selectedIds.includes(elem.id))
       .forEach((date) => {

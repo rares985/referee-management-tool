@@ -9,6 +9,7 @@ import DelegableMatches from './delegate/DelegableMatches';
 import ProposedDrafts from './delegate/ProposedDrafts';
 import RejectedDrafts from './delegate/RejectedDrafts';
 import PersonalDrafts from './delegate/PersonalDrafts';
+
 /* eslint-enable no-unused-vars */
 
 const useStyles = makeStyles((theme) => ({
@@ -25,21 +26,24 @@ const useStyles = makeStyles((theme) => ({
 const Delegate = () => {
   const classes = useStyles();
 
+  const pages = [
+    <DelegableMatches />,
+    // <PersonalDrafts />,
+    // <ProposedDrafts />,
+    // <ProposedDrafts />,
+    // <RejectedDrafts />,
+  ];
+
   return (
     <Container component="main" maxWidth="lg" className={classes.container}>
       <CssBaseline>
-        <Paper elevation={4} className={classes.paper}>
-          <DelegableMatches />
-        </Paper>
-        <Paper elevation={4} className={classes.paper}>
-          {/* <PersonalDrafts /> */}
-        </Paper>
-        <Paper elevation={4} className={classes.paper}>
-          {/* <ProposedDrafts /> */}
-        </Paper>
-        <Paper elevation={4} className={classes.paper}>
-          {/* <RejectedDrafts /> */}
-        </Paper>
+        {pages.map((page) => {
+          return (
+            <Paper elevation={4} className={classes.paper}>
+              {page}
+            </Paper>
+          );
+        })}
       </CssBaseline>
     </Container>
   );
