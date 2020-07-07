@@ -27,7 +27,7 @@ const Delegate = () => {
   const pages = [<DelegableMatches />, <PersonalDrafts />];
 
   return (
-    <Container component="main" maxWidth="xl" className={classes.container}>
+    <Container component="main" className={classes.container}>
       <CssBaseline>
         {pages.map((page) => {
           return (

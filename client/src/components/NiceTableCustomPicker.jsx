@@ -16,9 +16,6 @@ import TextFieldPicker from './TextFieldPicker';
 import { getComparator, stableSort } from '../utils/comparators';
 
 const useStyles = makeStyles({
-  table: {
-    width: 500,
-  },
   bottomTable: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -109,10 +106,6 @@ const NiceTableCustomPicker = (props) => {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
-  console.log('rows');
-  console.dir(rows);
-  console.log('shortlistById');
-  console.dir(shortlistById);
   return (
     <>
       <EnhancedTableToolbar

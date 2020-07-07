@@ -33,16 +33,11 @@ const mapDispatchToProps = (dispatch) => ({
 
 const DelegableMatches = (props) => {
   // eslint-disable-next-line no-unused-vars
-  const [delegated, setDelegated] = useState([]);
-
-  // eslint-disable-next-line no-unused-vars
   const [delegations, setDelegations] = useState([]);
 
-  // eslint-disable-next-line no-unused-vars
-  const [selected, setSelected] = useState([]);
-
-  // eslint-disable-next-line no-unused-vars
+  /* eslint-disable no-unused-vars */
   const { user, matches, shortlist, matchesLoading, shortlistLoading, error } = props;
+  /* eslint-enable no-unused-vars */
 
   useEffect(() => {
     const { DoFetchMatches, DoFetchShortlist } = props;
@@ -74,24 +69,27 @@ const DelegableMatches = (props) => {
   // eslint-disable-next-line no-unused-vars
   const handleDelegationSubmit = (event) => {};
 
-  // eslint-disable-next-line no-unused-vars
-  const onFirstRefereeChoice = (matchId, referee) => {
-    console.log(`Chosen ${referee.referee_name} as A1 for match with id ${matchId}`);
-    setDelegations(addUpdateArray(delegations, matchId, 'first_referee', referee));
-    console.dir(delegations);
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable no-console */
+  const onFirstRefereeChoice = (choice) => {
+    const { matchId, refereeId, refereeName } = choice;
+    console.log(`Chosen ${refereeName} as A1 for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'first_referee', refereeName));
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const onSecondRefereeChoice = (matchId, referee) => {
-    console.log(`Chosen ${referee.referee_name} as A2 for match with id ${matchId}`);
-    setDelegations(addUpdateArray(delegations, matchId, 'second_referee', referee));
+  const onSecondRefereeChoice = (choice) => {
+    const { matchId, refereeId, refereeName } = choice;
+    console.log(`Chosen ${refereeName} as A2 for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'second_referee', refereeName));
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const onObserverChoice = (matchId, referee) => {
-    console.log(`Chosen ${referee.referee_name} as Observer for match with id ${matchId}`);
-    setDelegations(addUpdateArray(delegations, matchId, 'observer', referee));
+  const onObserverChoice = (choice) => {
+    const { matchId, refereeId, refereeName } = choice;
+    console.log(`Chosen ${refereeName} as Observer for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'observer', refereeName));
   };
+  /* eslint-enable no-unused-vars */
+  /* eslint-enable no-console */
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: false, label: 'Număr meci' },
@@ -116,7 +114,6 @@ const DelegableMatches = (props) => {
   ];
 
   const shortlistById = groupBy(shortlist, (elem) => elem.match_id);
-  console.dir(shortlistById);
 
   return (
     <>

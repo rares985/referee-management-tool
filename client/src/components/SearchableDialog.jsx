@@ -27,9 +27,13 @@ const SearchableDialog = (props) => {
 
   const handleSaveClose = () => {
     onClose();
-    onChange(chosen.referee_name);
+    onChange({
+      matchId: chosen.match_id,
+      refereeId: chosen.referee_id,
+      refereeName: chosen.referee_name,
+    });
     setQuery('');
-    setChosen('');
+    setChosen({});
   };
 
   const handleChoice = (ref) => {

@@ -76,7 +76,6 @@ const PersonalDrafts = (props) => {
   ];
 
   const shortlistById = groupBy(shortlist, (elem) => elem.draft_id);
-  console.dir(shortlistById);
 
   return (
     <>

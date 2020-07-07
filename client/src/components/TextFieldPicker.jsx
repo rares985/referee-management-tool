@@ -9,15 +9,12 @@ const TextFieldPicker = (props) => {
   const [open, setOpen] = useState(false);
 
   const handleDialogChoice = (val) => {
-    setOpen(false);
     onChange(val);
   };
 
   const handleDialogClose = () => {
     setOpen(false);
   };
-
-  console.dir(refs);
 
   return (
     <>
