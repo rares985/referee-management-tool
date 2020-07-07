@@ -33,15 +33,11 @@ const mapDispatchToProps = (dispatch) => ({
 
 const DelegableMatches = (props) => {
   // eslint-disable-next-line no-unused-vars
-  const [delegated, setDelegated] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [delegations, setDelegations] = useState([]);
 
-  // eslint-disable-next-line no-unused-vars
-  const [selected, setSelected] = useState([]);
-
-  // eslint-disable-next-line no-unused-vars
+  /* eslint-disable no-unused-vars */
   const { user, matches, shortlist, matchesLoading, shortlistLoading, error } = props;
+  /* eslint-enable no-unused-vars */
 
   useEffect(() => {
     const { DoFetchMatches, DoFetchShortlist } = props;
@@ -58,18 +54,6 @@ const DelegableMatches = (props) => {
       });
     }
   });
-  // eslint-disable-next-line no-unused-vars
-  const OnRefSelectedA1 = (matchid, ref) => {
-    setDelegations(addUpdateArray(delegations, matchid, 'a1', ref));
-  };
-  // eslint-disable-next-line no-unused-vars
-  const OnRefSelectedA2 = (matchid, ref) => {
-    setDelegations(addUpdateArray(delegations, matchid, 'a2', ref));
-  };
-  // eslint-disable-next-line no-unused-vars
-  const OnRefSelectedObs = (matchid, ref) => {
-    setDelegations(addUpdateArray(delegations, matchid, 'Obs', ref));
-  };
 
   // eslint-disable-next-line no-unused-vars
   const GetRefereeName = (matchid, pos) => {
@@ -85,29 +69,46 @@ const DelegableMatches = (props) => {
   // eslint-disable-next-line no-unused-vars
   const handleDelegationSubmit = (event) => {};
 
-  // eslint-disable-next-line no-unused-vars
-  const onFirstRefereeChoice = (matchId, referee) => {
-    console.log(`Chosen ${referee.referee_name} as A1 for match with id ${matchId}`);
+  /* eslint-disable no-unused-vars */
+  /* eslint-disable no-console */
+  const onFirstRefereeChoice = (choice) => {
+    const { matchId, refereeId, refereeName } = choice;
+    console.log(`Chosen ${refereeName} as A1 for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'first_referee', refereeName));
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const onSecondRefereeChoice = (matchId, referee) => {
-    console.log(`Chosen ${referee.referee_name} as A2 for match with id ${matchId}`);
+  const onSecondRefereeChoice = (choice) => {
+    const { matchId, refereeId, refereeName } = choice;
+    console.log(`Chosen ${refereeName} as A2 for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'second_referee', refereeName));
   };
 
-  // eslint-disable-next-line no-unused-vars
-  const onObserverChoice = (matchId, referee) => {
-    console.log(`Chosen ${referee.referee_name} as Observer for match with id ${matchId}`);
+  const onObserverChoice = (choice) => {
+    const { matchId, refereeId, refereeName } = choice;
+    console.log(`Chosen ${refereeName} as Observer for match with id ${matchId}`);
+    setDelegations(addUpdateArray(delegations, matchId, 'observer', refereeName));
   };
+  /* eslint-enable no-unused-vars */
+  /* eslint-enable no-console */
 
   const headCells = [
-    { id: 'match_no', numeric: false, disablePadding: false, label: 'Număr meci' },
+    { id: 'match_no', numeric: true, disablePadding: false, label: 'Număr meci' },
     { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
     { id: 'competition_name', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'first_referee_name', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'second_referee_name', numeric: false, disablePadding: false, label: 'A2' },
+    {
+      id: 'first_referee_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Primul arbitru (A1)',
+    },
+    {
+      id: 'second_referee_name',
+      numeric: false,
+      disablePadding: false,
+      label: 'Arbitru secund (A2) ',
+    },
     { id: 'observer_name', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];

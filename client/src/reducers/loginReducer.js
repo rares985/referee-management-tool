@@ -5,12 +5,11 @@ import {
   LOGOUT_SUCCESS,
 } from '../constants/action-types';
 
-
 const initialState = {
-  user: '',
+  user: 'alinmateizer',
   loading: false, // only loads on submit
   finished: false, // set to true on login success
-  error: null
+  error: null,
 };
 
 const loginReducer = (state = initialState, action) => {
@@ -19,7 +18,7 @@ const loginReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: true,
-        error: null
+        error: null,
       };
     case LOGIN_SUCCESS:
       return {
@@ -27,24 +26,23 @@ const loginReducer = (state = initialState, action) => {
         user: action.payload.username,
         finished: true,
         loading: false,
-        error: null
+        error: null,
       };
     case LOGIN_FAILURE:
       return {
         ...state,
         loading: false,
-        error: action.payload.error
+        error: action.payload.error,
       };
     case LOGOUT_SUCCESS:
       return {
         ...state,
         user: '',
         finished: false,
-      }
+      };
     default:
       return state;
   }
 };
-
 
 export default loginReducer;

@@ -11,15 +11,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
-
-import ChooseRefereeModal from './ChooseRefereeModal';
+import TextFieldPicker from './TextFieldPicker';
 
 import { getComparator, stableSort } from '../utils/comparators';
 
 const useStyles = makeStyles({
-  table: {
-    minWidth: 750,
-  },
   bottomTable: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -44,6 +40,8 @@ const NiceTableCustomPicker = (props) => {
     handleSecondRefereeChoice,
     handleObserverChoice,
   } = props;
+
+  const { firstRef, secondRef, observer } = props;
 
   const { shortlistById } = props;
 
@@ -107,6 +105,7 @@ const NiceTableCustomPicker = (props) => {
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+
   return (
     <>
       <EnhancedTableToolbar
@@ -160,48 +159,31 @@ const NiceTableCustomPicker = (props) => {
                     ) : (
                       <></>
                     )}
-                    <TableCell component="th" id={labelId} scope="row" padding="default">
-                      {row.match_no}
-                    </TableCell>
+                    <TableCell align="right">{row.match_no}</TableCell>
                     <TableCell align="right">{row.match_date}</TableCell>
                     <TableCell align="right">{row.team_a_name}</TableCell>
                     <TableCell align="right">{row.team_b_name}</TableCell>
                     <TableCell align="right">{row.competition_name}</TableCell>
                     <TableCell align="right">
-                      {row.first_referee_name ? (
-                        row.first_referee_name
-                      ) : (
-                        <ChooseRefereeModal
-                          title="Alege arbitru A1"
-                          onSaveCloseCB={(choice) => handleFirstRefereeChoice(row.match_id, choice)}
-                          shortlist={shortlistById[row.match_id]}
-                        />
-                      )}
+                      <TextFieldPicker
+                        value={firstRef}
+                        refs={shortlistById[row[primaryKey]]}
+                        onChange={handleFirstRefereeChoice}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      {row.second_referee_name ? (
-                        row.second_referee_name
-                      ) : (
-                        <ChooseRefereeModal
-                          title="Alege arbitru A2"
-                          onSaveCloseCB={(choice) =>
-                            handleSecondRefereeChoice(row.match_id, choice)
-                          }
-                          shortlist={shortlistById[row.match_id]}
-                        />
-                      )}
+                      <TextFieldPicker
+                        value={secondRef}
+                        refs={shortlistById[row[primaryKey]]}
+                        onChange={handleSecondRefereeChoice}
+                      />
                     </TableCell>
                     <TableCell align="right">
-                      {row.observer_name ? (
-                        row.observer_name
-                      ) : (
-                        <ChooseRefereeModal
-                          matchid={row.match_id}
-                          title="Alege observator"
-                          onSaveCloseCB={(choice) => handleObserverChoice(row.match_id, choice)}
-                          shortlist={shortlistById[row.match_id]}
-                        />
-                      )}
+                      <TextFieldPicker
+                        value={observer}
+                        refs={shortlistById[row[primaryKey]]}
+                        onChange={handleObserverChoice}
+                      />
                     </TableCell>
                     <TableCell align="right">{row.location}</TableCell>
                   </TableRow>
@@ -254,8 +236,7 @@ NiceTableCustomPicker.propTypes = {
   acceptsRowDelete: PropTypes.bool /* and delete */,
   shortlistById: PropTypes.objectOf(
     PropTypes.arrayOf(
-      PropTypes.exact({
-        match_id: PropTypes.number.isRequired,
+      PropTypes.shape({
         referee_id: PropTypes.number.isRequired,
         referee_name: PropTypes.string.isRequired,
       }).isRequired
@@ -272,6 +253,10 @@ NiceTableCustomPicker.propTypes = {
     })
   ).isRequired,
 
+  firstRef: PropTypes.string,
+  secondRef: PropTypes.string,
+  observer: PropTypes.string,
+
   handleDeleteSelectedClick: PropTypes.func,
   handleConfirmSelectedClick: PropTypes.func,
   handleFirstRefereeChoice: PropTypes.func.isRequired,
@@ -284,6 +269,9 @@ NiceTableCustomPicker.defaultProps = {
   acceptsRowSelect: false,
   acceptsRowDelete: false,
   hasConfirmButton: false,
+  firstRef: 'Arbitru nedelegat',
+  secondRef: 'Arbitru nedelegat',
+  observer: 'Arbitru nedelegat',
   handleConfirmSelectedClick: () => {},
   handleDeleteSelectedClick: () => {},
   rowsPerPageOptions: [5, 10, 25],

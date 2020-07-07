@@ -69,6 +69,7 @@ const App = (props) => {
 
   return (
     <div className="app">
+      {/* To filter out "false" elements */}
       <ResponsiveDrawer links={links.filter((elem) => elem)}>
         <Router>
           <Home path="/" />
@@ -76,17 +77,12 @@ const App = (props) => {
           {user === '' && <Login path="/login" />}
           {user !== '' && <Dashboard path="/dashboard" />}
           {<Dashboard path="/dashboard" />}
-          {/* <PersInfoForm path="/updateinfo" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-          <PersonalInformationForm user={user} path="/updateinfo" />
-          {/* <PersMatchHist path="/viewhistory" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
+          <PersonalInformationForm path="/updateinfo" />
           <PersonalMatchHistory path="/viewhistory" />
-          {/* <CalndPicker path="/addunavailable" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-          <UnavailabilityPeriods path="/addunavailable" navigate={navigate} />
-          {/* <ApprvDrafts path="/approvedrafts" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-          <ApproveDrafts path="/approvedrafts" navigate={navigate} />
-          {/* <PrpsDrafts path="/delegate" authenticatedUser={authenticatedUser} navigate={navigate} /> */}
-          <Delegate path="/delegate" navigate={navigate} />
-          <Team path="/team" navigate={navigate} />
+          <UnavailabilityPeriods path="/addunavailable" />
+          <ApproveDrafts path="/approvedrafts" />
+          <Delegate path="/delegate" />
+          <Team path="/team" />
         </Router>
       </ResponsiveDrawer>
     </div>

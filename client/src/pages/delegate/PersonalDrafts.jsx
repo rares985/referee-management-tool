@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
 
+import { groupBy } from 'lodash';
+
 import {
   FetchPersonalDrafts,
   FetchPersonalDraftsShortlist,
 } from '../../actions/delegate/personalDraftsActions';
-import TableHeaderSelector from '../../components/TableHeaderSelector';
-import EnhancedTable from '../../components/EnhancedTable';
+import NiceTableCustomPicker from '../../components/NiceTableCustomPicker';
 
 import dateConverter from '../../utils/datemanip';
 
@@ -68,20 +69,21 @@ const PersonalDrafts = (props) => {
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
     { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'a1', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'a2', numeric: false, disablePadding: false, label: 'A2' },
-    { id: 'obs', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'first_referee', numeric: false, disablePadding: false, label: 'Primul arbitru (A1)' },
+    { id: 'second_referee', numeric: false, disablePadding: false, label: 'Arbitru secund (A2)' },
+    { id: 'obserer', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
+
+  const shortlistById = groupBy(shortlist, (elem) => elem.draft_id);
 
   return (
     <>
       {(draftsLoading || shortlistLoading) && <CircularProgress />}
-      <TableHeaderSelector />
       {!(draftsLoading || shortlistLoading) && (
-        <EnhancedTable
-          selectedKey="id"
-          shortlistById={shortlist}
+        <NiceTableCustomPicker
+          primaryKey="draft_id"
+          shortlistById={shortlistById}
           handleFirstRefereeChoice={onFirstRefereeChoice}
           handleSecondRefereeChoice={onSecondRefereeChoice}
           handleObserverChoice={onObserverChoice}
@@ -91,7 +93,7 @@ const PersonalDrafts = (props) => {
             match_date: dateConverter(elem.match_date),
           }))}
           headCells={headCells}
-          selectable
+          acceptsRowSelect
         />
       )}
     </>
