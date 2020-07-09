@@ -11,6 +11,9 @@ import {
   DELETE_DRAFTS_BEGIN,
   DELETE_DRAFTS_SUCCESS,
   DELETE_DRAFTS_FAILURE,
+  UPDATE_DRAFTS_BEGIN,
+  UPDATE_DRAFTS_SUCCESS,
+  UPDATE_DRAFTS_FAILURE,
 } from '../../constants/action-types';
 
 const initialState = {
@@ -57,7 +60,8 @@ const personalDraftsReducer = (state = initialState, action) => {
     case ADD_DRAFT_SUCCESS:
       return {
         ...state,
-        draftsLoading: true /* to retrigger matches download */,
+        draftsLoading: true /* to retrigger matches + shortlist download */,
+        shortlistLoading: true,
       };
     case ADD_DRAFT_FAILURE:
       return {
@@ -71,12 +75,27 @@ const personalDraftsReducer = (state = initialState, action) => {
     case DELETE_DRAFTS_SUCCESS:
       return {
         ...state,
-        draftsLoading: true /* to retrigger matches download */,
+        draftsLoading: true /* to retrigger matches + shortlist download */,
+        shortlistLoading: true,
       };
     case DELETE_DRAFTS_FAILURE:
       return {
         ...state,
         draftsLoading: false,
+      };
+    case UPDATE_DRAFTS_BEGIN:
+      return {
+        ...state,
+      };
+    case UPDATE_DRAFTS_SUCCESS /* Trigger update of personal drafts table */:
+      return {
+        ...state,
+        draftsLoading: true,
+        shortlistLoading: true,
+      };
+    case UPDATE_DRAFTS_FAILURE:
+      return {
+        ...state,
       };
     default:
       return state;

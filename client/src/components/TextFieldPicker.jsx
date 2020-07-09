@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import SearchableDialog from './SearchableDialog';
 
 const TextFieldPicker = (props) => {
-  const { refs, value, onChange } = props;
+  const { choices, value, onChange } = props;
   const { margin, variant, dialogTitle, dialogSearchLabel } = props;
   const [open, setOpen] = useState(false);
 
@@ -35,7 +35,7 @@ const TextFieldPicker = (props) => {
         open={open}
         title={dialogTitle}
         searchLabel={dialogSearchLabel}
-        refs={refs}
+        choices={choices}
       />
     </>
   );
@@ -43,7 +43,7 @@ const TextFieldPicker = (props) => {
 
 TextFieldPicker.propTypes = {
   value: PropTypes.string.isRequired,
-  refs: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  choices: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   onChange: PropTypes.func.isRequired,
   margin: PropTypes.oneOf(['dense', 'normal']),
   variant: PropTypes.oneOf(['filled', 'outlined', 'standard']),

@@ -37,7 +37,6 @@ const delegableMatchesReducer = (state = initialState, action) => {
     case ELIGIBLE_REFS_BEGIN:
       return {
         ...state,
-        shortlistLoading: true,
       };
     case ELIGIBLE_REFS_SUCCESS:
       return {
@@ -53,12 +52,14 @@ const delegableMatchesReducer = (state = initialState, action) => {
     case ADD_DRAFT_SUCCESS:
       return {
         ...state,
-        draftsLoading: true /* to trigger re-download of matches */,
+        matchesLoading: true /* to trigger re-download of matches */,
+        shortlistLoading: true /* to trigger download of shortlist */,
       };
     case DELETE_DRAFTS_SUCCESS:
       return {
         ...state,
-        draftsLoading: true /* to trigger re-download of matches */,
+        matchesLoading: true /* to trigger re-download of matches */,
+        shortlistLoading: true /* to trigger download of shortlist */,
       };
     default:
       return state;

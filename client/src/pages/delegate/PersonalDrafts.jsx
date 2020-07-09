@@ -9,6 +9,7 @@ import {
   FetchPersonalDrafts,
   FetchPersonalDraftsShortlist,
   DeleteDrafts,
+  UpdateDraft,
 } from '../../actions/delegate/personalDraftsActions';
 
 import NiceTableCustomPicker from '../../components/NiceTableCustomPicker';
@@ -33,6 +34,9 @@ const mapDispatchToProps = (dispatch) => ({
   DoDeleteDrafts: (request) => {
     dispatch(DeleteDrafts(request));
   },
+  DoUpdateDraft: (request) => {
+    dispatch(UpdateDraft(request));
+  },
 });
 
 const PersonalDrafts = (props) => {
@@ -40,31 +44,55 @@ const PersonalDrafts = (props) => {
   const { user, drafts, draftsLoading, shortlist, shortlistLoading, error } = props;
 
   useEffect(() => {
-    const { DoFetchDrafts, DoFetchShortlist } = props;
+    const { DoFetchDrafts } = props;
 
     if (draftsLoading) {
       DoFetchDrafts({
         username: user,
       });
     }
+  }, [draftsLoading]);
+
+  useEffect(() => {
+    const { DoFetchShortlist } = props;
     if (shortlistLoading) {
       DoFetchShortlist({
         username: user,
       });
     }
-  });
+  }, [shortlistLoading]);
 
-  /* eslint-disable no-console */
-  const onFirstRefereeChoice = (id, referee) => {
-    console.log(`Chosen ${referee} as A1 for ${id}`);
+  const onFirstRefereeChoice = (choice) => {
+    const { matchId, refereeId } = choice;
+    const { DoUpdateDraft } = props;
+
+    DoUpdateDraft({
+      username: user,
+      firstRefereeId: refereeId,
+      matchId,
+    });
   };
 
-  const onSecondRefereeChoice = (id, referee) => {
-    console.log(`Chosen ${referee} as A2 for ${id}`);
+  const onSecondRefereeChoice = (choice) => {
+    const { matchId, refereeId } = choice;
+    const { DoUpdateDraft } = props;
+
+    DoUpdateDraft({
+      username: user,
+      secondRefereeId: refereeId,
+      matchId,
+    });
   };
 
-  const onObserverChoice = (id, referee) => {
-    console.log(`Chosen ${referee} as Observer for ${id}`);
+  const onObserverChoice = (choice) => {
+    const { matchId, refereeId } = choice;
+    const { DoUpdateDraft } = props;
+
+    DoUpdateDraft({
+      username: user,
+      observerId: refereeId,
+      matchId,
+    });
   };
 
   const handleDelete = (selected) => {
@@ -74,7 +102,6 @@ const PersonalDrafts = (props) => {
       draftIds: selected,
     });
   };
-  /* eslint-enable no-console */
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
@@ -135,6 +162,7 @@ PersonalDrafts.propTypes = {
   shortlist: PropTypes.arrayOf(
     PropTypes.exact({
       draft_id: PropTypes.number.isRequired,
+      match_id: PropTypes.number.isRequired,
       referee_id: PropTypes.number.isRequired,
       referee_name: PropTypes.string.isRequired,
     })
@@ -145,6 +173,7 @@ PersonalDrafts.propTypes = {
   DoFetchDrafts: PropTypes.func.isRequired,
   DoFetchShortlist: PropTypes.func.isRequired,
   DoDeleteDrafts: PropTypes.func.isRequired,
+  DoUpdateDraft: PropTypes.func.isRequired,
 };
 
 PersonalDrafts.defaultProps = {

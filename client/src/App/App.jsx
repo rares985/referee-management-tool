@@ -1,7 +1,12 @@
-/* eslint-disable */
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Router, navigate } from '@reach/router';
 import { connect } from 'react-redux';
+
+import HomeIcon from '@material-ui/icons/Home';
+import LockIcon from '@material-ui/icons/Lock';
+import EventIcon from '@material-ui/icons/Event';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 
 import ResponsiveDrawer from '../components/ResponsiveDrawer';
 import Home from '../pages/Home';
@@ -14,11 +19,6 @@ import UnavailabilityPeriods from '../pages/UnavailabilityPeriods';
 import Team from '../pages/Team';
 import Delegate from '../pages/Delegate';
 import ApproveDrafts from '../pages/ApproveDrafts';
-import WithAuth from '../components/withAuth';
-import HomeIcon from '@material-ui/icons/Home';
-import LockIcon from '@material-ui/icons/Lock';
-import EventIcon from '@material-ui/icons/Event';
-import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -26,6 +26,8 @@ const mapStateToProps = (state) => ({
 });
 
 const App = (props) => {
+  const { user, finished } = props;
+
   const links = [
     {
       text: 'Acasă',
@@ -51,15 +53,6 @@ const App = (props) => {
         }
       : false,
   ];
-
-  /* Declare routes as protected */
-  const PersInfoForm = WithAuth(PersonalInformationForm);
-  const PersMatchHist = WithAuth(PersonalMatchHistory);
-  const CalndPicker = WithAuth(UnavailabilityPeriods);
-  const ApprvDrafts = WithAuth(ApproveDrafts);
-  const Dlgt = WithAuth(Delegate);
-
-  const { user, finished } = props;
 
   useEffect(() => {
     if (finished) {
@@ -87,6 +80,11 @@ const App = (props) => {
       </ResponsiveDrawer>
     </div>
   );
+};
+
+App.propTypes = {
+  user: PropTypes.string.isRequired,
+  finished: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps)(App);

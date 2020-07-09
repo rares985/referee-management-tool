@@ -41,8 +41,6 @@ const NiceTableCustomPicker = (props) => {
     handleObserverChoice,
   } = props;
 
-  const { firstRef, secondRef, observer } = props;
-
   const { shortlistById } = props;
 
   const [order, setOrder] = React.useState('asc');
@@ -166,22 +164,22 @@ const NiceTableCustomPicker = (props) => {
                     <TableCell align="right">{row.competition_name}</TableCell>
                     <TableCell align="right">
                       <TextFieldPicker
-                        value={firstRef}
-                        refs={shortlistById[row[primaryKey]]}
+                        value={row.first_referee}
+                        choices={shortlistById[row[primaryKey]]}
                         onChange={handleFirstRefereeChoice}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <TextFieldPicker
-                        value={secondRef}
-                        refs={shortlistById[row[primaryKey]]}
+                        value={row.second_referee}
+                        choices={shortlistById[row[primaryKey]]}
                         onChange={handleSecondRefereeChoice}
                       />
                     </TableCell>
                     <TableCell align="right">
                       <TextFieldPicker
-                        value={observer}
-                        refs={shortlistById[row[primaryKey]]}
+                        value={row.observer}
+                        choices={shortlistById[row[primaryKey]]}
                         onChange={handleObserverChoice}
                       />
                     </TableCell>
@@ -253,10 +251,6 @@ NiceTableCustomPicker.propTypes = {
     })
   ).isRequired,
 
-  firstRef: PropTypes.string,
-  secondRef: PropTypes.string,
-  observer: PropTypes.string,
-
   handleDeleteSelectedClick: PropTypes.func,
   handleConfirmSelectedClick: PropTypes.func,
   handleFirstRefereeChoice: PropTypes.func.isRequired,
@@ -269,9 +263,6 @@ NiceTableCustomPicker.defaultProps = {
   acceptsRowSelect: false,
   acceptsRowDelete: false,
   hasConfirmButton: false,
-  firstRef: 'Arbitru nedelegat',
-  secondRef: 'Arbitru nedelegat',
-  observer: 'Arbitru nedelegat',
   handleConfirmSelectedClick: () => {},
   handleDeleteSelectedClick: () => {},
   rowsPerPageOptions: [5, 10, 25],

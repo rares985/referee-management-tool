@@ -23,7 +23,7 @@ const SearchableDialog = (props) => {
 
   const { onChange, onClose } = props;
 
-  const { refs } = props;
+  const { choices } = props;
 
   const handleSaveClose = () => {
     onClose();
@@ -41,7 +41,7 @@ const SearchableDialog = (props) => {
     setChosen(ref);
   };
 
-  const matching = refs.filter((elem) =>
+  const matching = choices.filter((elem) =>
     query === ''
       ? true
       : removeAccents(elem.referee_name.toLowerCase()).indexOf(
@@ -97,7 +97,7 @@ SearchableDialog.propTypes = {
   title: PropTypes.string.isRequired,
   text: PropTypes.string,
   searchLabel: PropTypes.string.isRequired,
-  refs: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
+  choices: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,

@@ -14,7 +14,6 @@ const GetPublicMatches = (req, res) => {
           return;
         }
         res.status(200).send(proc_res.recordset);
-        console.dir(proc_res);
       });
     })
     .catch((err) => {

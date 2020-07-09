@@ -14,7 +14,6 @@ const secret = process.env.JWT_SECRET;
 /* AUTHENTICATE route */
 router.post("/", (req, res) => {
   const { username, password } = req.body;
-  console.log(`AUTH: Got request: ${username}, ${password}`);
 
   if (!username || !password) {
     res.status(401).send("Invalid parameters for authentication");

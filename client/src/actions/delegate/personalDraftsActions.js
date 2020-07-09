@@ -11,6 +11,9 @@ import {
   DELETE_DRAFTS_BEGIN,
   DELETE_DRAFTS_SUCCESS,
   DELETE_DRAFTS_FAILURE,
+  UPDATE_DRAFTS_BEGIN,
+  UPDATE_DRAFTS_SUCCESS,
+  UPDATE_DRAFTS_FAILURE,
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -122,8 +125,11 @@ export const DeleteDraftsBegin = () => ({
   type: DELETE_DRAFTS_BEGIN,
 });
 
-export const DeleteDraftsSuccess = () => ({
+export const DeleteDraftsSuccess = (data) => ({
   type: DELETE_DRAFTS_SUCCESS,
+  payload: {
+    data,
+  },
 });
 
 export const DeleteDraftsFailure = (error) => ({
@@ -134,19 +140,50 @@ export const DeleteDraftsFailure = (error) => ({
 });
 
 export const DeleteDrafts = (request) => {
-  const DeleteRequest = {
-    data: request,
-  };
   return (dispatch) => {
     dispatch(DeleteDraftsBegin());
 
+    console.log('DeleteDrafts');
+
     axios
-      .delete('/api/delegate/drafts/matches', DeleteRequest)
-      .then(() => {
-        dispatch(DeleteDraftsSuccess());
+      .delete('/api/delegate/drafts/matches', { data: request })
+      .then((res) => {
+        dispatch(DeleteDraftsSuccess(res));
       })
       .catch((err) => {
         dispatch(DeleteDraftsFailure(err.error));
+      });
+  };
+};
+
+export const UpdateDraftsBegin = () => ({
+  type: UPDATE_DRAFTS_BEGIN,
+});
+export const UpdateDraftsSuccess = (data) => ({
+  type: UPDATE_DRAFTS_SUCCESS,
+  payload: {
+    data,
+  },
+});
+
+export const UpdateDraftsFailure = (error) => ({
+  type: UPDATE_DRAFTS_FAILURE,
+  payload: {
+    error,
+  },
+});
+
+export const UpdateDraft = (request) => {
+  return (dispatch) => {
+    dispatch(UpdateDraftsBegin());
+
+    axios
+      .patch('api/delegate/drafts/matches', request)
+      .then((res) => {
+        dispatch(UpdateDraftsSuccess(res.data));
+      })
+      .catch((err) => {
+        dispatch(UpdateDraftsFailure(err.error));
       });
   };
 };

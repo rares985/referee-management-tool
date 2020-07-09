@@ -128,15 +128,11 @@ const DeleteUpcomingFailure = (error) => ({
 });
 
 export const DeleteUpcoming = (request) => {
-  const DeleteRequest = {
-    data: request,
-  };
-
   return (dispatch) => {
     dispatch(DeleteUpcomingBegin());
 
     axios
-      .delete('/api/unavailable/personal/upcoming', DeleteRequest)
+      .delete('/api/unavailable/personal/upcoming', request)
       .then((res) => {
         dispatch(DeleteUpcomingSuccess(res.data));
       })

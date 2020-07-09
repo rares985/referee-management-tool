@@ -41,26 +41,27 @@ const DelegableMatches = (props) => {
   /* eslint-enable no-unused-vars */
 
   useEffect(() => {
-    const { DoFetchMatches, DoFetchShortlist } = props;
+    const { DoFetchMatches } = props;
 
     if (matchesLoading) {
       DoFetchMatches({
         username: user,
       });
     }
+  }, [matchesLoading]);
 
+  useEffect(() => {
+    const { DoFetchShortlist } = props;
     if (shortlistLoading) {
       DoFetchShortlist({
         username: user,
       });
     }
-  });
+  }, [shortlistLoading]);
 
-  /* eslint-disable no-console */
   const onFirstRefereeChoice = (choice) => {
-    const { matchId, refereeId, refereeName } = choice;
+    const { matchId, refereeId } = choice;
     const { DoAddDraft } = props;
-    console.log(`Chosen ${refereeName} as A1 for match with id ${matchId}`);
 
     DoAddDraft({
       username: user,
@@ -70,9 +71,8 @@ const DelegableMatches = (props) => {
   };
 
   const onSecondRefereeChoice = (choice) => {
-    const { matchId, refereeId, refereeName } = choice;
+    const { matchId, refereeId } = choice;
     const { DoAddDraft } = props;
-    console.log(`Chosen ${refereeName} as A2 for match with id ${matchId}`);
 
     DoAddDraft({
       username: user,
@@ -82,9 +82,8 @@ const DelegableMatches = (props) => {
   };
 
   const onObserverChoice = (choice) => {
-    const { matchId, refereeId, refereeName } = choice;
+    const { matchId, refereeId } = choice;
     const { DoAddDraft } = props;
-    console.log(`Chosen ${refereeName} as Observer for match with id ${matchId}`);
 
     DoAddDraft({
       username: user,
@@ -92,7 +91,6 @@ const DelegableMatches = (props) => {
       matchId,
     });
   };
-  /* eslint-enable no-console */
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: false, label: 'Număr meci' },
@@ -133,6 +131,9 @@ const DelegableMatches = (props) => {
           rows={matches.map((elem) => ({
             ...elem,
             match_date: dateConverter(elem.match_date),
+            first_referee: 'Arbitru nedelegat',
+            second_referee: 'Arbitru nedelegat',
+            observer: 'Arbitru nedelegat',
           }))}
         />
       )}
