@@ -5,13 +5,15 @@ import {
   ELIGIBLE_REFS_BEGIN,
   ELIGIBLE_REFS_SUCCESS,
   ELIGIBLE_REFS_FAILURE,
+  ADD_DRAFT_SUCCESS,
+  DELETE_DRAFT_SUCCESS,
 } from '../../constants/action-types';
 
 const initialState = {
   matches: [],
   matchesLoading: true,
   shortlist: [],
-  shortlistLoading: true
+  shortlistLoading: true,
 };
 
 const delegableMatchesReducer = (state = initialState, action) => {
@@ -24,7 +26,7 @@ const delegableMatchesReducer = (state = initialState, action) => {
       return {
         ...state,
         matchesLoading: false,
-        matches: action.payload.matches
+        matches: action.payload.matches,
       };
     case DELEGABLE_MATCHES_FAILURE:
       return {
@@ -41,12 +43,22 @@ const delegableMatchesReducer = (state = initialState, action) => {
       return {
         ...state,
         shortlistLoading: false,
-        shortlist: action.payload.shortlist
+        shortlist: action.payload.shortlist,
       };
     case ELIGIBLE_REFS_FAILURE:
       return {
         ...state,
-        shortlistLoading: false
+        shortlistLoading: false,
+      };
+    case ADD_DRAFT_SUCCESS:
+      return {
+        ...state,
+        draftsLoading: true /* to trigger re-download of matches */,
+      };
+    case DELETE_DRAFTS_SUCCESS:
+      return {
+        ...state,
+        draftsLoading: true /* to trigger re-download of matches */,
       };
     default:
       return state;

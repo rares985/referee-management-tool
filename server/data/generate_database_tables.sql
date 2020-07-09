@@ -177,11 +177,12 @@ GO
 CREATE TABLE [referee-management-tool].dbo.delegation_draft (
   id INT IDENTITY
  ,created_by BIGINT NOT NULL
- ,first_referee_id INT NOT NULL
- ,second_referee_id INT NOT NULL
+ ,first_referee_id INT NULL
+ ,second_referee_id INT NULL
  ,observer_id INT NULL
  ,match_id INT NOT NULL
  ,CONSTRAINT PK_delegation_draft_id PRIMARY KEY CLUSTERED (id)
+ ,CONSTRAINT KEY_delegation_draft UNIQUE (created_by, match_id)
 )
 GO
 
