@@ -18,10 +18,8 @@ import removeAccents from '../utils/strmanip';
 
 const ChooseRefereeModal = (props) => {
   const [show, setShow] = useState(false);
-  /* eslint-disable no-unused-vars */
   const [chosen, setChosen] = useState({});
   const [query, setQuery] = useState('');
-  /* eslint-enable no-unused-vars */
 
   const handleClose = () => setShow(false);
   const handleOpen = () => setShow(true);

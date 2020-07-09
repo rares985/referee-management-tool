@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { CircularProgress } from '@material-ui/core';
 import { groupBy } from 'lodash';
@@ -11,7 +11,8 @@ import {
   FetchEligibleRefs,
 } from '../../actions/delegate/delegableMatchesActions';
 
-import addUpdateArray from '../../utils/arraymanip';
+import { AddDraft } from '../../actions/delegate/personalDraftsActions';
+
 import dateConverter from '../../utils/datemanip';
 
 const mapStateToProps = (state) => ({
@@ -29,67 +30,67 @@ const mapDispatchToProps = (dispatch) => ({
   DoFetchShortlist: (request) => {
     dispatch(FetchEligibleRefs(request));
   },
+  DoAddDraft: (request) => {
+    dispatch(AddDraft(request));
+  },
 });
 
 const DelegableMatches = (props) => {
-  // eslint-disable-next-line no-unused-vars
-  const [delegations, setDelegations] = useState([]);
-
   /* eslint-disable no-unused-vars */
   const { user, matches, shortlist, matchesLoading, shortlistLoading, error } = props;
   /* eslint-enable no-unused-vars */
 
   useEffect(() => {
-    const { DoFetchMatches, DoFetchShortlist } = props;
+    const { DoFetchMatches } = props;
 
     if (matchesLoading) {
       DoFetchMatches({
         username: user,
       });
     }
+  }, [matchesLoading]);
 
+  useEffect(() => {
+    const { DoFetchShortlist } = props;
     if (shortlistLoading) {
       DoFetchShortlist({
         username: user,
       });
     }
-  });
+  }, [shortlistLoading]);
 
-  // eslint-disable-next-line no-unused-vars
-  const GetRefereeName = (matchid, pos) => {
-    const idx = delegations.findIndex((elem) => elem.matchid === matchid);
-    if (idx !== -1) {
-      if (delegations[idx][pos]) {
-        return delegations[idx][pos].referee;
-      }
-    }
-    return 'Arbitru nedelegat';
-  };
-
-  // eslint-disable-next-line no-unused-vars
-  const handleDelegationSubmit = (event) => {};
-
-  /* eslint-disable no-unused-vars */
-  /* eslint-disable no-console */
   const onFirstRefereeChoice = (choice) => {
-    const { matchId, refereeId, refereeName } = choice;
-    console.log(`Chosen ${refereeName} as A1 for match with id ${matchId}`);
-    setDelegations(addUpdateArray(delegations, matchId, 'first_referee', refereeName));
+    const { matchId, refereeId } = choice;
+    const { DoAddDraft } = props;
+
+    DoAddDraft({
+      username: user,
+      firstRefereeId: refereeId,
+      matchId,
+    });
   };
 
   const onSecondRefereeChoice = (choice) => {
-    const { matchId, refereeId, refereeName } = choice;
-    console.log(`Chosen ${refereeName} as A2 for match with id ${matchId}`);
-    setDelegations(addUpdateArray(delegations, matchId, 'second_referee', refereeName));
+    const { matchId, refereeId } = choice;
+    const { DoAddDraft } = props;
+
+    DoAddDraft({
+      username: user,
+      secondRefereeId: refereeId,
+      matchId,
+    });
   };
 
   const onObserverChoice = (choice) => {
-    const { matchId, refereeId, refereeName } = choice;
-    console.log(`Chosen ${refereeName} as Observer for match with id ${matchId}`);
-    setDelegations(addUpdateArray(delegations, matchId, 'observer', refereeName));
+    const { matchId, refereeId } = choice;
+    const { DoAddDraft } = props;
+
+    DoAddDraft({
+      username: user,
+      observerId: refereeId,
+      matchId,
+    });
   };
-  /* eslint-enable no-unused-vars */
-  /* eslint-enable no-console */
 
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: false, label: 'Număr meci' },
@@ -130,6 +131,9 @@ const DelegableMatches = (props) => {
           rows={matches.map((elem) => ({
             ...elem,
             match_date: dateConverter(elem.match_date),
+            first_referee: 'Arbitru nedelegat',
+            second_referee: 'Arbitru nedelegat',
+            observer: 'Arbitru nedelegat',
           }))}
         />
       )}
@@ -163,6 +167,7 @@ DelegableMatches.propTypes = {
   error: PropTypes.string,
   DoFetchMatches: PropTypes.func.isRequired,
   DoFetchShortlist: PropTypes.func.isRequired,
+  DoAddDraft: PropTypes.func.isRequired,
 };
 
 DelegableMatches.defaultProps = {

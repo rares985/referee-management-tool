@@ -1,9 +1,20 @@
 const dotenv = require("dotenv").config();
 
+/* 3rd party middleware */
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
 const cookieParser = require("cookie-parser");
+
+/* custom middleware */
+const withAuth = require("./server/auth_middleware");
+
+/* Logger */
+const morgan = require("morgan");
+const winston = require("./server/config/logger");
+
+const expressStaticGzip = require("express-static-gzip");
+
+/* Routers */
 const unavailableRouter = require("./server/routers/unavailable.js");
 const delegateRouter = require("./server/routers/delegate.js");
 const approveRouter = require("./server/routers/approve.js");
@@ -11,19 +22,16 @@ const personalRouter = require("./server/routers/personal.js");
 const authRouter = require("./server/routers/auth.js");
 
 var Request = require("tedious").Request;
+const connection = require("./server/db-conn");
 
 const bcrypt = require("bcryptjs");
 
-const connection = require("./server/db-conn");
-
-const withAuth = require("./server/auth_middleware");
-
-const expressStaticGzip = require("express-static-gzip");
-
 const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(morgan("combined", { stream: winston.stream }));
 
 app.use("/api/unavailable", unavailableRouter);
 app.use("/api/delegate", delegateRouter);
@@ -52,7 +60,6 @@ app.post("/api/register", (req, res) => {
     res.status(400).send("Invalid parameters");
     return;
   }
-  console.log(`REGISTER: Got request: ${username}, ${password}`);
 
   bcrypt.hash(password, 10, (err, hash) => {
     if (err) {
@@ -75,7 +82,6 @@ app.post("/api/register", (req, res) => {
 /* GET PERSONAL MATCH HISTORY */
 app.get("/api/matchHistory", (req, res) => {
   const username = req.query.username;
-  console.log(`FETCH_MATCH_HISTORY: Got request: ${username}`);
 
   if (!username) {
     res.status(400).send("Invalid parameters");
@@ -111,13 +117,10 @@ app.get("/api/matchHistory", (req, res) => {
     OR R2.UserID = U.ID
     WHERE(U.Username = '${username}');`;
 
-  console.log(`Going to execute query ${query}`);
   request = new Request(query, (err, rowCount) => {
     if (err) {
       console.error(err);
       res.status(400).send("User information not in database!");
-    } else {
-      console.log(`Got ${rowCount} rows`);
     }
   });
 
@@ -127,7 +130,6 @@ app.get("/api/matchHistory", (req, res) => {
     cols.forEach((col) => {
       obj[col.metadata.colName] = col.value;
     });
-    console.log(`Adding ${JSON.stringify(obj)}`);
     matches.push(JSON.stringify(obj));
   });
 
@@ -146,8 +148,6 @@ app.get("/api/userinfo", (req, res) => {
     return;
   }
 
-  console.log(`USER_INFO: Got request: ${username}`);
-
   let user_info = {
     userid: -1,
     delegation: false,
@@ -161,7 +161,6 @@ app.get("/api/userinfo", (req, res) => {
       console.error(err);
       res.status(400).send("Could not perform the database query!");
     } else {
-      console.log("id_request OK");
       res.status(200).send(user_info);
     }
   });
@@ -176,7 +175,6 @@ app.get("/api/userinfo", (req, res) => {
       console.error(err);
       res.status(400).send("Could not perform database query!");
     } else {
-      console.log("delegable_request OK");
       if (rowCount > 0) {
         user_info.delegation = true;
       }
@@ -190,7 +188,6 @@ app.get("/api/userinfo", (req, res) => {
       console.error(err);
       res.status(400).send("Could not perform database query!");
     } else {
-      console.log("approval_request OK");
       if (rowCount > 0) {
         user_info.approval = true;
       }
@@ -204,7 +201,6 @@ app.get("/api/userinfo", (req, res) => {
       console.error(err);
       res.status(400).send("Could not perform database query, please try again.");
     } else {
-      console.log("check_cja_request OK");
       if (rowCount > 0) {
         user_info.team = true;
       }
@@ -215,22 +211,8 @@ app.get("/api/userinfo", (req, res) => {
   connection.execSql(check_cja_request);
 });
 
-app.post("/api/drafts", (req, res) => {
-  var base_query = `INSERT INTO delegation_draft(created_by, first_referee_id, second_referee_id, observer_id, match_id) VALUES`;
-  let value_rows = req.body.matches.map(
-    (draft) =>
-      `(${draft.created_by}, ${draft.first_referee_id}, ${draft.second_referee_id}, ${draft.observer_id}, ${draft.match_id})`
-  );
-
-  var query = `${base_query} ${value_rows.join(",")};`;
-  console.log(query);
-
-  res.status(200).send("OK");
-});
-
 app.get("/api/shortlist", (req, res) => {
   const matchid = req.query.id;
-  console.log(`REFEREE_SHORTLIST: Got request: ${matchid}`);
   if (matchid === undefined) {
     res.status(400).send("Invalid parameters");
   } else {
@@ -251,7 +233,6 @@ app.get("/api/shortlist", (req, res) => {
       cols.forEach((col) => {
         obj[col.metadata.colName] = col.value;
       });
-      console.log(`Adding ${JSON.stringify(obj)}`);
       shortlist.push(JSON.stringify(obj));
     });
 
@@ -259,15 +240,21 @@ app.get("/api/shortlist", (req, res) => {
   }
 });
 
-/* =============================== SERVICE ROUTES ==================================== */
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
-/* =============================== DEFAULT ROUTES ==================================== */
+  winston.error(
+    `${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - ${req.ip}`
+  );
+
+  res.status(err.status || 500);
+  res.render("error");
+});
 
 connection.on("connect", function (err) {
   if (err) {
     console.error(`Failed to connect to remote database due to ${err}`);
-  } else {
-    console.log("Successfully connected to database!");
   }
 });
 
