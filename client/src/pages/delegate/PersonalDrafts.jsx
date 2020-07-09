@@ -8,7 +8,9 @@ import { groupBy } from 'lodash';
 import {
   FetchPersonalDrafts,
   FetchPersonalDraftsShortlist,
+  DeleteDrafts,
 } from '../../actions/delegate/personalDraftsActions';
+
 import NiceTableCustomPicker from '../../components/NiceTableCustomPicker';
 
 import dateConverter from '../../utils/datemanip';
@@ -27,6 +29,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   DoFetchShortlist: (request) => {
     dispatch(FetchPersonalDraftsShortlist(request));
+  },
+  DoDeleteDrafts: (request) => {
+    dispatch(DeleteDrafts(request));
   },
 });
 
@@ -61,6 +66,14 @@ const PersonalDrafts = (props) => {
   const onObserverChoice = (id, referee) => {
     console.log(`Chosen ${referee} as Observer for ${id}`);
   };
+
+  const handleDelete = (selected) => {
+    const { DoDeleteDrafts } = props;
+
+    DoDeleteDrafts({
+      draftIds: selected,
+    });
+  };
   /* eslint-enable no-console */
 
   const headCells = [
@@ -71,7 +84,7 @@ const PersonalDrafts = (props) => {
     { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
     { id: 'first_referee', numeric: false, disablePadding: false, label: 'Primul arbitru (A1)' },
     { id: 'second_referee', numeric: false, disablePadding: false, label: 'Arbitru secund (A2)' },
-    { id: 'obserer', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'observer', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
 
@@ -94,6 +107,8 @@ const PersonalDrafts = (props) => {
           }))}
           headCells={headCells}
           acceptsRowSelect
+          acceptsRowDelete
+          handleDeleteSelectedClick={handleDelete}
         />
       )}
     </>
@@ -129,6 +144,7 @@ PersonalDrafts.propTypes = {
   error: PropTypes.string,
   DoFetchDrafts: PropTypes.func.isRequired,
   DoFetchShortlist: PropTypes.func.isRequired,
+  DoDeleteDrafts: PropTypes.func.isRequired,
 };
 
 PersonalDrafts.defaultProps = {
