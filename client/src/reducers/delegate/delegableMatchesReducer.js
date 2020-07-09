@@ -6,7 +6,7 @@ import {
   ELIGIBLE_REFS_SUCCESS,
   ELIGIBLE_REFS_FAILURE,
   ADD_DRAFT_SUCCESS,
-  DELETE_DRAFT_SUCCESS,
+  DELETE_DRAFTS_SUCCESS,
 } from '../../constants/action-types';
 
 const initialState = {
