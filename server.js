@@ -1,9 +1,20 @@
 const dotenv = require("dotenv").config();
 
+/* 3rd party middleware */
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
 const cookieParser = require("cookie-parser");
+
+/* custom middleware */
+const withAuth = require("./server/auth_middleware");
+
+/* Logger */
+const morgan = require("morgan");
+const winston = require("./server/config/logger");
+
+const expressStaticGzip = require("express-static-gzip");
+
+/* Routers */
 const unavailableRouter = require("./server/routers/unavailable.js");
 const delegateRouter = require("./server/routers/delegate.js");
 const approveRouter = require("./server/routers/approve.js");
@@ -11,19 +22,16 @@ const personalRouter = require("./server/routers/personal.js");
 const authRouter = require("./server/routers/auth.js");
 
 var Request = require("tedious").Request;
+const connection = require("./server/db-conn");
 
 const bcrypt = require("bcryptjs");
 
-const connection = require("./server/db-conn");
-
-const withAuth = require("./server/auth_middleware");
-
-const expressStaticGzip = require("express-static-gzip");
-
 const app = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(morgan("combined", { stream: winston.stream }));
 
 app.use("/api/unavailable", unavailableRouter);
 app.use("/api/delegate", delegateRouter);
