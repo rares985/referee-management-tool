@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { groupBy } from 'lodash';
 import { CircularProgress } from '@material-ui/core';
-import EnhancedTable from '../../components/EnhancedTable';
+import NiceTableCustomPicker from '../../components/NiceTableCustomPicker';
 
 import {
   FetchRejectedDrafts,
   FetchRejectedShortlist,
 } from '../../actions/delegate/rejectedDraftsActions';
-import TableHeaderSelector from '../../components/TableHeaderSelector';
 import dateConverter from '../../utils/datemanip';
 
 const mapStateToProps = (state) => ({
@@ -59,77 +59,48 @@ const RejectedDrafts = (props) => {
   const onObserverChoice = (event) => {};
 
   const headCells = [
+    { id: 'match_no', numeric: true, disablePadding: false, label: 'Număr meci' },
+    { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
+    { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
+    { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
+    { id: 'competition_name', numeric: false, disablePadding: false, label: 'Competiție' },
     {
-      id: 'match_no',
-      numeric: true,
-      disablePadding: true,
-      label: 'Număr meci',
-    },
-    {
-      id: 'match_date',
+      id: 'first_referee',
       numeric: false,
       disablePadding: false,
-      label: 'Data desfășurării',
+      label: 'Primul arbitru (A1)',
     },
     {
-      id: 'team_a_name',
+      id: 'second_referee',
       numeric: false,
       disablePadding: false,
-      label: 'Echipa A',
+      label: 'Arbitru secund (A2) ',
     },
-    {
-      id: 'team_b_name',
-      numeric: false,
-      disablePadding: false,
-      label: 'Echipa B',
-    },
-    {
-      id: 'full_name_competition',
-      numeric: false,
-      disablePadding: false,
-      label: 'Competiție',
-    },
-    {
-      id: 'a1',
-      numeric: false,
-      disablePadding: false,
-      label: 'A1',
-    },
-    {
-      id: 'a2',
-      numeric: false,
-      disablePadding: false,
-      label: 'A2',
-    },
-    {
-      id: 'obs',
-      numeric: false,
-      disablePadding: false,
-      label: 'Observator',
-    },
-    {
-      id: 'location',
-      numeric: false,
-      disablePadding: false,
-      label: 'Locație',
-    },
+    { id: 'observer', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
+
+  const shortlistById = groupBy(shortlist, (elem) => elem.draft_id);
 
   return (
     <>
-      {draftsLoading && <CircularProgress />}
-      <TableHeaderSelector />
-      {!draftsLoading && (
-        <EnhancedTable
+      {(draftsLoading || shortlistLoading) && <CircularProgress />}
+      {!(draftsLoading || shortlistLoading) && (
+        <NiceTableCustomPicker
+          tableName="Propuneri respinse "
+          primaryKey="match_id"
+          headCells={headCells}
           handleFirstRefereeChoice={onFirstRefereeChoice}
           handleSecondRefereeChoice={onSecondRefereeChoice}
           handleObserverChoice={onObserverChoice}
-          tableName="Propuneri respinse "
+          shortlistById={shortlistById}
           rows={drafts.map((elem) => ({
             ...elem,
             match_date: dateConverter(elem.match_date),
+            first_referee: 'Arbitru nedelegat',
+            second_referee: 'Arbitru nedelegat',
+            observer: 'Arbitru nedelegat',
           }))}
-          headCells={headCells}
         />
       )}
     </>
@@ -140,21 +111,8 @@ RejectedDrafts.propTypes = {
   user: PropTypes.string.isRequired,
   drafts: PropTypes.arrayOf(
     PropTypes.exact({
-      match_id: PropTypes.number,
-      match_no: PropTypes.string.isRequired,
-      match_date: PropTypes.string.isRequired,
-      team_a_name: PropTypes.string.isRequired,
-      team_b_name: PropTypes.string.isRequired,
-      competition_name: PropTypes.string.isRequired,
-      a1: PropTypes.string.isRequired,
-      a2: PropTypes.string.isRequired,
-      obs: PropTypes.string.isRequired,
-      location: PropTypes.string.isRequired,
-    })
-  ).isRequired,
-  shortlist: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.number.isRequired,
+      draft_id: PropTypes.number.isRequired,
+      match_id: PropTypes.number.isRequired,
       match_no: PropTypes.number.isRequired,
       match_date: PropTypes.string.isRequired,
       first_referee: PropTypes.string.isRequired,
@@ -162,12 +120,20 @@ RejectedDrafts.propTypes = {
       observer: PropTypes.string.isRequired,
       team_a_name: PropTypes.string.isRequired,
       team_b_name: PropTypes.string.isRequired,
-      competition_name: PropTypes.string.isRequired,
       location: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
     })
   ).isRequired,
-  draftsLoading: PropTypes.bool,
-  shortlistLoading: PropTypes.bool,
+  shortlist: PropTypes.arrayOf(
+    PropTypes.exact({
+      draft_id: PropTypes.number.isRequired,
+      match_id: PropTypes.number.isRequired,
+      referee_id: PropTypes.number.isRequired,
+      referee_name: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  draftsLoading: PropTypes.bool.isRequired,
+  shortlistLoading: PropTypes.bool.isRequired,
   error: PropTypes.string,
   DoFetchDrafts: PropTypes.func.isRequired,
   DoFetchShortlist: PropTypes.func.isRequired,
@@ -175,8 +141,6 @@ RejectedDrafts.propTypes = {
 
 RejectedDrafts.defaultProps = {
   error: '',
-  shortlistLoading: true,
-  draftsLoading: true,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RejectedDrafts);

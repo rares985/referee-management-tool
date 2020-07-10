@@ -4,8 +4,8 @@ import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 
-import DelegableMatches from './delegate/DelegableMatches';
-import PersonalDrafts from './delegate/PersonalDrafts';
+import ProposedDrafts from './proposed/ProposedDrafts';
+import RejectedDrafts from './proposed/RejectedDrafts';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,10 +18,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Delegate = () => {
+const Proposed = () => {
   const classes = useStyles();
 
-  const pages = [<DelegableMatches />, <PersonalDrafts />];
+  const pages = [<ProposedDrafts />, <RejectedDrafts />];
 
   return (
     <Container component="main" className={classes.container}>
@@ -37,4 +37,5 @@ const Delegate = () => {
     </Container>
   );
 };
-export default Delegate;
+
+export default Proposed;

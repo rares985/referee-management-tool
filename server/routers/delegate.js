@@ -226,8 +226,6 @@ const UpdatePersonalDraft = (req, res) => {
   let procedureName;
   let refereeId;
 
-  console.dir(req.body);
-
   if (!username || !matchId) {
     res.status(400).send("Invalid parameters");
     return;
@@ -269,6 +267,31 @@ const UpdatePersonalDraft = (req, res) => {
     });
 };
 
+const SubmitDrafts = (req, res) => {
+  const { draftIds } = req.body;
+
+  if (!draftIds) {
+    res.status(400).send("Invalid parameters");
+    return;
+  }
+
+  const query = `INSERT INTO delegation_proposal (draft_id)
+    VALUES ${draftIds.map((elem, idx) => `${idx !== 0 ? "," : ""} (${elem})`).join("")};`;
+
+  poolConnect
+    .then((pool) => {
+      return pool.request().query(query);
+    })
+    .then((result) => {
+      res.status(200).send(result.recordset);
+      return;
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(501).send("Internal database error");
+    });
+};
+
 /* Matches to which I can delegate */
 router.get("/delegable/matches", GetDelegableMatches);
 router.get("/delegable/shortlist", GetEligibleRefsForDelegableMatches);
@@ -281,6 +304,7 @@ router.patch("/drafts/matches", UpdatePersonalDraft);
 router.get("/drafts/shortlist", GetEligibleRefsForPersonalDrafts);
 
 /* Drafts which I have proposed - not yet reviewed */
+router.post("/proposed/matches", SubmitDrafts);
 router.get("/proposed/matches", GetPersonalProposedDrafts);
 
 /* Rejected drafts which need attention */

@@ -10,6 +10,7 @@ import {
   FetchPersonalDraftsShortlist,
   DeleteDrafts,
   UpdateDraft,
+  SubmitDrafts,
 } from '../../actions/delegate/personalDraftsActions';
 
 import NiceTableCustomPicker from '../../components/NiceTableCustomPicker';
@@ -36,6 +37,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   DoUpdateDraft: (request) => {
     dispatch(UpdateDraft(request));
+  },
+  DoSubmitDrafts: (request) => {
+    dispatch(SubmitDrafts(request));
   },
 });
 
@@ -103,6 +107,14 @@ const PersonalDrafts = (props) => {
     });
   };
 
+  const handleSubmit = (selected) => {
+    const { DoSubmitDrafts } = props;
+
+    DoSubmitDrafts({
+      draftIds: selected,
+    });
+  };
+
   const headCells = [
     { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
     { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
@@ -136,6 +148,8 @@ const PersonalDrafts = (props) => {
           acceptsRowSelect
           acceptsRowDelete
           handleDeleteSelectedClick={handleDelete}
+          hasConfirmButton
+          handleConfirmSelectedClick={handleSubmit}
         />
       )}
     </>
@@ -167,19 +181,18 @@ PersonalDrafts.propTypes = {
       referee_name: PropTypes.string.isRequired,
     })
   ).isRequired,
-  draftsLoading: PropTypes.bool,
-  shortlistLoading: PropTypes.bool,
+  draftsLoading: PropTypes.bool.isRequired,
+  shortlistLoading: PropTypes.bool.isRequired,
   error: PropTypes.string,
   DoFetchDrafts: PropTypes.func.isRequired,
   DoFetchShortlist: PropTypes.func.isRequired,
   DoDeleteDrafts: PropTypes.func.isRequired,
   DoUpdateDraft: PropTypes.func.isRequired,
+  DoSubmitDrafts: PropTypes.func.isRequired,
 };
 
 PersonalDrafts.defaultProps = {
   error: '',
-  draftsLoading: true,
-  shortlistLoading: true,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonalDrafts);

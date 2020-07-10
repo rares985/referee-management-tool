@@ -19,6 +19,7 @@ import UnavailabilityPeriods from '../pages/UnavailabilityPeriods';
 import Team from '../pages/Team';
 import Delegate from '../pages/Delegate';
 import ApproveDrafts from '../pages/ApproveDrafts';
+import ProposedRejected from '../pages/ProposedRejected';
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -70,11 +71,12 @@ const App = (props) => {
           {user === '' && <Login path="/login" />}
           {user !== '' && <Dashboard path="/dashboard" />}
           {<Dashboard path="/dashboard" />}
-          <PersonalInformationForm path="/updateinfo" />
           <PersonalMatchHistory path="/viewhistory" />
+          <PersonalInformationForm path="/updateinfo" />
           <UnavailabilityPeriods path="/addunavailable" />
-          <ApproveDrafts path="/approvedrafts" />
+          <ProposedRejected path="/proposed" />
           <Delegate path="/delegate" />
+          <ApproveDrafts path="/approve" />
           <Team path="/team" />
         </Router>
       </ResponsiveDrawer>
