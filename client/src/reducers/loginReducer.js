@@ -6,7 +6,7 @@ import {
 } from '../constants/action-types';
 
 const initialState = {
-  user: '',
+  user: 'alinmateizer',
   loading: false, // only loads on submit
   finished: false, // set to true on login success
   error: null,

@@ -111,7 +111,7 @@ const Dashboard = (props) => {
       title: 'Aprobă/Respinge propuneri',
       text: 'Aproba sau respinge propuneri de delegare',
       buttonLabel: 'Aproba',
-      path: '/approvedrafts',
+      path: '/approve',
       icon: <ListCheck />,
     },
 

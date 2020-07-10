@@ -14,6 +14,7 @@ import {
   UPDATE_DRAFTS_BEGIN,
   UPDATE_DRAFTS_SUCCESS,
   UPDATE_DRAFTS_FAILURE,
+  SUBMIT_DRAFTS_SUCCESS,
 } from '../../constants/action-types';
 
 const initialState = {
@@ -96,6 +97,12 @@ const personalDraftsReducer = (state = initialState, action) => {
     case UPDATE_DRAFTS_FAILURE:
       return {
         ...state,
+      };
+    case SUBMIT_DRAFTS_SUCCESS:
+      return {
+        ...state,
+        draftsLoading: true,
+        shortlistLoading: true,
       };
     default:
       return state;

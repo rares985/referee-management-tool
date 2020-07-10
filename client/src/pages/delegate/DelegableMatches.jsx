@@ -99,18 +99,18 @@ const DelegableMatches = (props) => {
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
     { id: 'competition_name', numeric: false, disablePadding: false, label: 'Competiție' },
     {
-      id: 'first_referee_name',
+      id: 'first_referee',
       numeric: false,
       disablePadding: false,
       label: 'Primul arbitru (A1)',
     },
     {
-      id: 'second_referee_name',
+      id: 'second_referee',
       numeric: false,
       disablePadding: false,
       label: 'Arbitru secund (A2) ',
     },
-    { id: 'observer_name', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'observer', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
 

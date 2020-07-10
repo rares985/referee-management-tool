@@ -14,6 +14,9 @@ import {
   UPDATE_DRAFTS_BEGIN,
   UPDATE_DRAFTS_SUCCESS,
   UPDATE_DRAFTS_FAILURE,
+  SUBMIT_DRAFTS_BEGIN,
+  SUBMIT_DRAFTS_SUCCESS,
+  SUBMIT_DRAFTS_FAILURE,
 } from '../../constants/action-types';
 
 const axios = require('axios').create({
@@ -143,8 +146,6 @@ export const DeleteDrafts = (request) => {
   return (dispatch) => {
     dispatch(DeleteDraftsBegin());
 
-    console.log('DeleteDrafts');
-
     axios
       .delete('/api/delegate/drafts/matches', { data: request })
       .then((res) => {
@@ -184,6 +185,39 @@ export const UpdateDraft = (request) => {
       })
       .catch((err) => {
         dispatch(UpdateDraftsFailure(err.error));
+      });
+  };
+};
+
+const SubmitDraftBegin = () => ({
+  type: SUBMIT_DRAFTS_BEGIN,
+});
+
+const SubmitDraftSuccess = (data) => ({
+  type: SUBMIT_DRAFTS_SUCCESS,
+  payload: {
+    data,
+  },
+});
+
+const SubmitDraftFailure = (error) => ({
+  type: SUBMIT_DRAFTS_FAILURE,
+  payload: {
+    error,
+  },
+});
+
+export const SubmitDrafts = (request) => {
+  return (dispatch) => {
+    dispatch(SubmitDraftBegin());
+
+    axios
+      .post('api/delegate/proposed/matches', request)
+      .then((res) => {
+        dispatch(SubmitDraftSuccess(res.data));
+      })
+      .catch((err) => {
+        dispatch(SubmitDraftFailure(err.error));
       });
   };
 };

@@ -4,9 +4,8 @@ import { connect } from 'react-redux';
 
 import { CircularProgress } from '@material-ui/core';
 import FetchProposedDrafts from '../../actions/delegate/proposedDraftsActions';
-import TableHeaderSelector from '../../components/TableHeaderSelector';
+import NiceTable from '../../components/NiceTable';
 
-import EnhancedTable from '../../components/EnhancedTable';
 import dateConverter from '../../utils/datemanip';
 
 const mapStateToProps = (state) => ({
@@ -37,32 +36,42 @@ const ProposedDrafts = (props) => {
   });
 
   const headCells = [
-    { id: 'match_no', numeric: true, disablePadding: true, label: 'Număr meci' },
+    { id: 'match_no', numeric: true, disablePadding: false, label: 'Număr meci' },
     { id: 'match_date', numeric: false, disablePadding: false, label: 'Data desfășurării' },
     { id: 'team_a_name', numeric: false, disablePadding: false, label: 'Echipa A' },
     { id: 'team_b_name', numeric: false, disablePadding: false, label: 'Echipa B' },
-    { id: 'full_name_competition', numeric: false, disablePadding: false, label: 'Competiție' },
-    { id: 'a1', numeric: false, disablePadding: false, label: 'A1' },
-    { id: 'a2', numeric: false, disablePadding: false, label: 'A2' },
-    { id: 'obs', numeric: false, disablePadding: false, label: 'Observator' },
+    { id: 'competition_name', numeric: false, disablePadding: false, label: 'Competiție' },
+    {
+      id: 'first_referee',
+      numeric: false,
+      disablePadding: false,
+      label: 'Primul arbitru (A1)',
+    },
+    {
+      id: 'second_referee',
+      numeric: false,
+      disablePadding: false,
+      label: 'Arbitru secund (A2) ',
+    },
+    { id: 'observer', numeric: false, disablePadding: false, label: 'Observator' },
     { id: 'location', numeric: false, disablePadding: false, label: 'Locație' },
   ];
 
   return (
     <>
       {draftsLoading && <CircularProgress />}
-      <TableHeaderSelector />
       {!draftsLoading && (
-        <EnhancedTable
-          tableName="Propuse pentru aprobare "
+        <NiceTable
+          tableName="Propuse spre aprobare"
+          primaryKey="draft_id"
+          headCells={headCells}
           rows={drafts.map((elem) => ({
             ...elem,
             match_date: dateConverter(elem.match_date),
-            a1: '-',
-            a2: '-',
-            obs: '-',
+            first_referee: 'Arbitru nedelegat',
+            second_referee: 'Arbitru nedelegat',
+            observer: 'Arbitru nedelegat',
           }))}
-          headCells={headCells}
         />
       )}
     </>
@@ -73,13 +82,14 @@ ProposedDrafts.propTypes = {
   user: PropTypes.string.isRequired,
   drafts: PropTypes.arrayOf(
     PropTypes.exact({
-      id: PropTypes.number.isRequired,
+      proposed_draft_id: PropTypes.number.isRequired,
       draft_id: PropTypes.number.isRequired,
+      match_id: PropTypes.number.isRequired,
       match_no: PropTypes.number.isRequired,
       match_date: PropTypes.string.isRequired,
       team_a_name: PropTypes.string.isRequired,
       team_b_name: PropTypes.string.isRequired,
-      competition_full_name: PropTypes.string.isRequired,
+      competition_name: PropTypes.string.isRequired,
       first_referee: PropTypes.string.isRequired,
       second_referee: PropTypes.string.isRequired,
       observer: PropTypes.string.isRequired,
