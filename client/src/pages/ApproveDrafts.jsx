@@ -40,7 +40,7 @@ const ApproveDrafts = (props) => {
   });
 
   return (
-    <Container fluid>
+    <Container fluid="true">
       {draftsLoading && <CircularProgress />}
       {!draftsLoading && (
         <>

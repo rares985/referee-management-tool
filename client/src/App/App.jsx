@@ -17,22 +17,35 @@ import {
   faPlusSquare,
   faCheckSquare,
   faSpinner,
+  faListUl,
 } from '@fortawesome/free-solid-svg-icons';
 
 import ResponsiveDrawer from '../components/ResponsiveDrawer';
 
+/* Public pages */
 import Home from '../pages/Home';
-import Matches from '../pages/Matches';
+import PublicMatches from '../pages/PublicMatches';
 import Login from '../pages/Login';
+
+/* Basic user pages */
 import Account from '../pages/Account';
+import PersonalInformation from '../pages/PersonalInformation';
 import Settings from '../pages/Settings';
 import PersonalMatchHistory from '../pages/PersonalMatchHistory';
-import PersonalInformation from '../pages/PersonalInformation';
-import UnavailabilityPeriods from '../pages/UnavailabilityPeriods';
-import Team from '../pages/Team';
+import Unavailable from '../pages/Unavailable';
+
+/* Delegator pages */
 import Delegate from '../pages/Delegate';
-import ApproveDrafts from '../pages/ApproveDrafts';
 import ProposedRejected from '../pages/ProposedRejected';
+
+/* Approver pages */
+import ApproveDrafts from '../pages/ApproveDrafts';
+
+/* Team pages */
+import Team from '../pages/Team';
+import TeamList from '../pages/TeamList';
+import TeamUnavailabilities from '../pages/TeamUnavailabilities';
+import TeamHistory from '../pages/TeamHistory';
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
@@ -117,6 +130,11 @@ const getLinks = (rights) => {
       icon: <FontAwesomeIcon size="lg" icon={faUsers} />,
       nested: [
         {
+          text: 'Listă',
+          path: '/team/list',
+          icon: <FontAwesomeIcon size="lg" icon={faListUl} />,
+        },
+        {
           text: 'Indisponibilități',
           path: '/team/unavailable',
           icon: <FontAwesomeIcon size="lg" icon={faCalendarTimes} />,
@@ -152,7 +170,7 @@ const App = (props) => {
         <Router>
           {/* public links */}
           <Home path="/" />
-          <Matches path="/matches" />
+          <PublicMatches path="/matches" />
           <Login path="/login" />
 
           {/* basic links */}
@@ -160,7 +178,7 @@ const App = (props) => {
           <PersonalInformation path="/info" />
           <Settings path="/settings" />
           <PersonalMatchHistory path="/history" />
-          <UnavailabilityPeriods path="/unavailable" />
+          <Unavailable path="/unavailable" />
 
           {/* delegator links */}
           <Delegate path="/delegate" />
@@ -171,6 +189,9 @@ const App = (props) => {
 
           {/* team links */}
           <Team path="/team" />
+          <TeamList path="/team/list" />
+          <TeamUnavailabilities path="/team/unavailable" />
+          <TeamHistory path="/team/history" />
         </Router>
       </ResponsiveDrawer>
     </div>

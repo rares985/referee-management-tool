@@ -45,7 +45,7 @@ const TableHeaderSelector = (props) => {
   };
 
   return (
-    <Container fluid>
+    <Container fluid="true">
       <Row>
         <IconButton onClick={prevMonth}>
           <ArrowBackIos fontSize={fontSize} />

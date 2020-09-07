@@ -20,7 +20,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-const Matches = (props) => {
+const PublicMatches = (props) => {
   const doFetchMatches = () => {
     const request = { msg: 'Dispatched ON_FETCH_MATCHES' };
     const { onFetchMatches } = props;
@@ -38,7 +38,7 @@ const Matches = (props) => {
   });
 
   return (
-    <Container fluid>
+    <Container fluid="true">
       {loading && <Spinner animation="border" />}
       {!loading && (
         <>
@@ -80,7 +80,7 @@ const Matches = (props) => {
   );
 };
 
-Matches.propTypes = {
+PublicMatches.propTypes = {
   matches: PropTypes.arrayOf(
     PropTypes.exact({
       id: PropTypes.number.isRequired,
@@ -99,8 +99,8 @@ Matches.propTypes = {
   error: PropTypes.string,
   onFetchMatches: PropTypes.func.isRequired,
 };
-Matches.defaultProps = {
+PublicMatches.defaultProps = {
   error: '',
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Matches);
+export default connect(mapStateToProps, mapDispatchToProps)(PublicMatches);

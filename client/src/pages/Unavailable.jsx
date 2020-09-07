@@ -3,16 +3,14 @@ import { format } from 'date-fns';
 import { makeStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { CircularProgress } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 
-import NiceTable from '../components/NiceTable';
 import DateAdder from './unavailable/DateAdder';
 
-import dateFormatter from '../utils/datemanip';
+import UnavailableDatesTable from '../components/UnavailableDatesTable';
 
 import {
   FetchUpcomingUnavailabilities,
@@ -61,21 +59,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const UnavailabilityPeriods = (props) => {
+const Unavailable = (props) => {
   const classes = useStyles();
 
   const [id, setId] = useState(0);
 
   /* eslint-disable no-unused-vars */
-  const {
-    user,
-    upcomingDates,
-    upcomingLoading,
-    oldDates,
-    oldLoading,
-    updateFinished,
-    error,
-  } = props;
+  const { user, upcomingDates, upcomingLoading, oldDates, oldLoading, error } = props;
   /* eslint-enable no-unused-vars */
 
   const [newUnavailabilityDates, setNewUnavailabilityDates] = useState([]);
@@ -139,78 +129,37 @@ const UnavailabilityPeriods = (props) => {
     setNewUnavailabilityDates([]);
   };
 
-  const tables = [
-    {
-      loading: oldLoading,
-      title: 'Perioade de indisponibilitate trecute',
-      dates: oldDates,
-    },
-    {
-      loading: upcomingLoading,
-      title: 'Perioade de indisponibilitate în perioada următoare',
-      dates: upcomingDates,
-      deletable: true,
-      handleDeleteSelected: onDeleteSelectedUpcoming,
-    },
-    {
-      loading: false,
-      title: 'Perioade de indisponibilitate noi',
-      dates: newUnavailabilityDates,
-      deletable: true,
-      hasConfirmButton: true,
-      handleConfirmSelected: onConfirmSelectedNew,
-      handleDeleteSelected: onDeleteSelectedNew,
-    },
-  ];
-
-  const headCells = [
-    {
-      id: 'StartDate',
-      numeric: false,
-      disablePadding: false,
-      label: 'Data începerii',
-    },
-    {
-      id: 'EndDate',
-      numeric: false,
-      disablePadding: false,
-      label: 'Data încheierii',
-    },
-    {
-      id: 'Reason',
-      numeric: false,
-      disablePadding: false,
-      label: 'Motiv',
-    },
-  ];
-
   return (
     <Container component="main" maxWidth="md" className={classes.container}>
       <CssBaseline>
-        {tables.map((table) => {
-          return (
-            <Paper elevation={4} className={classes.root} key={table.title}>
-              {table.loading && <CircularProgress />}
-              {!table.loading && (
-                <NiceTable
-                  tableName={table.title}
-                  rows={table.dates.map((elem) => ({
-                    ...elem,
-                    StartDate: dateFormatter(elem.StartDate),
-                    EndDate: dateFormatter(elem.EndDate),
-                  }))}
-                  headCells={headCells}
-                  hasConfirmButton={table.hasConfirmButton}
-                  handleConfirmSelectedClick={table.handleConfirmSelected}
-                  handleDeleteSelectedClick={table.handleDeleteSelected}
-                  primaryKey="id"
-                  acceptsRowSelect={table.deletable}
-                  acceptsRowDelete={table.deletable}
-                />
-              )}
-            </Paper>
-          );
-        })}
+        <Paper elevation={4} className={classes.root}>
+          <UnavailableDatesTable
+            loading={oldLoading}
+            dates={oldDates}
+            title="Perioade de indisponibilitate trecute"
+          />
+        </Paper>
+
+        <Paper elevation={4} className={classes.root}>
+          <UnavailableDatesTable
+            loading={upcomingLoading}
+            dates={upcomingDates}
+            title="Perioade de indisponibilitate în perioada următoare"
+            deletable
+            handleDeleteSelected={onDeleteSelectedUpcoming}
+          />
+        </Paper>
+
+        <Paper elevation={4} className={classes.root}>
+          <UnavailableDatesTable
+            dates={newUnavailabilityDates}
+            title="Perioade de indisponibilitate noi"
+            deletable
+            handleDeleteSelected={onDeleteSelectedNew}
+            hasConfirmButton
+            handleConfirmSelected={onConfirmSelectedNew}
+          />
+        </Paper>
 
         <Paper elevation={4} className={classes.root}>
           <Typography component="h1" variant="h5">
@@ -223,7 +172,7 @@ const UnavailabilityPeriods = (props) => {
   );
 };
 
-UnavailabilityPeriods.propTypes = {
+Unavailable.propTypes = {
   user: PropTypes.string.isRequired,
   upcomingDates: PropTypes.arrayOf(
     PropTypes.exact({
@@ -243,7 +192,6 @@ UnavailabilityPeriods.propTypes = {
     })
   ).isRequired,
   oldLoading: PropTypes.bool.isRequired,
-  updateFinished: PropTypes.bool.isRequired,
   error: PropTypes.string,
   doFetchUpcoming: PropTypes.func.isRequired,
   doFetchOld: PropTypes.func.isRequired,
@@ -251,8 +199,8 @@ UnavailabilityPeriods.propTypes = {
   addNewPeriod: PropTypes.func.isRequired,
 };
 
-UnavailabilityPeriods.defaultProps = {
+Unavailable.defaultProps = {
   error: '',
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UnavailabilityPeriods);
+export default connect(mapStateToProps, mapDispatchToProps)(Unavailable);

@@ -87,6 +87,7 @@ const NiceTable = (props) => {
 
   const handleConfirmSelectedClickLocal = (event) => {
     event.preventDefault();
+    setSelected([]);
 
     handleConfirmSelectedClick(selected);
   };
