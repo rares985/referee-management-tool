@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { CircularProgress } from '@material-ui/core';
-import { Table, Button, Container } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
+
+import Container from '@material-ui/core/Container';
 
 import { XIcon } from '../components/Icons';
 import TableHeaderSelector from '../components/TableHeaderSelector';

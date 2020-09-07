@@ -5,8 +5,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
+import Container from '@material-ui/core/Container';
 import { connect } from 'react-redux';
 
 import { FormGroup } from 'react-bootstrap';
@@ -55,7 +55,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-const PersonalInformationForm = (props) => {
+const PersonalInformation = (props) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [address, setAddress] = useState('');
@@ -111,7 +111,7 @@ const PersonalInformationForm = (props) => {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
+    <Container maxWidth="sm">
       <CssBaseline>
         {loading && <CircularProgress />}
         {!loading && (
@@ -228,7 +228,7 @@ const PersonalInformationForm = (props) => {
   );
 };
 
-PersonalInformationForm.propTypes = {
+PersonalInformation.propTypes = {
   user: PropTypes.string.isRequired,
   info: PropTypes.exact({
     id: PropTypes.number,
@@ -248,7 +248,7 @@ PersonalInformationForm.propTypes = {
   allowChangeRankFields: PropTypes.bool,
 };
 
-PersonalInformationForm.defaultProps = {
+PersonalInformation.defaultProps = {
   allowChangeRankFields: false,
   error: '',
   info: {
@@ -264,4 +264,4 @@ PersonalInformationForm.defaultProps = {
   },
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PersonalInformationForm);
+export default connect(mapStateToProps, mapDispatchToProps)(PersonalInformation);

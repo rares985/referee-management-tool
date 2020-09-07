@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { makeStyles } from '@material-ui/core/styles';
+import blueGrey from '@material-ui/core/colors/blueGrey';
+import grey from '@material-ui/core/colors/grey';
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 
 import LoginAction from '../actions/LoginAction';
 
@@ -21,7 +22,6 @@ import MaskableTextField from './login/MaskableTextField';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -29,7 +29,16 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
+    color: theme.palette.getContrastText(theme.palette.secondary.main),
     backgroundColor: theme.palette.secondary.main,
+  },
+  avatarContainer: {
+    backgroundColor: theme.palette.secondary.main,
+    borderRadius: theme.spacing(4),
+    marginBottom: theme.spacing(2),
+  },
+  avatarIcon: {
+    animation: 'rotation 0.5s linear',
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -37,6 +46,54 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  linkAlignRight: {
+    textAlign: 'right',
+  },
+  socialMediaRegister: {
+    padding: theme.spacing(2),
+  },
+  socialMediaRegisterTitle: {
+    textAlign: 'center',
+    marginBottom: theme.spacing(3),
+  },
+  socialMediaIcon: {
+    textAlign: 'center',
+  },
+
+  paperNoAccount: {
+    padding: theme.spacing(0),
+    marginTop: theme.spacing(4),
+    transform: 'scale(1)',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shorter,
+    }),
+    background: blueGrey[100],
+    color: blueGrey[900],
+  },
+  listItemNoAccount: {
+    padding: theme.spacing(0),
+    margin: theme.spacing(0),
+  },
+  listElementNoAccount: {
+    padding: theme.spacing(2),
+  },
+  noAccountText: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  expand: {
+    transform: 'rotate(0deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+      duration: theme.transitions.duration.shorter,
+    }),
+  },
+  root: {
+    marginBottom: theme.spacing(5),
+  },
+  expandOpen: {
+    transform: 'rotate(180deg)',
   },
 }));
 
@@ -54,8 +111,8 @@ const mapDispatchToProps = (dispatch) => ({
 const Login = (props) => {
   const classes = useStyles();
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
   const { error, onSubmitLoginRequest } = props;
 
@@ -73,14 +130,15 @@ const Login = (props) => {
   }
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
+    <Container maxWidth="sm">
       <Paper elevation={4} className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Autentificare
+        <Box border={1} borderColor={grey[900]} className={classes.avatarContainer}>
+          <Avatar className={classes.avatar}>
+            <FontAwesomeIcon icon={faLock} className={classes.avatarIcon} />
+          </Avatar>
+        </Box>
+        <Typography component="h1" variant="h4">
+          <Box letterSpacing={5}>Autentificare</Box>
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
@@ -95,10 +153,12 @@ const Login = (props) => {
             autoFocus
             value={username}
             error={error}
+            InputProps={{}}
             helperText={error ? 'Username/parola incorecta' : ''}
             onChange={(event) => setUsername(event.target.value)}
           />
           <MaskableTextField
+            variant="filled"
             margin="none"
             required
             fullWidth
@@ -111,10 +171,6 @@ const Login = (props) => {
             helperText={error ? 'Username/parola incorecta' : ''}
             onChange={(event) => setPassword(event.target.value)}
           />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
           <Button
             type="submit"
             fullWidth
@@ -125,13 +181,6 @@ const Login = (props) => {
           >
             Autentificare
           </Button>
-          <Grid container>
-            <Grid item xs>
-              <Link href="http://google.com" variant="body2">
-                Am uitat parola
-              </Link>
-            </Grid>
-          </Grid>
         </form>
       </Paper>
     </Container>

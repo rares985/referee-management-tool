@@ -1,11 +1,11 @@
-import { Table, Spinner, Container } from 'react-bootstrap';
+import { Table, Spinner } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import Container from '@material-ui/core/Container';
 
 import { FetchMatches } from '../actions/MatchesActions';
 
-import DismissibleHelper from '../components/DismissibleHelper';
 import dateFormatter from '../utils/datemanip';
 
 const mapStateToProps = (state) => ({
@@ -42,7 +42,6 @@ const Matches = (props) => {
       {loading && <Spinner animation="border" />}
       {!loading && (
         <>
-          <DismissibleHelper heading="Tip" text="Aici poti vedea delegarile confirmate" />
           <Table striped bordered size="sm">
             <thead>
               <tr>

@@ -1,20 +1,33 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Router, navigate } from '@reach/router';
+import { Router } from '@reach/router';
 import { connect } from 'react-redux';
 
-import HomeIcon from '@material-ui/icons/Home';
-import LockIcon from '@material-ui/icons/Lock';
-import EventIcon from '@material-ui/icons/Event';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faHome,
+  faCalendar,
+  faSignInAlt,
+  faUser,
+  faListAlt,
+  faCogs,
+  faHistory,
+  faCalendarTimes,
+  faUsers,
+  faPlusSquare,
+  faCheckSquare,
+  faSpinner,
+} from '@fortawesome/free-solid-svg-icons';
 
 import ResponsiveDrawer from '../components/ResponsiveDrawer';
+
 import Home from '../pages/Home';
 import Matches from '../pages/Matches';
 import Login from '../pages/Login';
-import Dashboard from '../pages/Dashboard';
-import PersonalInformationForm from '../pages/PersonalInformationForm';
+import Account from '../pages/Account';
+import Settings from '../pages/Settings';
 import PersonalMatchHistory from '../pages/PersonalMatchHistory';
+import PersonalInformation from '../pages/PersonalInformation';
 import UnavailabilityPeriods from '../pages/UnavailabilityPeriods';
 import Team from '../pages/Team';
 import Delegate from '../pages/Delegate';
@@ -23,60 +36,140 @@ import ProposedRejected from '../pages/ProposedRejected';
 
 const mapStateToProps = (state) => ({
   user: state.login.user,
-  finished: state.login.finished,
 });
 
-const App = (props) => {
-  const { user, finished } = props;
+const getLinks = (rights) => {
+  const { basic, delegation, approval, team } = rights;
 
-  const links = [
+  const publicLinks = [
     {
       text: 'Acasă',
       path: '/',
-      icon: <HomeIcon />,
+      icon: <FontAwesomeIcon size="lg" icon={faHome} />,
     },
     {
       text: 'Meciuri',
       path: '/matches',
-      icon: <EventIcon />,
+      icon: <FontAwesomeIcon size="lg" icon={faCalendar} />,
     },
     {
       text: 'Autentificare',
       path: '/login',
-      icon: <LockIcon />,
+      icon: <FontAwesomeIcon size="lg" icon={faSignInAlt} />,
     },
-    user !== ''
-      ? {
-          exclusive: true,
-          text: 'Dashboard',
-          path: '/dashboard',
-          icon: <DashboardIcon />,
-        }
-      : false,
   ];
 
-  useEffect(() => {
-    if (finished) {
-      navigate('/dashboard');
-    }
-  }, [finished]);
+  const basicLinks = [
+    {
+      text: 'Contul Meu',
+      path: '/account',
+      icon: <FontAwesomeIcon size="lg" icon={faUser} />,
+      nested: [
+        {
+          text: 'Date personale',
+          path: '/info',
+          icon: <FontAwesomeIcon size="lg" icon={faListAlt} />,
+        },
+        {
+          text: 'Setări cont',
+          path: '/settings',
+          icon: <FontAwesomeIcon size="lg" icon={faCogs} />,
+        },
+      ],
+    },
+    {
+      text: 'Istoric meciuri',
+      path: '/history',
+      icon: <FontAwesomeIcon size="lg" icon={faHistory} />,
+    },
+    {
+      text: 'Indisponibilități',
+      path: '/unavailable',
+      icon: <FontAwesomeIcon size="lg" icon={faCalendarTimes} />,
+    },
+  ];
+
+  const delegationLinks = [
+    {
+      text: 'Delegă arbitri',
+      path: '/delegate',
+      icon: <FontAwesomeIcon size="lg" icon={faPlusSquare} />,
+    },
+    {
+      text: 'Verifică propuneri',
+      path: '/proposals',
+      icon: <FontAwesomeIcon size="lg" icon={faSpinner} />,
+    },
+  ];
+
+  const approvalLinks = [
+    {
+      text: 'Aprobă propuneri',
+      path: '/approve',
+      icon: <FontAwesomeIcon size="lg" icon={faCheckSquare} />,
+    },
+  ];
+
+  const teamLinks = [
+    {
+      text: 'Echipa mea',
+      path: '/team',
+      icon: <FontAwesomeIcon size="lg" icon={faUsers} />,
+      nested: [
+        {
+          text: 'Indisponibilități',
+          path: '/team/unavailable',
+          icon: <FontAwesomeIcon size="lg" icon={faCalendarTimes} />,
+        },
+        {
+          text: 'Istoric meciuri',
+          path: '/team/history',
+          icon: <FontAwesomeIcon size="lg" icon={faHistory} />,
+        },
+      ],
+    },
+  ];
+
+  return [
+    ...publicLinks,
+    ...(basic ? basicLinks : []),
+    ...(delegation ? delegationLinks : []),
+    ...(approval ? approvalLinks : []),
+    ...(team ? teamLinks : []),
+  ];
+};
+
+const App = (props) => {
+  /* eslint-disable no-unused-vars */
+  const { user } = props;
+  /* eslint-enable no-unused-vars */
+
+  const links = getLinks({ basic: true, delegation: true, approval: true, team: true });
 
   return (
     <div className="app">
-      {/* To filter out "false" elements */}
-      <ResponsiveDrawer links={links.filter((elem) => elem)}>
+      <ResponsiveDrawer links={links}>
         <Router>
+          {/* public links */}
           <Home path="/" />
           <Matches path="/matches" />
-          {user === '' && <Login path="/login" />}
-          {user !== '' && <Dashboard path="/dashboard" />}
-          {<Dashboard path="/dashboard" />}
-          <PersonalMatchHistory path="/viewhistory" />
-          <PersonalInformationForm path="/updateinfo" />
-          <UnavailabilityPeriods path="/addunavailable" />
-          <ProposedRejected path="/proposed" />
+          <Login path="/login" />
+
+          {/* basic links */}
+          <Account path="/account" />
+          <PersonalInformation path="/info" />
+          <Settings path="/settings" />
+          <PersonalMatchHistory path="/history" />
+          <UnavailabilityPeriods path="/unavailable" />
+
+          {/* delegator links */}
           <Delegate path="/delegate" />
+
+          {/* approver links */}
+          <ProposedRejected path="/proposed" />
           <ApproveDrafts path="/approve" />
+
+          {/* team links */}
           <Team path="/team" />
         </Router>
       </ResponsiveDrawer>
@@ -86,7 +179,6 @@ const App = (props) => {
 
 App.propTypes = {
   user: PropTypes.string.isRequired,
-  finished: PropTypes.bool.isRequired,
 };
 
 export default connect(mapStateToProps)(App);

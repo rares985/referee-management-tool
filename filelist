@@ -47,7 +47,7 @@ client/src/pages/Delegate.jsx
 client/src/pages/Home.jsx
 client/src/pages/Login.jsx
 client/src/pages/Matches.jsx
-client/src/pages/PersonalInformationForm.jsx
+client/src/pages/PersonalInformation.jsx
 client/src/pages/PersonalMatchHistory.jsx
 client/src/pages/Team.jsx
 client/src/pages/UnavailabilityPeriods.jsx

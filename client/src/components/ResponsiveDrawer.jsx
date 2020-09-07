@@ -7,14 +7,12 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { navigate } from '@reach/router';
+
+import SidebarLink from './SidebarLink';
 
 const drawerWidth = 240;
 
@@ -67,24 +65,33 @@ const ResponsiveDrawer = (props) => {
       <Divider />
       <List>
         {links
-          .filter((elem) => !elem.exclusive)
+          .filter((elem) => !elem.afterDivider)
           .map((link) => (
-            <ListItem onClick={() => navigate(link.path)} button key={link.text}>
-              <ListItemIcon>{link.icon}</ListItemIcon>
-              <ListItemText primary={link.text} />
-            </ListItem>
+            <SidebarLink
+              withLabel
+              withIcons
+              key={link.text}
+              path={link.path}
+              icon={link.icon}
+              text={link.text}
+              nested={link.nested}
+            />
           ))}
       </List>
       <Divider />
       <List>
-        {/* TODO Check why dashboard appears before login */}
         {links
-          .filter((elem) => elem.exclusive)
+          .filter((elem) => elem.afterDivider)
           .map((link) => (
-            <ListItem onClick={() => navigate(link.path)} button key={link.text}>
-              <ListItemIcon>{link.icon}</ListItemIcon>
-              <ListItemText primary={link.text} />
-            </ListItem>
+            <SidebarLink
+              withLabel
+              withIcons
+              path={link.path}
+              key={link.text}
+              icon={link.icon}
+              text={link.text}
+              nested={link.nested}
+            />
           ))}
       </List>
     </div>
