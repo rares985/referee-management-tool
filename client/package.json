@@ -14,7 +14,7 @@
     "file-loader": "^6.0.0",
     "fontsource-roboto": "^2.1.4",
     "lodash": "^4.17.19",
-    "material-table": "^1.64.0",
+    "material-table": "^1.69.3",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
